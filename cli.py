@@ -68,7 +68,7 @@ def _logging_setup(verbosity=1, logfile=None):
         console_handler.setFormatter(formatter)
         logger.addHandler(console_handler)
 
-    logging.getLogger('mlb:worker').setLevel(logging.INFO)
+    logging.getLogger('fh:worker').setLevel(logging.INFO)
 
 
 def main():

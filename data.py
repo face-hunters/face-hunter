@@ -8,7 +8,7 @@ LOGGER = logging.getLogger('d')
 
 def download_seqamlab_dataset(path: str = './videos'):
     if not os.path.exists(path):
-        LOGGER.info('Creating path ' + path)
+        LOGGER.info('Creating path {}'.format(path))
         os.makedirs(path)
 
     url = 'http://seqamlab.com/wp-content/uploads/Data/ytcelebrity.tar'
