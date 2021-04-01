@@ -2,10 +2,16 @@ import argparse
 import logging
 
 
-def _download_videos(args):
+def _download_youtube_videos(args):
+    from data import download_youtube_videos
+
+    download_youtube_videos(args.url, args.path)
+
+
+def _download_video_datasets(args):
     from data import download_seqamlab_dataset
 
-    download_seqamlab_dataset(args.path)
+    download_seqamlab_dataset(args.path + '/ytcelebrity')
 
 
 def _download_thumbnails(args):
@@ -18,6 +24,7 @@ def _run_detection(args):
     from worker import Worker
 
     worker = Worker(args.thumbnails, args.videos)
+    worker.load_encodings()
     worker.run_face_detection()
 
 
@@ -27,17 +34,25 @@ def _get_parser():
     logging_args.add_argument('-l', '--logfile')
     parser = argparse.ArgumentParser(description='Face-Hunter Command Line Interface',
                                      parents=[logging_args])
-
-    # Parser to download videos
     subparsers = parser.add_subparsers(title='action', help='Action to perform')
-    download_videos = subparsers.add_parser('download_videos',
+
+    # Parser to download videos from youtube
+    youtube_videos = subparsers.add_parser('youtube',
+                                            help='Download videos from youtube')
+    youtube_videos.add_argument('--url', help='Video URL', type=str, default='./videos')
+    youtube_videos.add_argument('--path', help='Path to store the videos', type=str, default='./videos/youtube')
+    youtube_videos.set_defaults(action=_download_youtube_videos)
+
+    # Parser to download video datasets
+    download_videos = subparsers.add_parser('download_video_datasets',
                                             help='Download test video datasets')
     download_videos.add_argument('--path', help='Path to store the videos', type=str, default='./videos')
-    download_videos.set_defaults(action=_download_videos)
+    download_videos.set_defaults(action=_download_video_datasets)
 
     # Parser to download thumbnails
-    subparsers.add_parser('download_thumbnails',
+    download_thumbnails = subparsers.add_parser('download_thumbnails',
                           help='Download thumbnails for training')
+    download_thumbnails.set_defaults(action=_download_thumbnails)
 
     # Parser to run the face detection
     run_detection = subparsers.add_parser('run_detection',
