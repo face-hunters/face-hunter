@@ -60,8 +60,15 @@ def download_seqamlab_dataset(path: str = './videos/ytcelebrity'):
     information.to_csv(path + '/information.csv')
 
 
-def download_wikidata_thumbnails(path: str = './thumbnails'):
+def download_wikidata_thumbnails(query_csv,path: str = './thumbnails'):
     if not os.path.exists(path):
+        LOGGER.info('Creating path {}'.format(path))
         os.makedirs(path)
-
-    # TODO thumbnail download code
+    df = pd.read_csv(query_csv)
+    for i in range(len(df)):
+        human_id = df['human'][i]
+        name = df['humanLabel'][i]
+        thumbnail_url = df['pic'][i]
+        if not os.path.exists(path + '/' + human_id + name):
+            os.makedirs(path + '/' + human_id + name)
+        urllib.request.urlretrieve(thumbnail_url, filename=path + '/' + human_id + name + '/' + str(i) + '.jpg')
