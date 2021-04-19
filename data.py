@@ -69,8 +69,6 @@ def download_wikidata_thumbnails(query_csv,path: str = './thumbnails'):
         human_id = df['human'][i].split('/')[-1]
         name = df['humanLabel'][i]
         thumbnail_url = df['pic'][i]
-        if not os.path.exists(path + '/' + human_id + name):
-            os.makedirs(path + '/' + human_id + name)
-        filename = path + '/' + human_id + name + '/' + thumbnail_url.split('/')[-1]
-        if not os.path.exists(filename):
-            urllib.request.urlretrieve(thumbnail_url, filename=filename)
+        if not os.path.exists(path + '/' + human_id + '_' + name):
+            os.makedirs(path + '/' + human_id + '_' + name)
+        urllib.request.urlretrieve(thumbnail_url, filename=path + '/' + human_id + '_' + name + '/' + str(i) + '.jpg')
