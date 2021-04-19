@@ -10,8 +10,17 @@ def _download_youtube_videos(args):
 
 def _download_video_datasets(args):
     from data import download_seqamlab_dataset
+    from data import download_imdb_faces_dataset
+    from data import download_youtube_faces_db
+    from data import download_imdb_wiki_dataset
 
-    download_seqamlab_dataset(args.path + '/ytcelebrity')
+    options = {
+        'imdb-wiki': download_imdb_wiki_dataset,
+        'imdb-faces': download_imdb_faces_dataset,
+        'yt-celebrity': download_seqamlab_dataset,
+        'youtube-faces-db': download_youtube_faces_db
+    }
+    options[args.dataset](args.path)
 
 
 def _download_thumbnails(args):
@@ -21,11 +30,11 @@ def _download_thumbnails(args):
 
 
 def _run_detection(args):
-    from worker import Worker
+    from hunter import Hunter
 
-    worker = Worker(args.thumbnails, args.videos)
-    worker.load_encodings()
-    worker.run_face_detection()
+    hunter = Hunter()
+    hunter.fit(args.thumbnails)
+    hunter.predict(args.videos)
 
 
 def _get_parser():
@@ -46,7 +55,11 @@ def _get_parser():
     # Parser to download video datasets
     download_videos = subparsers.add_parser('download_video_datasets',
                                             help='Download test video datasets')
-    download_videos.add_argument('--path', help='Path to store the videos', type=str, default='./videos')
+    download_videos.add_argument('--path', help='Path to store the videos', type=str, default='./images/youtube-faces-db')
+    download_videos.add_argument('--dataset',
+                                 help='Options are imdb-wiki, imdb-faces, youtube-faces-db and yt-celebrity',
+                                 type=str,
+                                 default='youtube-faces-db')
     download_videos.set_defaults(action=_download_video_datasets)
 
     # Parser to download thumbnails
@@ -57,7 +70,7 @@ def _get_parser():
     # Parser to run the face detection
     run_detection = subparsers.add_parser('run_detection',
                                           help='Run face detection on locally downloaded videos')
-    run_detection.add_argument('--videos', help='Path to the videos', type=str, default='./videos')
+    run_detection.add_argument('--videos', help='Path to the videos', type=str, default='./videos/ytcelebrity')
     run_detection.add_argument('--thumbnails', help='Path to the thumbnails', type=str, default='./thumbnails')
     run_detection.set_defaults(action=_run_detection)
     return parser
