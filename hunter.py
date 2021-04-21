@@ -2,7 +2,8 @@ import logging
 import os
 import face_recognition
 import cv2
-import pandas as pd
+from helpers import path_exists
+import pickle
 
 LOGGER = logging.getLogger('fh')
 
@@ -24,10 +25,20 @@ class Hunter(object):
         self.estimator = None
         self.labels = []
 
-    def fit(self, thumbnails_path: str = './thumbnails'):
+    def fit(self, thumbnails_path: str = './thumbnails', load_data: bool = False, name: str = 'index'):
         import nmslib
         self.estimator = nmslib.init(method=self.method, space=self.space)
 
+        # Check if path points to an existing index of embeddings
+        if load_data:
+            self.estimator.loadIndex(os.path.join(thumbnails_path, name + '.bin'), True)
+            with open(os.path.join(thumbnails_path, name + '.txt'), "rb") as fp:
+                self.labels = pickle.load(fp)
+            if self.estimator is None:
+                LOGGER.warning('Failed to load embeddings at {}')
+            return self
+
+        # Create embeddings if not
         for identity in os.listdir(thumbnails_path):
             if not os.path.isdir(os.path.join(thumbnails_path, identity)):
                 continue
@@ -52,56 +63,50 @@ class Hunter(object):
 
         return self
 
-    def predict(self, information_csv_path: str = './videos'):
-        videos = pd.read_csv(os.path.join(information_csv_path, 'information.csv'))
+    def predict(self, file: str = './videos/video.avi'):
         y = []
 
-        for index, video in videos.iterrows():
-            LOGGER.info("Starting face recognition on {}".format(video['video']))
-            cap = cv2.VideoCapture(os.path.join(information_csv_path, video['video']))
+        LOGGER.info("Starting face recognition on {}".format(file))
+        cap = cv2.VideoCapture(file)
 
-            face_names = []
-            while cap.isOpened():
-                ret, frame = cap.read()
+        while cap.isOpened():
+            ret, frame = cap.read()
 
-                # Exit when there's no frame
-                if not ret:
-                    break
+            # Exit when there's no frame
+            if not ret:
+                break
 
-                # Resize the frame for faster computation
-                small_frame = cv2.resize(frame, (0, 0), fx=self.scaling_x, fy=self.scaling_y)
-                small_frame = cv2.cvtColor(small_frame, cv2.COLOR_BGR2RGB)
+            # Resize the frame for faster computation
+            small_frame = cv2.resize(frame, (0, 0), fx=self.scaling_x, fy=self.scaling_y)
+            small_frame = cv2.cvtColor(small_frame, cv2.COLOR_BGR2RGB)
 
-                # Find faces and get their encodings
-                face_locations = face_recognition.face_locations(small_frame, model=self.model)
+            # Find faces and get their encodings
+            face_locations = face_recognition.face_locations(small_frame, model=self.model)
 
-                if len(face_locations) == 0:
-                    continue
+            if len(face_locations) == 0:
+                continue
 
-                face_encodings = face_recognition.face_encodings(small_frame, face_locations)
+            face_encodings = face_recognition.face_encodings(small_frame, face_locations)
 
-                # Compare closest identities against threshold
-                closest_distances = self.estimator.knnQueryBatch(face_encodings, k=1)
-                are_matches = [closest_distances[i][1][0] <= self.distance_threshold for i in
-                               range(len(face_locations))]
+            # Compare closest identities against threshold
+            closest_distances = self.estimator.knnQueryBatch(face_encodings, k=1)
+            are_matches = [closest_distances[i][1][0] <= self.distance_threshold for i in
+                           range(len(face_locations))]
 
-                for match_id, match_value in enumerate(are_matches):
-                    if not match_value:
-                        LOGGER.warning('Unknown identity')
-                    elif self.labels[closest_distances[match_id][0][0]] not in face_names:
-                        face_names.append(self.labels[closest_distances[0][0][match_id]])
-
-            LOGGER.info("Video {} contained: {}. True value: {}".format(video['video'], face_names, video['entities']))
-            y.append(video['entities'])
-
+            faces = []
+            for match_id, match_value in enumerate(are_matches):
+                if not match_value:
+                    faces.append('Unknown')
+                else:
+                    faces.append(self.labels[closest_distances[0][0][match_id]])
+                y.append(faces)
         return y
 
-    def save(self, path: str = './config/index.txt'):
-        path_without_filename = os.path.dirname(os.path.abspath(path))
-        if not os.path.exists(path_without_filename):
-            LOGGER.info('Creating path {}'.format(path_without_filename))
-            os.makedirs(path)
+    def save(self, path: str = './config', name: str = 'index'):
+        path_exists(path)
 
-        self.estimator.saveIndex(path, save_data=True)
+        self.estimator.saveIndex(os.path.join(path, name + '.bin'), save_data=True)
+        with open(os.path.join(path, name + '.txt'), 'wb') as fp:
+            pickle.dump(self.labels, fp)
 
         return self

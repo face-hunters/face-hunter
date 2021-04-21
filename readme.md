@@ -15,7 +15,7 @@
  Currently supports:
 ###### `run_detection (--path <path to images/videos> --thumbnails <path to thumbnails>)`
 ###### `download_thumbnails`
-###### `download_video_datasets (--path <path to save the dataset at> --dataset <imdb-wiki/imdb-faces/youtube-faces-db/yt-celebrity)`
+###### `download_video_dataset (--path <path to save the dataset at> --dataset <imdb-wiki/imdb-faces/youtube-faces-db/yt-celebrity)`
 ###### `youtube (--url <path to txt with urls> --path <path to store the videos at>)`
 
 ### data.py
@@ -28,12 +28,13 @@
  
 ### hunter.py
  - Class that handles the face recognition
- - **fit(thumbnails_path: str)** function creates embeddings of thumbnails or loads existing ones
+ - **fit(thumbnails_path: str, load_data: bool, name: str)** function creates embeddings of thumbnails or loads existing ones
  - for a fast search over thousands of embeddings a k-Nearest Neighbor Algorithm is trained with the embeddings
- - **predict(information_csv_path: str)** function takes as input the path to a information.csv and returns a list of predicted entities
- - **save(path: str)** function locally saves the created embeddings to reuse them later
+ - **predict(file: str)** function takes as input the path to a video/image and returns a list of predicted (frame-wise) entities
+ - **save(path: str, name: str)** function locally saves the created embeddings to reuse them later
  - Parameters of the object allow configuration of the kNN-algorithm and face recognition tool
  
 ### helpers.py
  - **check_path** function checks if a path exists and creates it otherwise
+ - **calculate_accuracy** function to calculate the accuracy between frame-lists of lists with entities
  

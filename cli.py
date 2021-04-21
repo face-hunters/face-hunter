@@ -1,5 +1,11 @@
 import argparse
+import itertools
 import logging
+import os
+import pandas as pd
+from helpers import calculate_accuracy
+
+LOGGER = logging.getLogger('c')
 
 
 def _download_youtube_videos(args):
@@ -34,7 +40,12 @@ def _run_detection(args):
 
     hunter = Hunter()
     hunter.fit(args.thumbnails)
-    hunter.predict(args.videos)
+    # hunter.save('./config/index.bin')
+
+    data = pd.read_csv(os.path.join(args.path, 'information.csv'))
+    for index, video in data.iterrows():
+        y = hunter.predict(os.path.join(args.path, video['video']))
+        LOGGER.info('Accuracy {}'.format(calculate_accuracy(list(itertools.repeat(video['entities'], len(y))), y)))
 
 
 def _get_parser():
@@ -48,14 +59,14 @@ def _get_parser():
     # Parser to download videos from youtube
     youtube_videos = subparsers.add_parser('youtube',
                                             help='Download videos from youtube')
-    youtube_videos.add_argument('--url', help='Video URL', type=str, default='./videos')
+    youtube_videos.add_argument('--url', help='Path to a text file containing URLs', type=str, default='./videos')
     youtube_videos.add_argument('--path', help='Path to store the videos', type=str, default='./videos/youtube')
     youtube_videos.set_defaults(action=_download_youtube_videos)
 
     # Parser to download video datasets
-    download_videos = subparsers.add_parser('download_video_datasets',
+    download_videos = subparsers.add_parser('download_video_dataset',
                                             help='Download test video datasets')
-    download_videos.add_argument('--path', help='Path to store the videos', type=str, default='./images/youtube-faces-db')
+    download_videos.add_argument('--path', help='Path to store the dataset', type=str, default='./images/youtube-faces-db')
     download_videos.add_argument('--dataset',
                                  help='Options are imdb-wiki, imdb-faces, youtube-faces-db and yt-celebrity',
                                  type=str,
@@ -69,7 +80,7 @@ def _get_parser():
 
     # Parser to run the face detection
     run_detection = subparsers.add_parser('run_detection',
-                                          help='Run face detection on locally downloaded videos')
+                                          help='Run face detection on locally downloaded data')
     run_detection.add_argument('--path', help='Path to the videos', type=str, default='./videos/ytcelebrity')
     run_detection.add_argument('--thumbnails', help='Path to the thumbnails', type=str, default='./thumbnails')
     run_detection.set_defaults(action=_run_detection)
