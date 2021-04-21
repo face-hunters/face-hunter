@@ -70,7 +70,7 @@ def _get_parser():
     # Parser to run the face detection
     run_detection = subparsers.add_parser('run_detection',
                                           help='Run face detection on locally downloaded videos')
-    run_detection.add_argument('--videos', help='Path to the videos', type=str, default='./videos/ytcelebrity')
+    run_detection.add_argument('--path', help='Path to the videos', type=str, default='./videos/ytcelebrity')
     run_detection.add_argument('--thumbnails', help='Path to the thumbnails', type=str, default='./thumbnails')
     run_detection.set_defaults(action=_run_detection)
     return parser

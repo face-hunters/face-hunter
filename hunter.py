@@ -52,13 +52,13 @@ class Hunter(object):
 
         return self
 
-    def predict(self, videos_path: str = './videos'):
-        videos = pd.read_csv(os.path.join(videos_path, 'information.csv'))
+    def predict(self, information_csv_path: str = './videos'):
+        videos = pd.read_csv(os.path.join(information_csv_path, 'information.csv'))
         y = []
 
         for index, video in videos.iterrows():
             LOGGER.info("Starting face recognition on {}".format(video['video']))
-            cap = cv2.VideoCapture(os.path.join(videos_path, video['video']))
+            cap = cv2.VideoCapture(os.path.join(information_csv_path, video['video']))
 
             face_names = []
             while cap.isOpened():
