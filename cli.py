@@ -3,18 +3,39 @@ import itertools
 import logging
 import os
 import pandas as pd
-from helpers import calculate_accuracy
+from helpers import evaluation_metrics
 
 LOGGER = logging.getLogger('c')
 
 
 def _download_youtube_videos(args):
+    """ Starts the download of youtube videos
+
+    Parameters
+    ----------
+    args.url: str, default = './videos/youtube/urls.txt'
+        Location of a text-file containing line-wise URLs of youtube videos and entities that occur in it.
+        Format should be: <url>;<entity1>,<entity2>,..
+
+    args.path: str, default = './videos/youtube'
+        The Location where the videos should be saved at.
+    """
     from data import download_youtube_videos
 
     download_youtube_videos(args.url, args.path)
 
 
 def _download_video_datasets(args):
+    """ Starts the download of thumbnails
+
+    Parameters
+    ----------
+    args.dataset: str, default = 'youtube-faces-db'
+        The dataset to download and parse. Can be: imdb-wiki, imdb-faces, yt-celebrity or youtube-faces-db.
+
+    args.path: str, default = './images/youtube-faces-db'
+        The Location where the dataset should be saved at.
+    """
     from data import download_seqamlab_dataset
     from data import download_imdb_faces_dataset
     from data import download_youtube_faces_db
@@ -30,25 +51,62 @@ def _download_video_datasets(args):
 
 
 def _download_thumbnails(args):
+    """ Starts the download of thumbnails
+
+    Parameters
+    ----------
+    args.path: str, default = './thumbnails'
+        The Location where the thumbnails should be saved at.
+    """
     from data import download_wikidata_thumbnails
 
     download_wikidata_thumbnails(args.path)
 
 
 def _run_detection(args):
+    """ Starts the face detection
+
+    Parameters
+    ----------
+    args.index: str, default = None
+        Specifies the name of an existing NMSLIB index if it should be loaded.
+
+    args.save: str, default = None
+        Specifies the path where the embeddings should be saved locally if they should be saved.
+
+    args.path: str, default = './videos/yt-celebrity'
+        The Location of videos or images to analyze.
+
+    args.thumbnails: str, default = './thumbnails'
+        The location of the thumbnails of an existing NMSLIB index.
+    """
     from hunter import Hunter
 
     hunter = Hunter()
-    hunter.fit(args.thumbnails)
-    # hunter.save('./config/index.bin')
+    if args.index is not None:
+        hunter.fit('./config', load_data=True, name='index')
+    else:
+        hunter.fit(args.thumbnails)
+
+    if args.save is not None:
+        hunter.save('./config', 'index')
 
     data = pd.read_csv(os.path.join(args.path, 'information.csv'))
-    for index, video in data.iterrows():
-        y = hunter.predict(os.path.join(args.path, video['video']))
-        LOGGER.info('Accuracy {}'.format(calculate_accuracy(list(itertools.repeat(video['entities'], len(y))), y)))
+    for index, file in data.iterrows():
+        y = hunter.predict(os.path.join(args.path, file['file']))
+        accuracy, recall, precision = evaluation_metrics(y,
+                                                         list(itertools.repeat(file['entities'], len(y))),
+                                                         len(hunter.labels))
+        LOGGER.info('Accuracy: {}, Recall: {}, Precision: {}'.format(accuracy, recall, precision))
 
 
 def _get_parser():
+    """ Sets up a command line interface.
+
+    Returns
+    ----------
+    parser: ArgumentParser
+    """
     logging_args = argparse.ArgumentParser(add_help=False)
     logging_args.add_argument('-v', '--verbose', action='count', default=0)
     logging_args.add_argument('-l', '--logfile')
@@ -58,7 +116,7 @@ def _get_parser():
 
     # Parser to download videos from youtube
     youtube_videos = subparsers.add_parser('youtube',
-                                            help='Download videos from youtube')
+                                           help='Download videos from youtube')
     youtube_videos.add_argument('--url', help='Path to a text file containing URLs', type=str, default='./videos')
     youtube_videos.add_argument('--path', help='Path to store the videos', type=str, default='./videos/youtube')
     youtube_videos.set_defaults(action=_download_youtube_videos)
@@ -66,7 +124,8 @@ def _get_parser():
     # Parser to download video datasets
     download_videos = subparsers.add_parser('download_video_dataset',
                                             help='Download test video datasets')
-    download_videos.add_argument('--path', help='Path to store the dataset', type=str, default='./images/youtube-faces-db')
+    download_videos.add_argument('--path', help='Path to store the dataset', type=str,
+                                 default='./images/youtube-faces-db')
     download_videos.add_argument('--dataset',
                                  help='Options are imdb-wiki, imdb-faces, youtube-faces-db and yt-celebrity',
                                  type=str,
@@ -75,7 +134,7 @@ def _get_parser():
 
     # Parser to download thumbnails
     download_thumbnails = subparsers.add_parser('download_thumbnails',
-                          help='Download thumbnails for training')
+                                                help='Download thumbnails for training')
     download_thumbnails.set_defaults(action=_download_thumbnails)
 
     # Parser to run the face detection
@@ -83,11 +142,23 @@ def _get_parser():
                                           help='Run face detection on locally downloaded data')
     run_detection.add_argument('--path', help='Path to the videos', type=str, default='./videos/ytcelebrity')
     run_detection.add_argument('--thumbnails', help='Path to the thumbnails', type=str, default='./thumbnails')
+    run_detection.add_argument('--index', help='Name of an existing index', type=str, default=None)
+    run_detection.add_argument('--save', help='Path to save the embeddings at', type=str, default=None)
     run_detection.set_defaults(action=_run_detection)
     return parser
 
 
-def _logging_setup(verbosity=1, logfile=None):
+def _logging_setup(verbosity: int = 1, logfile: str = None):
+    """ Sets up a logger.
+
+    Parameters
+    ----------
+    verbosity: int, default = 1
+        Defines the log level. A higher verbosity shows more details.
+
+    logfile: str, default = None
+        Location to save the logs.
+    """
     logger = logging.getLogger()
     log_level = (2 - verbosity) * 10
     fmt = '%(asctime)s - %(levelname)s - %(module)s - %(message)s'

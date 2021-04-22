@@ -9,6 +9,45 @@ LOGGER = logging.getLogger('fh')
 
 
 class Hunter(object):
+    """
+    Hunter
+
+    Can be used to create embeddings of thumbnails and predict entities in videos or images
+
+    Parameters
+    ----------
+    method: str, default = 'hnsw'
+        The method that NMSLIB uses for the k-Nearest Neighbor search.
+        Details can be found here: https://github.com/nmslib/nmslib/blob/master/manual/methods.md.
+
+    space: str, default = 'l2'
+        The vector space NMSLIB uses for comparing data points.
+        Details can be found here: https://github.com/nmslib/nmslib/blob/master/manual/spaces.md.
+
+    model: str, default = 'hog'
+        Defines the model of the face recognition library.
+        Can be 'hog' or 'CNN'.
+
+    distance_threshold: float, default = 0.4
+        Defines the maximum distance face embeddings can have to be detected as similar.
+
+    scaling_x: float, default = 1.0
+        Allows to scale frames in x-direction before applying the face recognition.
+        May allow faster computations.
+
+    scaling_y: float, default = 1.0
+        Allows to scale frames in y-direction before applying the face recognition.
+        May allow faster computations.
+
+    Attributes
+    ----------
+    estimator, default = None
+        Contains the reference to the created or loaded NMSLIB-Index.
+
+    labels: list, default = []
+        An ordered list of entities. The indices allow to link embeddings in the NMSLIB index to entities.
+
+    """
     def __init__(self,
                  method: str = 'hnsw',
                  space: str = 'l2',
@@ -26,6 +65,23 @@ class Hunter(object):
         self.labels = []
 
     def fit(self, thumbnails_path: str = './thumbnails', load_data: bool = False, name: str = 'index'):
+        """ Create embeddings from thumbnails in a folder or load an existing NMSLIB index
+
+        Parameters
+        ----------
+        thumbnails_path: str, default = './thumbnails
+            Path to the directory in which the thumbnails or an existing index are.
+
+        load_data: bool, default = False
+            Specifies if new embeddings should be created or an existing index loaded.
+
+        name: str, default = 'index'
+            Only necessary if load_data is True. Defines the name of the index to load.
+
+        Returns
+        ----------
+        self
+        """
         import nmslib
         self.estimator = nmslib.init(method=self.method, space=self.space)
 
@@ -63,18 +119,39 @@ class Hunter(object):
 
         return self
 
-    def predict(self, file: str = './videos/video.avi'):
+    def predict(self, file: str = None):
+        """ Predict entities in a video or image
+
+        Parameters
+        ----------
+        file: str, default = None
+            The path to the video or image to analyze.
+
+        Returns
+        ----------
+        y: List of lists, length = number of frames in a video or 1
+            Inner lists contain the entities per frame or in an image
+        """
         y = []
+        frame = None
 
         LOGGER.info("Starting face recognition on {}".format(file))
         cap = cv2.VideoCapture(file)
 
-        while cap.isOpened():
-            ret, frame = cap.read()
+        while True:
+            # Check if file is a video or image
+            if cap.isOpened():
+                ret, frame = cap.read()
 
-            # Exit when there's no frame
-            if not ret:
-                break
+                # Exit when there are no frames anymore
+                if not ret:
+                    break
+            else:
+                # Exit if image has already been read. We only want to execute the loop once.
+                if frame is not None:
+                    break
+
+                frame = cv2.imread(file)
 
             # Resize the frame for faster computation
             small_frame = cv2.resize(frame, (0, 0), fx=self.scaling_x, fy=self.scaling_y)
@@ -84,6 +161,7 @@ class Hunter(object):
             face_locations = face_recognition.face_locations(small_frame, model=self.model)
 
             if len(face_locations) == 0:
+                y.append([])
                 continue
 
             face_encodings = face_recognition.face_encodings(small_frame, face_locations)
@@ -96,13 +174,28 @@ class Hunter(object):
             faces = []
             for match_id, match_value in enumerate(are_matches):
                 if not match_value:
-                    faces.append('Unknown')
+                    pass
+                    # faces.append('Unknown')
                 else:
                     faces.append(self.labels[closest_distances[0][0][match_id]])
-                y.append(faces)
+            y.append(faces)
         return y
 
     def save(self, path: str = './config', name: str = 'index'):
+        """ Save embeddings of the class locally
+
+        Parameters
+        ----------
+        path: str, default = './config'
+            The path to the folder for the index
+
+        name: str, default = 'index'
+            The name of the newly created index.
+
+        Returns
+        ----------
+        self
+        """
         path_exists(path)
 
         self.estimator.saveIndex(os.path.join(path, name + '.bin'), save_data=True)
