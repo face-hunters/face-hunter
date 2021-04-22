@@ -95,26 +95,26 @@ class Hunter(object):
             return self
 
         # Create embeddings if not
-        for identity in os.listdir(thumbnails_path):
-            if not os.path.isdir(os.path.join(thumbnails_path, identity)):
+        for entity in os.listdir(thumbnails_path):
+            if not os.path.isdir(os.path.join(thumbnails_path, entity)):
                 continue
 
-            for image in os.listdir(os.path.join(thumbnails_path, identity)):
-                LOGGER.info('Encoding {}, thumbnail: {}'.format(identity, image))
-                current_image = cv2.imread(os.path.join(thumbnails_path, identity, image))
+            for image in os.listdir(os.path.join(thumbnails_path, entity)):
+                LOGGER.info('Encoding {}, thumbnail: {}'.format(entity, image))
+                current_image = cv2.imread(os.path.join(thumbnails_path, entity, image))
                 if current_image is None:
-                    LOGGER.warning('Could not load image {}'.format(os.path.join(thumbnails_path, identity, image)))
+                    LOGGER.warning('Could not load image {}'.format(os.path.join(thumbnails_path, entity, image)))
                     continue
 
                 img = cv2.cvtColor(current_image, cv2.COLOR_BGR2RGB)
                 face_encoding = face_recognition.face_encodings(img)
                 if len(face_encoding) == 0:
                     LOGGER.warning(
-                        'Could not create encoding for image {}'.format(os.path.join(thumbnails_path, identity, image)))
+                        'Could not create encoding for image {}'.format(os.path.join(thumbnails_path, entity, image)))
                     continue
 
                 self.estimator.addDataPoint(len(self.labels), face_recognition.face_encodings(img)[0])
-                self.labels.append(identity)
+                self.labels.append(entity)
         self.estimator.createIndex()
 
         return self
@@ -166,7 +166,7 @@ class Hunter(object):
 
             face_encodings = face_recognition.face_encodings(small_frame, face_locations)
 
-            # Compare closest identities against threshold
+            # Compare closest entities against threshold
             closest_distances = self.estimator.knnQueryBatch(face_encodings, k=1)
             are_matches = [closest_distances[i][1][0] <= self.distance_threshold for i in
                            range(len(face_locations))]
