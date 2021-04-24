@@ -1,9 +1,5 @@
 import argparse
-import itertools
 import logging
-import os
-import pandas as pd
-from helpers import evaluation_metrics
 
 LOGGER = logging.getLogger('c')
 
@@ -78,26 +74,12 @@ def _run_detection(args):
         The Location of videos or images to analyze.
 
     args.thumbnails: str, default = './thumbnails'
-        The location of the thumbnails of an existing NMSLIB index.
+        The location of the thumbnails or an existing NMSLIB index.
     """
-    from hunter import Hunter
+    from worker import Worker
 
-    hunter = Hunter()
-    if args.index is not None:
-        hunter.fit('./config', load_data=True, name='index')
-    else:
-        hunter.fit(args.thumbnails)
-
-    if args.save is not None:
-        hunter.save('./config', 'index')
-
-    data = pd.read_csv(os.path.join(args.path, 'information.csv'))
-    for index, file in data.iterrows():
-        y = hunter.predict(os.path.join(args.path, file['file']))
-        accuracy, recall, precision = evaluation_metrics(y,
-                                                         list(itertools.repeat(file['entities'], len(y))),
-                                                         len(hunter.labels))
-        LOGGER.info('Accuracy: {}, Recall: {}, Precision: {}'.format(accuracy, recall, precision))
+    worker = Worker(args.index, args.thumbnails, args.save)
+    worker.evaluate_dataset(args.path)
 
 
 def _get_parser():

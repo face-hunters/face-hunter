@@ -8,6 +8,8 @@
 
 ## Architecture
 
+<img src="https://i.ibb.co/kSxNDNZ/Untitled-Diagram-2.png" alt="diagram">
+
 ### cli.py
  - Defines the user interface
  - Can be used like `python cli.py <command> <params>`
