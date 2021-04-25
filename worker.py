@@ -4,6 +4,7 @@ from helpers import evaluation_metrics
 from hunter import Hunter
 import logging
 import pandas as pd
+from data import download_missing_thumbnails
 
 LOGGER = logging.getLogger('w')
 
@@ -30,6 +31,7 @@ class Worker(object):
     ----------
 
     """
+
     def __init__(self,
                  index: str = None,
                  thumbnails: str = './thumbnails',
@@ -55,6 +57,12 @@ class Worker(object):
         if self.save_path is not None:
             hunter.save(self.save_path, self.index)
 
+        LOGGER.info('Looking for missing thumbnails to evaluate the dataset')
+        missing_entities = download_missing_thumbnails(path, hunter.labels)
+        if len(missing_entities) != 0:
+            LOGGER.info('Refitting due to new thumbnails')
+            hunter.fit(self.thumbnails)
+
         data = pd.read_csv(os.path.join(path, 'information.csv'))
         total_accuracy = 0
         total_recall = 0
@@ -71,9 +79,9 @@ class Worker(object):
         total_accuracy = total_accuracy / len(data)
         total_recall = total_recall / len(data)
         total_precision = total_precision / len(data)
-        LOGGER.info('Total Accuracy: {}, Total Recall: {}, Total Precision: {}'. format(total_accuracy,
-                                                                                        total_recall,
-                                                                                        total_precision))
+        LOGGER.info('Total Accuracy: {}, Total Recall: {}, Total Precision: {}'.format(total_accuracy,
+                                                                                       total_recall,
+                                                                                       total_precision))
 
     def crawl_and_link(self):
         pass

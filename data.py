@@ -203,7 +203,7 @@ def download_youtube_faces_db(path: str = './images/youtube-faces-db'):
     information.to_csv(path + '/information.csv')
 
 
-def download_wikidata_thumbnails(path: str = './thumbnails'):
+def download_wikidata_thumbnails(path: str = './thumbnails', entities: list = None):
     """ Downloads the thumbnails of wikidata and parses them in the following structure:
         <Entity1>
             <Thumbnail1>
@@ -213,9 +213,29 @@ def download_wikidata_thumbnails(path: str = './thumbnails'):
 
     Parameters
     ----------
-    path: str, default = ./videos/ytcelebrity'
+    path: str, default = './videos/ytcelebrity'
         Path where the thumbnails should be saved at.
+    entities: str, default = None
+        If not none, downloads only the list of entities. All thumbnails otherwise.
     """
     path_exists(path)
 
-    # TODO thumbnail download code
+    if entities is not None:
+        pass
+        # TODO code to download entities from the list
+    else:
+        pass
+        # TODO Download all thumbnails
+
+
+def download_missing_thumbnails(path: str = './videos/ytcelebrity', loaded_entities: list = None):
+    data = pd.read_csv(os.path.join(path, 'information.csv'))
+
+    missing_entities = list(set(data['entities']) - set(loaded_entities))
+    if len(missing_entities) != 0:
+        LOGGER.info('Missing entities detected: {}'.format(missing_entities))
+        download_wikidata_thumbnails('./thumbnails', entities=missing_entities)
+    else:
+        LOGGER.info('No missing entities found')
+
+    return missing_entities
