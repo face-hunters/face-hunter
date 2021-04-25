@@ -229,6 +229,15 @@ def download_wikidata_thumbnails(path: str = './thumbnails', entities: list = No
 
 
 def download_missing_thumbnails(path: str = './videos/ytcelebrity', loaded_entities: list = None):
+    """ Compares a list of entities with a dataset and downloads missing ones.
+
+    Parameters
+    ----------
+    path: str, default = './videos/ytcelebrity'
+        Path where the information.csv of the dataset is saved.
+    loaded_entities: list, default = None
+        Comparable list of entities.
+    """
     data = pd.read_csv(os.path.join(path, 'information.csv'))
 
     missing_entities = list(set(data['entities']) - set(loaded_entities))
