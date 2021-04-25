@@ -1,6 +1,9 @@
 import os
 import logging
 import numpy as np
+import time
+import requests
+from urllib.error import HTTPError
 
 LOGGER = logging.getLogger('h')
 
@@ -67,3 +70,41 @@ def evaluation_metrics(y_pred: list = None, y_true: list = None, num_entities: i
     recall_macro = recall_sum / len(y_pred)
     precision_macro = precision_sum / len(y_pred)
     return accuracy, recall_macro, precision_macro
+
+
+def download_thumbnail(index: int, i_thumbnail_url: str, i_path: str, i_file_name: str):
+    """Downloads a thumbnail from dbpedia
+    Parameters
+    ----------
+    index: int
+        The index of the downloaded thumbnail taken from the thumbnail urls dataframe
+    i_thumbnail_url: str
+        The url of the downloaded thumbnail
+    i_path: str
+        The download path
+    i_file_name: str
+        The file name
+    Returns
+    ----------
+    output: list
+        A list containing the index, the thumbnail url and the result outcome (success, HTTPError or UnicodeEncodeError)
+    """
+    try:
+        if index % 10000 == 0:
+            LOGGER.info(f'Downloaded {index} thumbnails')
+        time.sleep(0.001)
+        path_exists(os.path.join(i_path))
+        headers = {'user-agent': 'bot'}
+        r = requests.get(i_thumbnail_url, headers=headers)
+        with open(os.path.join(i_path, i_file_name), 'wb') as f:
+            f.write(r.content)
+        output = [index, i_thumbnail_url, 'success']
+        return output
+    except HTTPError:
+        os.remove(i_path)
+        output = [index, i_thumbnail_url, 'HTTPError']
+        return output
+    except UnicodeEncodeError:
+        os.remove(i_path)
+        output = [index, i_thumbnail_url, 'UnicodeEncodeError']
+        return output
