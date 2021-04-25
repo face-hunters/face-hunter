@@ -8,6 +8,10 @@ import scipy
 from scipy.io import loadmat
 import shutil
 from helpers import path_exists
+from helpers import download_thumbnail
+from SPARQLWrapper import SPARQLWrapper, JSON
+import multiprocessing as mp
+from pandas import json_normalize
 
 LOGGER = logging.getLogger('d')
 
@@ -248,3 +252,95 @@ def download_missing_thumbnails(path: str = './videos/ytcelebrity', loaded_entit
         LOGGER.info('No missing entities found')
 
     return missing_entities
+
+
+def download_dbpedia_thumbnails(path: str = './dbpedia_thumbnails', query_links: bool = True, download_images: bool = True):
+    """ Queries the thumbnail links from dbpedia and saves the links in a file path/Thumbnails_links.csv
+    Downloads the thumbnails of dbpedia and parses them in the following structure:
+        <Entity1>
+            <Thumbnail1>
+        <Entity2>
+            <Thumbnail1>
+    saves a summary of the results in path/download_results.csv
+    saves the images in path/thumbnails
+    Parameters
+    ----------
+    path: str, default = ./dbpedia_thumbnails'
+        Path where the thumbnails should be saved at.
+    query_links: bool, default = True
+        Boolean that indicates whether to query the thumbnails links
+    download_images: bool, default = True
+        Boolean that indicated whether to download the thumbnails
+    """
+    path_exists(path)
+    if query_links:
+        LOGGER.info('Starting to query dbpedia thumbnail links')
+        query_results = pd.DataFrame()
+        query_number = '''
+        PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+        PREFIX dbo: <http://dbpedia.org/ontology/>
+        SELECT (COUNT( ?entity) AS ?count)
+        WHERE {
+        SELECT ?entity, ?img, ?name
+        WHERE {
+        ?entity a dbo:Person.
+        ?entity dbo:thumbnail ?img.
+        OPTIONAL{?entity foaf:name ?name}
+        FILTER(LANG(?name) = 'en').
+        }}
+        '''
+        sparql = SPARQLWrapper('http://dbpedia.org/sparql')
+        sparql.setQuery(query_number)
+        sparql.setReturnFormat(JSON)
+        q_results = sparql.query().convert()
+        number = json_normalize(q_results['results']['bindings'])
+        max_offset = int(number.loc[0, 'count.value'])
+        for offset in range(0, max_offset, 10000):
+            query = '''
+            PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+            PREFIX dbo: <http://dbpedia.org/ontology/>
+            SELECT ?entity, ?img, ?name
+            WHERE {
+            SELECT ?entity, ?img, ?name
+            WHERE {
+            ?entity a dbo:Person.
+            ?entity dbo:thumbnail ?img.
+            OPTIONAL{?entity foaf:name ?name}
+            FILTER(LANG(?name) = 'en').
+            }}
+            '''
+            query = query + f" OFFSET {offset} LIMIT 10000"
+            sparql.setQuery(query)
+            sparql.setReturnFormat(JSON)
+            q_results = sparql.query().convert()
+            query_results = query_results.append(json_normalize(q_results['results']['bindings']))
+        query_results = query_results[['entity.value', 'img.value', 'name.value']]
+        query_results['img.value'] = query_results['img.value'].apply(lambda x: x.split('?')[0])
+        query_results = query_results.rename(columns={col: col.split('.')[0] for col in query_results.columns})
+        query_results['name'] = query_results.groupby(['entity', 'img']).transform(lambda x: ' / '.join(x))
+        query_results = query_results.drop_duplicates()
+        query_results = query_results.reset_index()
+        query_results.to_csv(os.path.join(path, f'Thumbnails_links.csv'), index=False)
+    if download_images:
+        LOGGER.info('Starting to download dbpedia thumbnails')
+
+        def mycallback(result):
+            global results
+            results.append(result)
+        query_results = pd.read_csv(os.path.join(path, f'Thumbnails_links.csv'))
+        pool = mp.Pool(mp.cpu_count())
+        download_list = []
+        global results
+        results = []
+        for i in query_results.index.to_list():
+            entity_name = query_results.loc[i, 'entity'].split('/')[-1]
+            thumbnail_url = query_results.loc[i, 'img']
+            i_path = os.path.join(path, 'thumbnails', entity_name)
+            file_name = f"{entity_name}.{thumbnail_url.split('.')[-1]}"
+            download_list.append([i, thumbnail_url, i_path, file_name])
+        for i_entity, thumbnail_url, i_path, file_name in download_list:
+            pool.apply_async(download_thumbnail, args=(i_entity, thumbnail_url, i_path, file_name), callback=mycallback)
+        pool.close()
+        pool.join()
+        results = pd.DataFrame(results, columns=["index", "url", "result"])
+        results.to_csv(os.path.join(path, 'download_results.csv'), index=False)
