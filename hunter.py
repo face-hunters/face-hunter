@@ -88,10 +88,10 @@ class Hunter(object):
         # Check if path points to an existing index of embeddings
         if load_data:
             self.estimator.loadIndex(os.path.join(thumbnails_path, name + '.bin'), True)
-            with open(os.path.join(thumbnails_path, name + '.txt'), "rb") as fp:
+            with open(os.path.join(thumbnails_path, f'{name}.txt'), "rb") as fp:
                 self.labels = pickle.load(fp)
             if self.estimator is None:
-                LOGGER.warning('Failed to load embeddings at {}')
+                LOGGER.warning(f'Failed to load embeddings at {thumbnails_path}')
             return self
 
         # Create embeddings if not
@@ -100,17 +100,17 @@ class Hunter(object):
                 continue
 
             for image in os.listdir(os.path.join(thumbnails_path, entity)):
-                LOGGER.info('Encoding {}, thumbnail: {}'.format(entity, image))
+                LOGGER.info(f'Encoding {entity}, thumbnail: {image}')
                 current_image = cv2.imread(os.path.join(thumbnails_path, entity, image))
                 if current_image is None:
-                    LOGGER.warning('Could not load image {}'.format(os.path.join(thumbnails_path, entity, image)))
+                    LOGGER.warning(f'Could not load image {os.path.join(thumbnails_path, entity, image)}')
                     continue
 
                 img = cv2.cvtColor(current_image, cv2.COLOR_BGR2RGB)
                 face_encoding = face_recognition.face_encodings(img)
                 if len(face_encoding) == 0:
                     LOGGER.warning(
-                        'Could not create encoding for image {}'.format(os.path.join(thumbnails_path, entity, image)))
+                        f'Could not create encoding for image {os.path.join(thumbnails_path, entity, image)}')
                     continue
 
                 self.estimator.addDataPoint(len(self.labels), face_recognition.face_encodings(img)[0])
@@ -135,7 +135,7 @@ class Hunter(object):
         y = []
         frame = None
 
-        LOGGER.info("Starting face recognition on {}".format(file))
+        LOGGER.info(f'Starting face recognition on {file}')
         cap = cv2.VideoCapture(file)
 
         while True:
@@ -177,7 +177,10 @@ class Hunter(object):
                     pass
                     # faces.append('Unknown')
                 else:
-                    faces.append(self.labels[closest_distances[0][0][match_id]])
+                    try:
+                        faces.append(self.labels[closest_distances[0][0][match_id]])
+                    except IndexError:
+                        LOGGER.info('Found more faces than got labels')
             y.append(faces)
         return y
 

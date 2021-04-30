@@ -38,8 +38,8 @@ def download_youtube_videos(urls: str = None, path: str = './videos/youtube'):
             line = line.strip()
             video = line.split(';')
             yt = YouTube(video[0])
-            LOGGER.info('Starting to download ' + yt.title)
-            videos.append(yt.title + '.mp4')
+            LOGGER.info(f'Starting to download {yt.title}')
+            videos.append(f'{yt.title}.mp4')
             entities.append(video[1].split(','))
             yt.streams.filter(progressive=True, file_extension='mp4').order_by(
                 'resolution').desc().first().download(path)
@@ -49,9 +49,9 @@ def download_youtube_videos(urls: str = None, path: str = './videos/youtube'):
         'entities': entities
     })
     information = information.set_index('file')
-    if os.path.exists(os.path.join(path + '/information.csv')):
-        information = pd.read_csv(os.path.join(path + '/information.csv')).set_index('video').append(information)
-    information.to_csv(os.path.join(path + '/information.csv'))
+    if os.path.exists(os.path.join(path, 'information.csv')):
+        information = pd.read_csv(os.path.join(path, 'information.csv')).set_index('video').append(information)
+    information.to_csv(os.path.join(path, 'information.csv'))
 
 
 def download_seqamlab_dataset(path: str = './videos/ytcelebrity'):
@@ -66,14 +66,14 @@ def download_seqamlab_dataset(path: str = './videos/ytcelebrity'):
     path_exists(path)
 
     url = 'http://seqamlab.com/wp-content/uploads/Data/ytcelebrity.tar'
-    file = path + '/ytcelebrity.tar'
+    file = os.path.join(path, 'ytcelebrity.tar')
     LOGGER.info('Downloading Youtube Celebrities Face Tracking and Recognition Data Set')
     wget.download(url, file)
     LOGGER.info('Extracting ...')
     tar = tarfile.open(file)
     tar.extractall(path)
     tar.close()
-    os.remove(os.path.join(path, '/ytcelebrity.tar'))
+    os.remove(os.path.join(path, 'ytcelebrity.tar'))
 
     videos = pd.Series(os.listdir(path))
     information = pd.DataFrame(data={
@@ -102,17 +102,17 @@ def download_imdb_faces_dataset(path: str = './images/imdb-faces'):
     for index, row in imdb_faces.iterrows():
         try:
             entity = row['name'].replace('_', ' ').lower()
-            LOGGER.info('{}/{}: Downloading image of {}'.format(index, total_count, entity))
-            wget.download(row['url'], './images/imdb-faces/{}.jpg'.format(len(entities)))
+            LOGGER.info(f'{index}/{total_count}: Downloading image of {entity}')
+            wget.download(row['url'], f'./images/imdb-faces/{len(entities)}.jpg')
             entities.append(entity)
         except:
-            LOGGER.warning('Could not download {}'.format(row['url']))
+            LOGGER.warning(f'Could not download {row["url"]}')
     information = pd.DataFrame(data={
         'file': range(0, len(entities) - 1),
         'entities': entities
     })
     information = information.set_index('file')
-    information.to_csv(path + '/information.csv')
+    information.to_csv(os.path.join(path, 'information.csv'))
 
 
 def download_imdb_wiki_dataset(path: str = './images/imdb-wiki'):
@@ -160,10 +160,10 @@ def download_imdb_wiki_dataset(path: str = './images/imdb-wiki'):
         'https://data.vision.ee.ethz.ch/cvl/rrothe/imdb-wiki/static/imdb_9.tar'
     ]
     for part, url in enumerate(urls, start=1):
-        LOGGER.info('Downloading part {}/9'.format(part))
-        file = os.path.join(path, 'imdb_' + str(part) + '.tar')
+        LOGGER.info(f'Downloading part {part}/9')
+        file = os.path.join(path, f'imdb_{str(part)}.tar')
         wget.download(url, file)
-        LOGGER.info('Extracting part {}/9'.format(part))
+        LOGGER.info(f'Extracting part {part}/9')
         tar = tarfile.open(file)
         tar.extractall(path)
         tar.close()
@@ -204,7 +204,7 @@ def download_youtube_faces_db(path: str = './images/youtube-faces-db'):
         'entities': entities
     })
     information = information.set_index('file')
-    information.to_csv(path + '/information.csv')
+    information.to_csv(os.path.join(path, 'information.csv'))
 
 
 def download_wikidata_thumbnails(path: str = './thumbnails', entities: list = None):

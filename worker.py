@@ -31,7 +31,6 @@ class Worker(object):
     ----------
 
     """
-
     def __init__(self,
                  index: str = None,
                  thumbnails: str = './thumbnails',
@@ -72,16 +71,14 @@ class Worker(object):
             accuracy, recall, precision = evaluation_metrics(y,
                                                              list(itertools.repeat(file['entities'], len(y))),
                                                              len(hunter.labels))
-            LOGGER.info('Accuracy: {}, Recall: {}, Precision: {}'.format(accuracy, recall, precision))
+            LOGGER.info(f'Accuracy: {accuracy}, Recall: {recall}, Precision: {precision}')
             total_accuracy += accuracy
             total_recall += recall
             total_precision += precision
         total_accuracy = total_accuracy / len(data)
         total_recall = total_recall / len(data)
         total_precision = total_precision / len(data)
-        LOGGER.info('Total Accuracy: {}, Total Recall: {}, Total Precision: {}'.format(total_accuracy,
-                                                                                       total_recall,
-                                                                                       total_precision))
+        LOGGER.info(f'Total Accuracy: {total_accuracy}, Total Recall: {total_recall}, Total Precision: {total_precision}')
 
     def crawl_and_link(self):
         pass

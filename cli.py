@@ -54,9 +54,9 @@ def _download_thumbnails(args):
     args.path: str, default = './thumbnails'
         The Location where the thumbnails should be saved at.
     """
-    from data import download_wikidata_thumbnails
+    from data import download_dbpedia_thumbnails
 
-    download_wikidata_thumbnails(args.path)
+    download_dbpedia_thumbnails(args.path)
 
 
 def _run_detection(args):
@@ -117,13 +117,14 @@ def _get_parser():
     # Parser to download thumbnails
     download_thumbnails = subparsers.add_parser('download_thumbnails',
                                                 help='Download thumbnails for training')
+    download_thumbnails.add_argument('--path', help='Path to save the thumbnails at', type=str, default='./thumbnails')
     download_thumbnails.set_defaults(action=_download_thumbnails)
 
     # Parser to run the face detection
     run_detection = subparsers.add_parser('run_detection',
                                           help='Run face detection on locally downloaded data')
     run_detection.add_argument('--path', help='Path to the videos', type=str, default='./videos/ytcelebrity')
-    run_detection.add_argument('--thumbnails', help='Path to the thumbnails', type=str, default='./thumbnails')
+    run_detection.add_argument('--thumbnails', help='Path to the thumbnails', type=str, default='./dbpedia_thumbnails')
     run_detection.add_argument('--index', help='Name of an existing index', type=str, default=None)
     run_detection.add_argument('--save', help='Path to save the embeddings at', type=str, default=None)
     run_detection.set_defaults(action=_run_detection)
