@@ -1,0 +1,22 @@
+# Pycharm
+.idea
+__pycache__
+
+# VS Code
+.vscode/
+
+# Spyder
+.spyproject/
+
+# Jupyter NB Checkpoints
+.ipynb_checkpoints/
+
+# exclude data from source control by default
+/data/datasets
+/data/embeddings
+/data/thumbnails
+/venv/
+
+
+# Mac OS-specific storage files
+.DS_Store
