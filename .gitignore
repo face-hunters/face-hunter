@@ -1,0 +1,18 @@
+# Pycharm
+.idea
+
+# VS Code
+.vscode/
+
+# Spyder
+.spyproject/
+
+# Jupyter NB Checkpoints
+.ipynb_checkpoints/
+
+# exclude data from source control by default
+/venv/
+
+
+# Mac OS-specific storage files
+.DS_Store

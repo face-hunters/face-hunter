@@ -2,15 +2,15 @@ import logging
 import os
 import face_recognition
 import cv2
-from helpers import path_exists
+from src.utils.utils import check_path_exists
 import pickle
 
 LOGGER = logging.getLogger('fh')
 
 
-class Hunter(object):
+class ApproximateKNearestNeighbors(object):
     """
-    Hunter
+    ApproximateKNearestNeighbors
 
     Can be used to create embeddings of thumbnails and predict entities in videos or images
 
@@ -64,12 +64,12 @@ class Hunter(object):
         self.estimator = None
         self.labels = []
 
-    def fit(self, thumbnails_path: str = './thumbnails', load_data: bool = False, name: str = 'index'):
+    def fit(self, thumbnails_path: str = 'data/thumbnails', load_data: bool = False, name: str = 'index'):
         """ Create embeddings from thumbnails in a folder or load an existing NMSLIB index
 
         Parameters
         ----------
-        thumbnails_path: str, default = './thumbnails
+        thumbnails_path: str, default = 'data/thumbnails
             Path to the directory in which the thumbnails or an existing index are.
 
         load_data: bool, default = False
@@ -162,6 +162,7 @@ class Hunter(object):
 
             if len(face_locations) == 0:
                 y.append([])
+                print('hi')
                 continue
 
             face_encodings = face_recognition.face_encodings(small_frame, face_locations)
@@ -184,12 +185,12 @@ class Hunter(object):
             y.append(faces)
         return y
 
-    def save(self, path: str = './config', name: str = 'index'):
+    def save(self, path: str = 'models', name: str = 'index'):
         """ Save embeddings of the class locally
 
         Parameters
         ----------
-        path: str, default = './config'
+        path: str, default = 'models'
             The path to the folder for the index
 
         name: str, default = 'index'
@@ -199,7 +200,7 @@ class Hunter(object):
         ----------
         self
         """
-        path_exists(path)
+        check_path_exists(path)
 
         self.estimator.saveIndex(os.path.join(path, name + '.bin'), save_data=True)
         with open(os.path.join(path, name + '.txt'), 'wb') as fp:

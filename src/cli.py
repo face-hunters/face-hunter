@@ -9,14 +9,14 @@ def _download_youtube_videos(args):
 
     Parameters
     ----------
-    args.url: str, default = './videos/youtube/urls.txt'
+    args.url: str, default = 'data/datasets/youtube/urls.txt'
         Location of a text-file containing line-wise URLs of youtube videos and entities that occur in it.
         Format should be: <url>;<entity1>,<entity2>,..
 
-    args.path: str, default = './videos/youtube'
+    args.path: str, default = 'data/datasets/youtube'
         The Location where the videos should be saved at.
     """
-    from data import download_youtube_videos
+    from src.data.youtube import download_youtube_videos
 
     download_youtube_videos(args.url, args.path)
 
@@ -29,13 +29,13 @@ def _download_video_datasets(args):
     args.dataset: str, default = 'youtube-faces-db'
         The dataset to download and parse. Can be: imdb-wiki, imdb-faces, yt-celebrity or youtube-faces-db.
 
-    args.path: str, default = './images/youtube-faces-db'
+    args.path: str, default = 'data/datasets/youtube-faces-db'
         The Location where the dataset should be saved at.
     """
-    from data import download_seqamlab_dataset
-    from data import download_imdb_faces_dataset
-    from data import download_youtube_faces_db
-    from data import download_imdb_wiki_dataset
+    from src.data.datasets import download_seqamlab_dataset
+    from src.data.datasets import download_imdb_faces_dataset
+    from src.data.datasets import download_youtube_faces_db
+    from src.data.datasets import download_imdb_wiki_dataset
 
     options = {
         'imdb-wiki': download_imdb_wiki_dataset,
@@ -51,12 +51,13 @@ def _download_thumbnails(args):
 
     Parameters
     ----------
-    args.path: str, default = './thumbnails'
+    args.path: str, default = 'data/thumbnails'
         The Location where the thumbnails should be saved at.
     """
-    from data import download_dbpedia_thumbnails
+    from src.data.knowledge_graphs import download_dbpedia_thumbnails, download_wikidata_thumbnails
 
     download_dbpedia_thumbnails(args.path)
+    download_wikidata_thumbnails(args.path)
 
 
 def _run_detection(args):
@@ -70,16 +71,15 @@ def _run_detection(args):
     args.save: str, default = None
         Specifies the path where the embeddings should be saved locally if they should be saved.
 
-    args.path: str, default = './videos/yt-celebrity'
+    args.path: str, default = 'data/datasets/yt-celebrity'
         The Location of videos or images to analyze.
 
-    args.thumbnails: str, default = './thumbnails'
+    args.thumbnails: str, default = 'data/thumbnails'
         The location of the thumbnails or an existing NMSLIB index.
     """
-    from worker import Worker
+    from src.models.evaluation import evaluate_on_dataset
 
-    worker = Worker(args.index, args.thumbnails, args.save)
-    worker.evaluate_dataset(args.path)
+    evaluate_on_dataset(args.path, args.thumbnails, args.save, args.index)
 
 
 def _get_parser():
@@ -99,15 +99,15 @@ def _get_parser():
     # Parser to download videos from youtube
     youtube_videos = subparsers.add_parser('youtube',
                                            help='Download videos from youtube')
-    youtube_videos.add_argument('--url', help='Path to a text file containing URLs', type=str, default='./videos')
-    youtube_videos.add_argument('--path', help='Path to store the videos', type=str, default='./videos/youtube')
+    youtube_videos.add_argument('--url', help='Path to a text file containing URLs', type=str, default='data/datasets/youtube')
+    youtube_videos.add_argument('--path', help='Path to store the videos', type=str, default='data/datasets/youtube')
     youtube_videos.set_defaults(action=_download_youtube_videos)
 
     # Parser to download video datasets
     download_videos = subparsers.add_parser('download_video_dataset',
                                             help='Download test video datasets')
     download_videos.add_argument('--path', help='Path to store the dataset', type=str,
-                                 default='./images/youtube-faces-db')
+                                 default='data/datasets/youtube-faces-db')
     download_videos.add_argument('--dataset',
                                  help='Options are imdb-wiki, imdb-faces, youtube-faces-db and yt-celebrity',
                                  type=str,
@@ -117,14 +117,14 @@ def _get_parser():
     # Parser to download thumbnails
     download_thumbnails = subparsers.add_parser('download_thumbnails',
                                                 help='Download thumbnails for training')
-    download_thumbnails.add_argument('--path', help='Path to save the thumbnails at', type=str, default='./thumbnails')
+    download_thumbnails.add_argument('--path', help='Path to save the thumbnails at', type=str, default='data/thumbnails')
     download_thumbnails.set_defaults(action=_download_thumbnails)
 
     # Parser to run the face detection
     run_detection = subparsers.add_parser('run_detection',
                                           help='Run face detection on locally downloaded data')
-    run_detection.add_argument('--path', help='Path to the videos', type=str, default='./videos/ytcelebrity')
-    run_detection.add_argument('--thumbnails', help='Path to the thumbnails', type=str, default='./dbpedia_thumbnails')
+    run_detection.add_argument('--path', help='Path to the videos', type=str, default='data/datasets/ytcelebrity')
+    run_detection.add_argument('--thumbnails', help='Path to the thumbnails', type=str, default='data/thumbnails')
     run_detection.add_argument('--index', help='Name of an existing index', type=str, default=None)
     run_detection.add_argument('--save', help='Path to save the embeddings at', type=str, default=None)
     run_detection.set_defaults(action=_run_detection)
