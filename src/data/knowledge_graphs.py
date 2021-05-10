@@ -146,7 +146,7 @@ def download_images(path):
         entity_name = query_results.loc[i, 'entity'].split('/')[-1]
         thumbnail_url = query_results.loc[i, 'img']
         i_path = os.path.join(path, 'thumbnails', entity_name)
-        file_name = f"{entity_name}{i}.{thumbnail_url.split('.')[-1]}"
+        file_name = f"{entity_name}.{thumbnail_url.split('.')[-1]}"
         download_list.append([i, thumbnail_url, i_path, file_name])
     for i_entity, thumbnail_url, i_path, file_name in download_list:
         pool.apply_async(download_thumbnail, args=(i_entity, thumbnail_url, i_path, file_name), callback=mycallback)
