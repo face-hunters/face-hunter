@@ -194,3 +194,55 @@ def download_thumbnail(index: int, i_thumbnail_url: str, i_path: str, i_file_nam
         os.remove(i_path)
         output = [index, i_thumbnail_url, 'UnicodeEncodeError']
         return output
+    
+def download_entity_list(path: str = './thumbnails', entity_list: list = None):
+  """ Download a list of entities'thumbnails from wikidata.
+  Parameters
+  ----------
+  path: str, default = './thumbnails'
+      Path where the thumbnails are stored.
+  entity_list: list, default = None
+      a list of entities required to download
+  """
+  url = 'https://query.wikidata.org/sparql'
+  for entity in entity_list:
+    query = f'''
+    SELECT *
+    WHERE
+      {{
+          ?s rdfs:label '{entity}'@en;
+            wdt:P31 wd:Q5;
+            wdt:P18 ?img;
+      }}
+    '''
+    r = requests.get(url, params = {'format': 'json', 'query': query})
+    q_results = r.json()
+    missing_img = json_normalize(q_results['results']['bindings'])
+    if missing_img.empty:
+      LOGGER.info(f'{entity} is not found in wikidata as well')
+      continue
+    missing_img = missing_img[['img.value']]
+    missing_img = missing_img.rename(columns={col: col.split('.')[0] for col in missing_img.columns})
+    for index, row in missing_img.iterrows():
+      download_thumbnail(index = index, i_thumbnail_url = row['img'], i_path = os.path.join(path,entity), i_file_name = f'{entity}_{index}')
+                           
+                                                    
+def download_missing_thumbnails(path: str = './videos/ytcelebrity', loaded_entities: list = None):
+    """ Compares a list of entities with a dataset and downloads missing ones.
+    Parameters
+    ----------
+    path: str, default = './videos/ytcelebrity'
+        Path where the information.csv of the dataset is saved.
+    loaded_entities: list, default = None
+        Comparable list of entities.
+    """
+    data = pd.read_csv(os.path.join(path, 'information.csv'))
+
+    missing_entities = list(set(data['entities']) - set(loaded_entities))
+    if len(missing_entities) != 0:
+        LOGGER.info('Missing entities detected: {}'.format(missing_entities))
+        download_entity_list(path = './thumbnails', entity_list = missing_entities)
+    else:
+        LOGGER.info('No missing entities found')
+
+    return missing_entities
