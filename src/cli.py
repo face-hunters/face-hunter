@@ -18,7 +18,7 @@ def _download_youtube_videos(args):
     """
     from src.data.youtube import download_youtube_videos
 
-    download_youtube_videos(args.url, args.path)
+    download_youtube_videos(args.txt, args.path)
 
 
 def _download_video_datasets(args):
@@ -99,7 +99,7 @@ def _get_parser():
     # Parser to download videos from youtube
     youtube_videos = subparsers.add_parser('youtube',
                                            help='Download videos from youtube')
-    youtube_videos.add_argument('--url', help='Path to a text file containing URLs', type=str, default='data/datasets/youtube')
+    youtube_videos.add_argument('--txt', help='Path to a text file containing URLs', type=str, default='data/datasets/youtube/youtube.txt')
     youtube_videos.add_argument('--path', help='Path to store the videos', type=str, default='data/datasets/youtube')
     youtube_videos.set_defaults(action=_download_youtube_videos)
 
