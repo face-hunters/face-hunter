@@ -1,0 +1,8 @@
+rdf:
+  uri: http://localhost/
+
+virtuoso:
+  sparql-auth: http://localhost:8890/sparql-auth
+  graph: http://localhost:8890/DAV/
+  user: dba
+  password: dba

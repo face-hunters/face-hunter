@@ -1,0 +1,35 @@
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix mpeg7: <http://purl.org/ontology/mpeg7/> .
+@prefix temporal: <http://swrl.stanford.edu/ontologies/builtins/3.3/temporal.owl> .
+@prefix video: <http://purl.org/ontology/video/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/dasdsad#t=0:00:10,0:00:50> a video:Scene ;
+    video:sceneFrom <http://example.org/dasdsad> ;
+    video:temporalSegmentOf <http://example.org/dasdsad> ;
+    temporal:duration "0:00:40"^^xsd:duration ;
+    temporal:hasFinishTime "0:00:50"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:10"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Adam_Sandler> .
+
+<http://example.org/kakdoq#t=0:00:03,0:00:30> a video:Scene ;
+    video:sceneFrom <http://example.org/kakdoq> ;
+    video:temporalSegmentOf <http://example.org/kakdoq> ;
+    temporal:duration "0:00:27"^^xsd:duration ;
+    temporal:hasFinishTime "0:00:30"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:03"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Adam_Sandler> .
+
+<http://example.org/qeqdq> a mpeg7:Video ;
+    dc:identifier "http://www.youtube.com/watch?v=qeqdq" ;
+    dc:title "Test" .
+
+<http://example.org/dasdsad> a mpeg7:Video ;
+    dc:identifier "http://www.youtube.com/watch?v=dasdsad" ;
+    dc:title "Adam Sandler" .
+
+<http://example.org/kakdoq> a mpeg7:Video ;
+    dc:identifier "http://www.youtube.com/watch?v=kakdoq" ;
+    dc:title "History Lesson" .
+
