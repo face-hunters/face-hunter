@@ -49,7 +49,7 @@ def face_number(img, detector=MTCNN()):
 
     params:
       img: can be img object or img path
-  
+
     return:
       face number in the img
     """
