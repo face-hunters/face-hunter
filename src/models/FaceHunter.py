@@ -106,7 +106,7 @@ class FaceHunter():
 
         return img_pixels
 
-    def _get_img_embeddings(self, img):
+    def _get_img_embeddings(self, img, one_face=False):
         """ create embedings from img
 
         Params:
@@ -122,6 +122,14 @@ class FaceHunter():
 
         faces = self.detector.detect_faces(img)
 
+        # get biggest face from thumbnails
+        if one_face and len(faces) > 1:
+            height = [face['box'][3] for face in faces]  # box: [x, y, w, h]
+            print(height)
+            index = height.index(max(height))
+            print(index)
+            faces = [faces[index]]
+
         for face in faces:
             x, y, w, h = face['box']
             detected_face = img[int(y):int(y + h), int(x):int(x + w)]
@@ -134,7 +142,7 @@ class FaceHunter():
             # aligned_face = FaceDetector.alignment_procedure(detected_face, left_eye, right_eye)
             detected_face = self.face_alignment(img, face['keypoints'], align=self.align)
 
-            embedding = self.encoder.predict(detected_face)[0]  # .tolist()
+            embedding = self.encoder.predict(detected_face)[0]
             embeddings.append(embedding)
 
         return embeddings
@@ -164,7 +172,7 @@ class FaceHunter():
             for img_path in self.image_files_in_folder(
                     entity_path):  # for every img of celebrity, exactly one face in one pic
                 LOGGER.info(f'Encoding {entity_dir}, thumbnail: {img_path}')
-                entity_embedding = self._get_img_embeddings(img_path)
+                entity_embedding = self._get_img_embeddings(img_path, one_face=True)
 
                 if not entity_embedding:
                     LOGGER.warning(f'Could not create encoding for image {img_path}')
