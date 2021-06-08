@@ -125,9 +125,7 @@ class FaceHunter():
         # get biggest face from thumbnails
         if one_face and len(faces) > 1:
             height = [face['box'][3] for face in faces]  # box: [x, y, w, h]
-            print(height)
             index = height.index(max(height))
-            print(index)
             faces = [faces[index]]
 
         for face in faces:
