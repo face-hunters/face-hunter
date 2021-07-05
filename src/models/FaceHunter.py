@@ -46,7 +46,7 @@ class FaceHunter():
                  distance_threshold=0.6,  # TODO(honglin): tune later
                  encoder_name='Dlib',
                  labels_path='data/embeddings/labels.pickle',
-                 embeddings_path='data/embeddings/embeddings.pickle'):
+                 embeddings_path='data/embeddings/embeddings.pickle'):  # for#for
         """ create or load kg_encodings. create detector, encoder """
         self.thumbnails_path = thumbnails_path
         self.img_width = img_width
@@ -229,6 +229,7 @@ class FaceHunter():
                     # display(Image.fromarray(unknown_img))
 
             else:  # build different standard ML model on top of embeddings
+                recognizer_model.fit(embeddings=self.embeddings, labels=self.labels)
                 entity = recognizer_model.predict(unknown_img_embedding)
                 if entity:
                     detected_faces.append(entity)
@@ -268,7 +269,7 @@ class FaceHunter():
                 dsize = (img_width, int(h * r))
                 frame = cv2.resize(frame, dsize)
 
-            detected_faces = self.recognize_image(frame)
+            detected_faces = self.recognize_image(frame, recognizer_model)
             frame_faces_list.append(detected_faces)
 
             # frames.append(frame)
