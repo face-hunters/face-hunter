@@ -30,12 +30,13 @@ class Graph(object):
     def __init__(self, storage_type: str = 'memory',
                  memory_path: str = 'models/store',
                  virtuoso_url: str = None,
+                 virtuoso_graph: str = None,
                  virtuoso_username: str = None,
                  virtuoso_password: str = None):
         if storage_type == 'memory':
             self.store = MemoryStore(memory_path)
         elif storage_type == 'virtuoso':
-            self.store = VirtuosoStore(virtuoso_url, virtuoso_username, virtuoso_password)
+            self.store = VirtuosoStore(virtuoso_url, virtuoso_graph, virtuoso_username, virtuoso_password)
         else:
             raise Exception('Unknown storage type')
 
@@ -87,6 +88,26 @@ class Graph(object):
             self.store.insert((scene_uri, FOAF['depicts'], entity_uri_dbpedia))
         self.store.commit()
 
+    def video_exists(self, youtube_id: str) -> bool:
+        """ Returns whether a video is already in the graph or not
+
+        Parameters
+        ----------
+        youtube_id: str
+            Id of the YouTube-Video.
+
+        Returns
+        ----------
+        Boolean
+            Whether it exists or not.
+        """
+        query = ('SELECT COUNT(?video)'
+                 'WHERE {'
+                 '??video a mpeg7:Video ;'
+                 f'dc:identifier "http://www.youtube.com/watch?v={youtube_id}" .'
+                 '}')
+        return True if self.store.query(query)[0][0] > 0 else False
+
     def get_videos_with_entity_name(self, entity: str):
         """ Returns all videos for an entity
 
@@ -101,17 +122,17 @@ class Graph(object):
             Returns a list of the videos in which a entity occurs. Format: [[<link>, <title>], ...]
         """
         query = ('SELECT DISTINCT ?link ?title'
-                 'HERE {'
+                 'WHERE {'
                  '?scene a video:Scene ;'
                  f'foaf:depicts <http://dbpedia.org/resource/{entity.replace(" ", "_")}> ;'
                  'video:sceneFrom ?video .'
                  '?video a mpeg7:Video ;'
-                 'dc:identifier ?link '
+                 'dc:identifier ?link ;'
                  'dc:title ?title .'
                  '}')
         return self.store.query(query)
 
-    def get_videos_with_dbpedia_query(self):
+    def get_videos_with_dbpedia_data(self, filters: dict):
         """ Returns videos for a user specific query.
             For example: Videos with actors born before 1970.
 

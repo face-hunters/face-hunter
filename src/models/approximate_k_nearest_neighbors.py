@@ -1,8 +1,10 @@
+import os
+
 import numpy as np
 import nmslib
 import logging
-LOGGER = logging.getLogger('fh')
 
+LOGGER = logging.getLogger('appr_k_neighbors')
 
 
 class ApproximateKNearestNeighbors(object):
@@ -54,6 +56,7 @@ class ApproximateKNearestNeighbors(object):
         self.labels = []
         self.distance_threshold = distance_threshold
         self.k = k
+        self.fitted = False
 
     def fit(self, embeddings, labels):
         """ Transform the embeddings into the index parameter of nmslib
@@ -65,12 +68,11 @@ class ApproximateKNearestNeighbors(object):
         labels: list,
             List of entities in our datasets
 
-
         Returns
         ----------
         self
         """
-        self.recognizer = nmslib.init(method=self.method, space=self.space)
+        self.recognizer = nmslib.init(method=self.method, space=self.space, data_type=nmslib.DataType.DENSE_VECTOR)
         self.labels = labels
 
         # If there exists index for nmslib, load it
@@ -85,6 +87,7 @@ class ApproximateKNearestNeighbors(object):
             index_time_params = {'M': 15, 'indexThreadQty': 4, 'efConstruction': 100}
             self.recognizer.createIndex(index_time_params)
             self.recognizer.saveIndex(self.index_path, save_data=False)
+        self.fitted = True
         return self
 
     def predict(self, embedding):

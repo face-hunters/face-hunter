@@ -2,10 +2,10 @@ from pytube import YouTube
 import logging
 from src.utils.utils import check_path_exists
 
-LOGGER = logging.getLogger('y')
+LOGGER = logging.getLogger('youtube-downloader')
 
 
-def download_youtube_videos(txt_path: str = None, path: str = 'data/datasets/youtube'):
+def download_youtube_videos(txt_path: str = None, path: str = 'data/datasets/youtube') -> list:
     """ Downloads videos from youtube.
 
     Parameters
@@ -18,13 +18,15 @@ def download_youtube_videos(txt_path: str = None, path: str = 'data/datasets/you
     """
     check_path_exists(path)
 
+    video_paths = []
     with open(txt_path) as f:
         for line in f:
             url = line.strip()
-            download_youtube_video(url, path)
+            video_paths.append(download_youtube_video(url, path))
+    return video_paths
 
 
-def download_youtube_video(url: str, path: str = 'data/datasets/youtube'):
+def download_youtube_video(url: str, path: str = 'data/datasets/youtube') -> str:
     """ Downloads a single video from youtube.
 
     Parameters
@@ -37,5 +39,5 @@ def download_youtube_video(url: str, path: str = 'data/datasets/youtube'):
     """
     youtube = YouTube(url)
     LOGGER.info(f'Starting to download {youtube.title}')
-    youtube.streams.filter(progressive=True, file_extension='mp4').order_by(
+    return youtube.streams.filter(progressive=True, file_extension='mp4').order_by(
         'resolution').desc().first().download(path)

@@ -16,3 +16,7 @@ levenshtein~=0.12.0
 rdflib~=5.0.0
 PyYAML~=5.4.1
 deepface~=0.0.53
+tensorflow~=2.5.0
+mtcnn~=0.1.0
+matplotlib~=3.1.1
+Keras~=2.4.3

@@ -2,14 +2,9 @@ import os
 import re
 import pickle
 import logging
-
 import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-
 import cv2
 from deepface import DeepFace
-from deepface.detectors import FaceDetector
 from deepface.commons import functions
 from mtcnn import MTCNN
 from keras.preprocessing.image import img_to_array
@@ -225,11 +220,13 @@ class FaceHunter():
 
                 else:  # TODO(honglin): delete after testing
                     LOGGER.info('face detected but no match')
+                    detected_faces.append('unknown')
                     # if not isinstance(unknown_img, str):
                     # display(Image.fromarray(unknown_img))
 
             else:  # build different standard ML model on top of embeddings
-                recognizer_model.fit(embeddings=self.embeddings, labels=self.labels)
+                if not recognizer_model.fitted:
+                    recognizer_model.fit(embeddings=self.embeddings, labels=self.labels)
                 entity = recognizer_model.predict(unknown_img_embedding)
                 if entity:
                     detected_faces.append(entity)
@@ -265,8 +262,8 @@ class FaceHunter():
             # scale the frame
             w, h = frame.shape[1], frame.shape[0]
             if w > self.img_width:
-                r = img_width / w
-                dsize = (img_width, int(h * r))
+                r = self.img_width / w
+                dsize = (self.img_width, int(h * r))
                 frame = cv2.resize(frame, dsize)
 
             detected_faces = self.recognize_image(frame, recognizer_model)

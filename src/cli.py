@@ -1,10 +1,13 @@
 import argparse
 import logging
+from src.hunter import Hunter
+from src.utils.utils import get_config
 
-LOGGER = logging.getLogger('c')
+LOGGER = logging.getLogger('cli')
+CONFIG = get_config()
 
 
-def _download_youtube_videos(args):
+def _search(args):
     """ Starts the download of youtube videos
 
     Parameters
@@ -16,12 +19,18 @@ def _download_youtube_videos(args):
     args.path: str, default = 'data/datasets/youtube'
         The Location where the videos should be saved at.
     """
-    from src.data.youtube import download_youtube_videos
+    if 'virtuoso' in CONFIG:
+        LOGGER.info(Hunter.search(args.entity,
+                                  'virtuoso',
+                                  virtuoso_url=CONFIG['virtuoso']['sparql-auth'],
+                                  virtuoso_graph=CONFIG['virtuoso']['graph'],
+                                  virtuoso_username=CONFIG['virtuoso']['user'],
+                                  virtuoso_password=CONFIG['virtuoso']['password']))
+    else:
+        LOGGER.info(Hunter.search(args.entity, 'memory', memory_path=CONFIG['memory']['path']))
 
-    download_youtube_videos(args.txt, args.path)
 
-
-def _download_video_datasets(args):
+def _download_datasets(args):
     """ Starts the download of thumbnails
 
     Parameters
@@ -79,7 +88,7 @@ def _run_detection(args):
     """
     from src.models.evaluation import evaluate_on_dataset
 
-    evaluate_on_dataset(args.path, args.thumbnails, args.save, args.index)
+    evaluate_on_dataset(args.path, args.thumbnails)
 
 
 def _get_parser():
@@ -97,11 +106,9 @@ def _get_parser():
     subparsers = parser.add_subparsers(title='action', help='Action to perform')
 
     # Parser to download videos from youtube
-    youtube_videos = subparsers.add_parser('youtube',
-                                           help='Download videos from youtube')
-    youtube_videos.add_argument('--txt', help='Path to a text file containing URLs', type=str, default='data/datasets/youtube/youtube.txt')
-    youtube_videos.add_argument('--path', help='Path to store the videos', type=str, default='data/datasets/youtube')
-    youtube_videos.set_defaults(action=_download_youtube_videos)
+    search = subparsers.add_parser('search', help='Returns videos in which an entity occurs')
+    search.add_argument('--entity', help='Name of the entity', type=str, default=None)
+    search.set_defaults(action=_search)
 
     # Parser to download video datasets
     download_videos = subparsers.add_parser('download_video_dataset',
@@ -112,12 +119,13 @@ def _get_parser():
                                  help='Options are imdb-wiki, imdb-faces, youtube-faces-db and yt-celebrity',
                                  type=str,
                                  default='youtube-faces-db')
-    download_videos.set_defaults(action=_download_video_datasets)
+    download_videos.set_defaults(action=_download_datasets)
 
     # Parser to download thumbnails
     download_thumbnails = subparsers.add_parser('download_thumbnails',
                                                 help='Download thumbnails for training')
-    download_thumbnails.add_argument('--path', help='Path to save the thumbnails at', type=str, default='data/thumbnails')
+    download_thumbnails.add_argument('--path', help='Path to save the thumbnails at', type=str,
+                                     default='data/thumbnails')
     download_thumbnails.set_defaults(action=_download_thumbnails)
 
     # Parser to run the face detection
@@ -125,8 +133,6 @@ def _get_parser():
                                           help='Run face detection on locally downloaded data')
     run_detection.add_argument('--path', help='Path to the videos', type=str, default='data/datasets/ytcelebrity')
     run_detection.add_argument('--thumbnails', help='Path to the thumbnails', type=str, default='data/thumbnails')
-    run_detection.add_argument('--index', help='Name of an existing index', type=str, default=None)
-    run_detection.add_argument('--save', help='Path to save the embeddings at', type=str, default=None)
     run_detection.set_defaults(action=_run_detection)
     return parser
 
