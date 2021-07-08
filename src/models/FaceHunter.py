@@ -6,12 +6,13 @@ import cv2
 from deepface import DeepFace
 from deepface.commons import functions
 from mtcnn import MTCNN
-from keras.preprocessing.image import img_to_array
+from src.preprocessing.facial_preprocessing import face_alignment
+from src.utils.utils import image_files_in_folder
 
 LOGGER = logging.getLogger(__name__)
 
 
-class FaceHunter():
+class FaceHunter(object):
     """recognize faces in videos
 
     Parameters:
@@ -54,52 +55,6 @@ class FaceHunter():
         self.target = functions.find_input_shape(self.encoder)  # (150,150) encoder input shape
         self.labels, self.embeddings = self.load_embeddings()  # store the 2 lists in labels.pickle encoddings.pickle
 
-    def face_alignment(self, img, keypoints, blank=0.3, align=True):  # TODO(honglin):delete align parameters later
-        left_eye = keypoints['left_eye']
-        right_eye = keypoints['right_eye']
-        mouth_left = keypoints['mouth_left']
-        mouth_right = keypoints['mouth_right']
-
-        eye_center = ((left_eye[0] + right_eye[0]) // 2, (left_eye[1] + right_eye[1]) // 2)
-        mouth_center = ((mouth_left[0] + mouth_right[0]) // 2, (mouth_left[1] + mouth_right[1]) // 2)
-
-        # get rotation angle
-        dY = right_eye[1] - left_eye[1]
-        dX = right_eye[0] - left_eye[0]
-        angle = np.degrees(np.arctan2(dY, dX))
-
-        # get scale by the distance from eye center to mouth center
-        desiredDist = (1 - 2 * blank) * self.target[1]
-        dY = mouth_center[1] - eye_center[1]
-        dX = mouth_center[0] - eye_center[0]
-        dist = np.sqrt((dX ** 2) + (dY ** 2))
-        scale = desiredDist / dist
-
-        M = cv2.getRotationMatrix2D(eye_center, angle, scale)
-
-        # TODO(honglin): performance comparision use , delete later
-        if not align:
-            M = cv2.getRotationMatrix2D(keypoints['nose'], 0, scale)
-
-        # translation
-        tX = self.target[0] * 0.5
-        tY = self.target[1] * blank
-        M[0, 2] += (tX - eye_center[0])
-        M[1, 2] += (tY - eye_center[1])
-
-        aligned_face = cv2.warpAffine(img, M, self.target, flags=cv2.INTER_CUBIC)
-
-        # TODO(honglin):face alignment test use, delete later
-        # plt.imshow(aligned_face)
-        # plt.show()
-
-        # input layer shape
-        img_pixels = img_to_array(aligned_face)
-        img_pixels = np.expand_dims(aligned_face, axis=0)
-        img_pixels = img_pixels / 255
-
-        return img_pixels
-
     def _get_img_embeddings(self, img, one_face=False):
         """ create embedings from img
 
@@ -132,7 +87,7 @@ class FaceHunter():
             # plt.show()
 
             # aligned_face = FaceDetector.alignment_procedure(detected_face, left_eye, right_eye)
-            detected_face = self.face_alignment(img, face['keypoints'], align=self.align)
+            detected_face = face_alignment(img, self.target, face['keypoints'], align=self.align)
 
             embedding = self.encoder.predict(detected_face)[0]
             embeddings.append(embedding)
@@ -157,7 +112,7 @@ class FaceHunter():
             if not os.path.isdir(entity_path):
                 continue
 
-            for img_path in self.image_files_in_folder(
+            for img_path in image_files_in_folder(
                     entity_path):  # for every img of celebrity, exactly one face in one pic
                 LOGGER.info(f'Encoding {entity_dir}, thumbnail: {img_path}')
                 entity_embedding = self._get_img_embeddings(img_path, one_face=True)
