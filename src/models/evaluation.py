@@ -6,7 +6,7 @@ from itertools import chain
 import numpy as np
 import mimetypes
 from src.models.approximate_k_nearest_neighbors import ApproximateKNearestNeighbors
-from src.models.FaceHunter import FaceHunter
+from src.models.face_recognition import FaceRecognition
 
 LOGGER = logging.getLogger('evaluation')
 
@@ -22,7 +22,7 @@ def evaluate_on_dataset(path: str = 'data/datasets/ytcelebrity', thumbnails: str
     thumbnails: str, default = 'data/thumbnails'
         The Location of the thumbnails.
     """
-    hunter = FaceHunter(thumbnails)
+    hunter = FaceRecognition(thumbnails)
     recognizer_model = ApproximateKNearestNeighbors()
     data = pd.read_csv(os.path.join(path, 'information.csv'))
 

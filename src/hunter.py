@@ -2,6 +2,7 @@ import os
 from src.knowledge_graph.graph import Graph
 from src.data.youtube import download_youtube_video
 from src.models.approximate_k_nearest_neighbors import ApproximateKNearestNeighbors
+from src.models.face_recognition import FaceRecognition
 import tempfile
 
 
@@ -11,6 +12,7 @@ class Hunter(object):
         self.url = url
         self.identifier = self.url.split('=')[1]
         self.path_to_video = None
+        self.face_detection = FaceRecognition()
 
     def recognize(self, method: str = 'approximate_k_neighbors') -> list:
         if method == 'approximate_k_neighbors':
@@ -19,7 +21,7 @@ class Hunter(object):
             raise Exception('Unknown Detector')
 
         self.path_to_video = download_youtube_video(self.url, tempfile.gettempdir())
-        return detector.predict(self.path_to_video)
+        return self.face_detection.recognize_video(self.path_to_video, detector)[0]
 
     def link(self,
              storage_type: str = 'memory',

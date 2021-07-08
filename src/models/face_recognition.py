@@ -12,7 +12,7 @@ from src.utils.utils import image_files_in_folder
 LOGGER = logging.getLogger(__name__)
 
 
-class FaceHunter(object):
+class FaceRecognition(object):
     """recognize faces in videos
 
     Parameters:
@@ -55,7 +55,7 @@ class FaceHunter(object):
         self.target = functions.find_input_shape(self.encoder)  # (150,150) encoder input shape
         self.labels, self.embeddings = self.load_embeddings()  # store the 2 lists in labels.pickle encoddings.pickle
 
-    def _get_img_embeddings(self, img, one_face=False):
+    def _get_img_embedding(self, img, one_face=False):
         """ create embedings from img
 
         Params:
@@ -115,7 +115,7 @@ class FaceHunter(object):
             for img_path in image_files_in_folder(
                     entity_path):  # for every img of celebrity, exactly one face in one pic
                 LOGGER.info(f'Encoding {entity_dir}, thumbnail: {img_path}')
-                entity_embedding = self._get_img_embeddings(img_path, one_face=True)
+                entity_embedding = self._get_img_embedding(img_path, one_face=True)
 
                 if not entity_embedding:
                     LOGGER.warning(f'Could not create encoding for image {img_path}')
@@ -153,7 +153,7 @@ class FaceHunter(object):
           detected_faces: list of detected entity names in unknown_img
         """
         detected_faces = []
-        unknown_img_embeddings = self._get_img_embeddings(unknown_img)
+        unknown_img_embeddings = self._get_img_embedding(unknown_img)
 
         for unknown_img_embedding in unknown_img_embeddings:  # for each face in the image
             if not recognizer_model:  # run basic recognition
@@ -196,6 +196,8 @@ class FaceHunter(object):
         LOGGER.info(f'Starting face recognition on {video_path}')
 
         video = cv2.VideoCapture(video_path)
+        fps = video.get(cv2.CAP_PROP_FPS)
+        timestamps = [0.0]
 
         frame_faces_list = []
         # frames = []
@@ -219,6 +221,8 @@ class FaceHunter(object):
             detected_faces = self.recognize_image(frame, recognizer_model)
             frame_faces_list.append(detected_faces)
 
+            timestamps.append(timestamps[-1] + 1000 / fps)
+
             # frames.append(frame)
             # if len(frames) == batch_size:
             #  frame_faces_list.extend(self._batch_recognize_images(frames, recognizer_model))
@@ -226,5 +230,5 @@ class FaceHunter(object):
 
         detected_faces = {entity for l in frame_faces_list for entity in l}
 
-        return detected_faces, frame_faces_list
+        return detected_faces, frame_faces_list, timestamps
 
