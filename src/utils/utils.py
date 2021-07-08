@@ -1,7 +1,7 @@
 import logging
 import os
 import yaml
-
+import  re
 from mtcnn import MTCNN
 import cv2
 
@@ -58,3 +58,19 @@ def face_number(img, detector=MTCNN()):
 
     faces = detector.detect_faces(img)
     return len(faces)
+
+
+def image_files_in_folder(folder):
+    """ Searches for images in a folder
+
+    Parameters
+    ----------
+    folder: str, default = None
+        The path to the dictionary
+
+    Returns
+    ----------
+    list
+        paths to images
+    """
+    return [os.path.join(folder, f) for f in os.listdir(folder) if re.match(r'.*\.(jpg|jpeg|png)', f, flags=re.I)]

@@ -1,5 +1,4 @@
 import os
-import re
 import pickle
 import logging
 import numpy as np
@@ -139,10 +138,6 @@ class FaceHunter():
             embeddings.append(embedding)
 
         return embeddings
-
-    # TODO(Honglin): move to Helper module
-    def image_files_in_folder(self, folder):  # copy from face_recognition library
-        return [os.path.join(folder, f) for f in os.listdir(folder) if re.match(r'.*\.(jpg|jpeg|png)', f, flags=re.I)]
 
     def create_embeddings(self):
         """ create and save face embeddings and entity labels of thumbnails in KnowledgeGraph
