@@ -9,7 +9,7 @@ from urllib.error import HTTPError
 import time
 from src.utils.utils import check_path_exists
 
-LOGGER = logging.getLogger('k')
+LOGGER = logging.getLogger('knowledge-graphs')
 
 
 def download_wikidata_thumbnails(path: str = 'data/thumbnails/wikidata_thumbnails', query_links: bool = True, download: bool = True):
