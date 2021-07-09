@@ -73,7 +73,7 @@ class Graph(object):
             End time of the scene in the respective video.
         """
         video_uri = URIRef(f'{HOME_URI}{youtube_id}')
-        scene_uri = URIRef(f'{HOME_URI}{youtube_id}#t={str(start_time)},{str(end_time)}')
+        scene_uri = URIRef(f'{HOME_URI}{youtube_id}#t={str(start_time).split(".", 2)[0]},{str(end_time).split(".", 2)[0]}')
 
         self.store.insert((scene_uri, RDF['type'], VIDEO['Scene']))
         self.store.insert((scene_uri, VIDEO['sceneFrom'], video_uri))
