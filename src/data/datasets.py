@@ -8,7 +8,7 @@ from scipy.io import loadmat
 import shutil
 from src.utils.utils import check_path_exists
 
-LOGGER = logging.getLogger('d')
+LOGGER = logging.getLogger('dataset-downloader')
 
 
 def download_seqamlab_dataset(path: str = 'data/datasets/ytcelebrity'):

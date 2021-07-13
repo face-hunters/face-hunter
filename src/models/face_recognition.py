@@ -230,5 +230,5 @@ class FaceRecognition(object):
 
         detected_faces = {entity for l in frame_faces_list for entity in l}
 
-        return detected_faces, frame_faces_list, timestamps
+        return detected_faces, frame_faces_list, timestamps[1:]
 

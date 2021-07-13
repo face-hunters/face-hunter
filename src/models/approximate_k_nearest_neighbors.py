@@ -4,7 +4,7 @@ import numpy as np
 import nmslib
 import logging
 
-LOGGER = logging.getLogger('appr_k_neighbors')
+LOGGER = logging.getLogger('approximate_k_neighbors')
 
 
 class ApproximateKNearestNeighbors(object):

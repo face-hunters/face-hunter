@@ -91,6 +91,15 @@ def _run_detection(args):
     evaluate_on_dataset(args.path, args.thumbnails)
 
 
+def _link(args):
+    from src.hunter import Hunter
+    Hunter('https://www.youtube.com/watch?v=elz1J86AExY').link('virtuoso', '',
+                                                               'http://localhost:8890/sparql-auth',
+                                                               'http://localhost:8890/DAV/',
+                                                               'dba',
+                                                               'dba')
+
+
 def _get_parser():
     """ Sets up a command line interface.
 
@@ -128,12 +137,17 @@ def _get_parser():
                                      default='data/thumbnails')
     download_thumbnails.set_defaults(action=_download_thumbnails)
 
-    # Parser to run the face detection
+    # Parser to evaluate the face recognition
     run_detection = subparsers.add_parser('run_detection',
                                           help='Run face detection on locally downloaded data')
     run_detection.add_argument('--path', help='Path to the videos', type=str, default='data/datasets/ytcelebrity')
     run_detection.add_argument('--thumbnails', help='Path to the thumbnails', type=str, default='data/thumbnails')
     run_detection.set_defaults(action=_run_detection)
+
+    # Parser to link a video
+    link = subparsers.add_parser('link',
+                                 help='Link entities of a video to a knowledge graph')
+    link.set_defaults(action=_link)
     return parser
 
 

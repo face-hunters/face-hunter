@@ -2,7 +2,6 @@ import logging
 from datetime import timedelta
 from rdflib import URIRef, Literal
 from rdflib.namespace import DC, RDF, Namespace, FOAF, XSD
-
 from src.knowledge_graph.memory_store import MemoryStore
 from src.knowledge_graph.virtuoso_store import VirtuosoStore
 from src.utils.utils import get_config
@@ -74,15 +73,18 @@ class Graph(object):
             End time of the scene in the respective video.
         """
         video_uri = URIRef(f'{HOME_URI}{youtube_id}')
-        scene_uri = URIRef(f'{HOME_URI}{youtube_id}#t={str(start_time)},{str(end_time)}')
+        scene_uri = URIRef(f'{HOME_URI}{youtube_id}#t={str(start_time).split(".", 2)[0]},{str(end_time).split(".", 2)[0]}')
 
         self.store.insert((scene_uri, RDF['type'], VIDEO['Scene']))
         self.store.insert((scene_uri, VIDEO['sceneFrom'], video_uri))
         self.store.insert((scene_uri, VIDEO['temporalSegmentOf'], video_uri))
-        self.store.insert((scene_uri, TEMPORAL['hasStartTime'], Literal(str(start_time), datatype=XSD['dateTime'])))
+        self.store.insert((scene_uri, TEMPORAL['hasStartTime'], Literal(str(start_time).split('.', 2)[0],
+                                                                        datatype=XSD['dateTime'])))
         self.store.insert(
-            (scene_uri, TEMPORAL['duration'], Literal(str(end_time - start_time), datatype=XSD['duration'])))
-        self.store.insert((scene_uri, TEMPORAL['hasFinishTime'], Literal(str(end_time), datatype=XSD['dateTime'])))
+            (scene_uri, TEMPORAL['duration'], Literal(str(end_time - start_time).split('.', 2)[0],
+                                                      datatype=XSD['duration'])))
+        self.store.insert((scene_uri, TEMPORAL['hasFinishTime'], Literal(str(end_time).split('.', 2)[0],
+                                                                         datatype=XSD['dateTime'])))
         for entity in entities:
             entity_uri_dbpedia = URIRef(f'http://dbpedia.org/resource/{entity.replace(" ", "_")}')
             self.store.insert((scene_uri, FOAF['depicts'], entity_uri_dbpedia))
@@ -103,10 +105,10 @@ class Graph(object):
         """
         query = ('SELECT COUNT(?video)'
                  'WHERE {'
-                 '??video a mpeg7:Video ;'
+                 '?video a mpeg7:Video ;'
                  f'dc:identifier "http://www.youtube.com/watch?v={youtube_id}" .'
                  '}')
-        return True if self.store.query(query)[0][0] > 0 else False
+        return True if int(self.store.query(query)[0][0]) > 0 else False
 
     def get_videos_with_entity_name(self, entity: str):
         """ Returns all videos for an entity
