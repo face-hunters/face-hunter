@@ -31,7 +31,11 @@ RUN cd ~ && \
     cd  dlib/ && \
     python3 setup.py install --yes USE_AVX_INSTRUCTIONS
 
-
+RUN apt-get install -y --fix-missing \
+    libssl-dev \
+    libffi-dev 
 COPY . /root/FACE-HUNTER
 RUN cd /root/FACE-HUNTER && \
-    pip install -r requirements.txt
+    pip install -r requirements.txt --use-deprecated=legacy-resolver
+CMD cd /root/FACE-HUNTER/src && \
+    python3 cli.py
