@@ -190,7 +190,7 @@ def main():
 
     _logging_setup(args.verbose, args.logfile)
 
-    if not args.action:
+    if not hasattr(args, 'action'):
         parser.print_help()
         parser.exit()
 

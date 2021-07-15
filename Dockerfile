@@ -36,6 +36,7 @@ RUN apt-get install -y --fix-missing \
     libffi-dev 
 COPY . /root/FACE-HUNTER
 RUN cd /root/FACE-HUNTER && \
-    pip install -r requirements.txt --use-deprecated=legacy-resolver
-CMD cd /root/FACE-HUNTER/src && \
-    python3 cli.py
+    pip install -r requirements.txt
+CMD export PYTHONPATH="${PYTHONPATH}:/root/FACE-HUNTER" && \
+    cd /root/FACE-HUNTER && \
+    python3 src/cli.py
