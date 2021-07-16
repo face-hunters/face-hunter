@@ -58,4 +58,4 @@ class Hunter(object):
                      virtuoso_url,
                      virtuoso_graph,
                      virtuoso_username,
-                     virtuoso_password).get_videos_with_entity_name(entity)
+                     virtuoso_password).get_videos_with_entity(entity)

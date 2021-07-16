@@ -2,6 +2,7 @@ import logging
 from datetime import timedelta
 from rdflib import URIRef, Literal
 from rdflib.namespace import DC, RDF, Namespace, FOAF, XSD
+from src.data.knowledge_graphs import get_same_as_link, get_uri_from_label
 from src.knowledge_graph.memory_store import MemoryStore
 from src.knowledge_graph.virtuoso_store import VirtuosoStore
 from src.utils.utils import get_config
@@ -86,8 +87,13 @@ class Graph(object):
         self.store.insert((scene_uri, TEMPORAL['hasFinishTime'], Literal(str(end_time).split('.', 2)[0],
                                                                          datatype=XSD['dateTime'])))
         for entity in entities:
-            entity_uri_dbpedia = URIRef(f'http://dbpedia.org/resource/{entity.replace(" ", "_")}')
-            self.store.insert((scene_uri, FOAF['depicts'], entity_uri_dbpedia))
+            dbpedia_uri, wikidata_uri = get_uri_from_label(entity)
+            if dbpedia_uri is not None:
+                self.store.insert((scene_uri, FOAF['depicts'], dbpedia_uri))
+            elif wikidata_uri is not None:
+                self.store.insert((scene_uri, FOAF['depicts'], wikidata_uri))
+            else:
+                LOGGER.info(f'Failed to create link to {entity} for video {youtube_id}')
         self.store.commit()
 
     def video_exists(self, youtube_id: str) -> bool:
@@ -110,23 +116,33 @@ class Graph(object):
                  '}')
         return True if int(self.store.query(query)[0][0]) > 0 else False
 
-    def get_videos_with_entity_name(self, entity: str):
+    def get_videos_with_entity(self, identifier: str):
         """ Returns all videos for an entity
 
         Parameters
         ----------
-        entity: str
-            Name of the entity.
+        identifier: str
+            Can be the name of the entity or a dbpedia/wikidata link.
 
         Returns
         ----------
         List
             Returns a list of the videos in which a entity occurs. Format: [[<link>, <title>], ...]
         """
+
+        if identifier.startswith('http://www.wikidata'):
+            identifier = get_same_as_link(identifier)
+        elif not identifier.startswith('http://dbpedia'):
+            uris = get_uri_from_label(identifier)
+            identifier = uris[0] if uris[0] is not None else uris[1]
+            if identifier is None:
+                LOGGER.warning('Could not identify entity using the label')
+                return None
+
         query = ('SELECT DISTINCT ?link ?title'
                  'WHERE {'
                  '?scene a video:Scene ;'
-                 f'foaf:depicts <http://dbpedia.org/resource/{entity.replace(" ", "_")}> ;'
+                 f'foaf:depicts <{identifier}> ;'
                  'video:sceneFrom ?video .'
                  '?video a mpeg7:Video ;'
                  'dc:identifier ?link ;'
@@ -134,7 +150,7 @@ class Graph(object):
                  '}')
         return self.store.query(query)
 
-    def get_videos_with_dbpedia_data(self, filters: dict):
+    def get_videos_with_filters(self, filters: dict):
         """ Returns videos for a user specific query.
             For example: Videos with actors born before 1970.
 
@@ -144,19 +160,25 @@ class Graph(object):
             Returns a list of the videos in which a entity occurs. Format: [[<link>, <title>, <entity>], ...]
         """
         query = '''
-        select distinct ?title ?link ?entity 
+        select distinct ?title ?link ?dbpedia_entity
         where { 
             ?scene a video:Scene; 
-                foaf:depicts ?entity; 
+                foaf:depicts ?dbpedia_entity; 
                 video:sceneFrom ?video. 
             ?video dc:identifier ?link;
                     dc:title ?title.
             
             service <http://dbpedia.org/sparql> { 
-                ?entity dbo:birthDate ?date 
+                ?dbpedia_entity dbo:birthDate ?date;
+                    owl:sameAs ?wikidata_entity
             } 
             
-            filter (?date < "19700101"^^xsd:date) 
+            service <https://query.wikidata.org/sparql> {
+                ?wikidata_entity <http://www.wikidata.org/prop/direct/P21> ?sex .
+                ?sex rdfs:label ?sex_label 
+            }
+            
+            filter (regex(str(?wikidata_entity), "www.wikidata.org") && (?sex_label = "male"@en) && ?date < "19700101"^^xsd:date) 
         }
         '''
         return self.store.query(query)
