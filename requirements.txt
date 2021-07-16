@@ -22,3 +22,5 @@ matplotlib~=3.1.1
 Keras~=2.4.3
 ruamel.yaml==0.17.10
 pyOpenSSL==19.1.0
+gcloud==0.18.3
+google-cloud-storage==1.41.0
