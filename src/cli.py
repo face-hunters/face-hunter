@@ -65,8 +65,8 @@ def _download_thumbnails(args):
     """
     from src.data.knowledge_graphs import download_dbpedia_thumbnails, download_wikidata_thumbnails
 
-    download_dbpedia_thumbnails(args.path)
-    download_wikidata_thumbnails(args.path)
+    download_dbpedia_thumbnails()
+    download_wikidata_thumbnails()
 
 
 def _run_detection(args):
