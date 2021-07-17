@@ -31,7 +31,7 @@ def _search(args):
 
 
 def _download_datasets(args):
-    """ Starts the download of thumbnails
+    """ Starts the download of video datasets
 
     Parameters
     ----------
