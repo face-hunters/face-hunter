@@ -58,7 +58,7 @@ def download_wikidata_thumbnails(path: str = 'data/thumbnails/wikidata_thumbnail
         query_results.to_csv(os.path.join(path, f'Thumbnails_links.csv'), index=False)
     if download:
         LOGGER.info('Starting to download wikidata thumbnails')
-        download_images(path)
+        download_images('wikidata', path)
 
 
 def download_dbpedia_thumbnails(path: str = 'data/thumbnails/dbpedia_thumbnails', query_links: bool = True,
@@ -131,7 +131,7 @@ def download_dbpedia_thumbnails(path: str = 'data/thumbnails/dbpedia_thumbnails'
         query_results.to_csv(os.path.join(path, f'Thumbnails_links.csv'), index=False)
     if download:
         LOGGER.info('Starting to download dbpedia thumbnails')
-        download_images(path)
+        download_images('dbpedia', path)
 
 
 def download_images(method='dbpedia', path):
