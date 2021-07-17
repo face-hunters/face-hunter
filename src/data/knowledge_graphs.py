@@ -134,7 +134,7 @@ def download_dbpedia_thumbnails(path: str = 'data/thumbnails/dbpedia_thumbnails'
         download_images(path)
 
 
-def download_images(path):
+def download_images(method='dbpedia', path):
     def mycallback(result):
         global results
         results.append(result)
@@ -145,7 +145,10 @@ def download_images(path):
     global results
     results = []
     for i in query_results.index.to_list():
-        entity_name = query_results.loc[i, 'entity'].split('/')[-1]
+        if method == 'dbpedia':
+          entity_name = query_results.loc[i, 'entity'].split('/')[-1]
+        elif method == 'wikidata':
+          entity_name = query_results.loc[i, 'name'] + query_results.loc[i, 'entity'].split('/')[-1]
         thumbnail_url = query_results.loc[i, 'img']
         i_path = os.path.join(path, 'thumbnails', entity_name)
         file_name = f"{entity_name}{i}.{thumbnail_url.split('.')[-1]}"
@@ -157,6 +160,7 @@ def download_images(path):
     results = pd.DataFrame(results, columns=["index", "url", "result"])
     results.to_csv(os.path.join(path, 'download_results.csv'), index=False)
 
+    
 
 def download_thumbnail(index: int, i_thumbnail_url: str, i_path: str, i_file_name: str):
     """ Downloads a thumbnail from dbpedia
