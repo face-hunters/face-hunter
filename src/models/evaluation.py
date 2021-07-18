@@ -5,8 +5,8 @@ import pandas as pd
 from itertools import chain
 import numpy as np
 import mimetypes
-from src.models.approximate_k_nearest_neighbors import ApproximateKNearestNeighbors
-from src.models.face_recognition import FaceRecognition
+from models.approximate_k_nearest_neighbors import ApproximateKNearestNeighbors
+from models.face_recognition import FaceRecognition
 
 LOGGER = logging.getLogger('evaluation')
 

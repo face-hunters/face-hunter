@@ -1,7 +1,7 @@
 import argparse
 import logging
-from src.hunter import Hunter
-from src.utils.utils import get_config
+from hunter import Hunter
+from utils.utils import get_config
 
 LOGGER = logging.getLogger('cli')
 CONFIG = get_config()

@@ -6,7 +6,7 @@ import pandas as pd
 import scipy
 from scipy.io import loadmat
 import shutil
-from src.utils.utils import check_path_exists
+from utils.utils import check_path_exists
 
 LOGGER = logging.getLogger('dataset-downloader')
 

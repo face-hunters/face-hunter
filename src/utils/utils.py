@@ -21,7 +21,7 @@ def check_path_exists(path: str = None):
         os.makedirs(path)
 
 
-def get_config(path: str = 'config.yaml'):
+def get_config(path: str = '/root/FACE-HUNTER/src/utils/config.yaml'):
     """ Loads the configuration file to a dictionary
 
     Parameters

@@ -1,7 +1,7 @@
 import logging
 import os
 
-from src.utils.utils import check_path_exists
+from utils.utils import check_path_exists
 from rdflib import Graph
 from rdflib.namespace import DC, RDF, Namespace, FOAF, XSD, RDFS
 from rdflib.plugins.sparql import prepareQuery
