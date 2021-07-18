@@ -58,7 +58,7 @@ def download_wikidata_thumbnails(path: str = 'data/thumbnails/wikidata_thumbnail
         query_results.to_csv(os.path.join(path, f'Thumbnails_links.csv'), index=False)
     if download:
         LOGGER.info('Starting to download wikidata thumbnails')
-        download_images('wikidata', path)
+        download_images(path, 'wikidata')
 
 
 def download_dbpedia_thumbnails(path: str = 'data/thumbnails/dbpedia_thumbnails', query_links: bool = True,
@@ -131,10 +131,10 @@ def download_dbpedia_thumbnails(path: str = 'data/thumbnails/dbpedia_thumbnails'
         query_results.to_csv(os.path.join(path, f'Thumbnails_links.csv'), index=False)
     if download:
         LOGGER.info('Starting to download dbpedia thumbnails')
-        download_images('dbpedia', path)
+        download_images(path, 'dbpedia')
 
 
-def download_images(method='dbpedia', path):
+def download_images(path, method='dbpedia'):
     def mycallback(result):
         global results
         results.append(result)
@@ -148,7 +148,7 @@ def download_images(method='dbpedia', path):
         if method == 'dbpedia':
           entity_name = query_results.loc[i, 'entity'].split('/')[-1]
         elif method == 'wikidata':
-          entity_name = query_results.loc[i, 'name'] + query_results.loc[i, 'entity'].split('/')[-1]
+          entity_name = query_results.loc[i, 'name'] + '_' + query_results.loc[i, 'entity'].split('/')[-1]
         thumbnail_url = query_results.loc[i, 'img']
         i_path = os.path.join(path, 'thumbnails', entity_name)
         file_name = f"{entity_name}{i}.{thumbnail_url.split('.')[-1]}"
