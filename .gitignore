@@ -31,3 +31,6 @@ __pycache__
 # Lock file
 *.lock.*
 face-hunter.json
+
+* SSH keys
+*pub_key*
