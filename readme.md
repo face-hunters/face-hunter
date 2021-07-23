@@ -9,10 +9,8 @@ Team Project at the University of Mannheim
  ## Provisioning GCP resources
 
 In the root folder create ssh key using the following command
-ssh-keygen -t pub_key
 
-visit the website https://checkip.amazonaws.com to find your IP and insert it in main.tf line 140.
-Make sure to keep the "/32"
+ssh-keygen -t pub_key
 
 Use the commands below to start the script
 
@@ -42,8 +40,11 @@ cd root/FACE-HUNTER
 and start running the commands
 
 also install nano to be able to edit the code
+
 apt-get install nano
+
 then for example
+
 nano cli.py
 
 IMPORTANT!
@@ -52,8 +53,6 @@ When you finish don't forget to run the command below
 terraform destroy --auto-approve
 
 Enjoy!
-
-Also since your IP may change, make sure to check your IP each time you connect and insert it into main.tf line 140 
 
 
 

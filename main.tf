@@ -22,7 +22,7 @@ resource "google_compute_firewall" "firewall" {
     protocol = "tcp"
     ports    = ["22"]
   }
-  source_ranges = [var.my_ip]
+  source_ranges = ["${chomp(data.http.my_ip.body)}/32"]
   target_tags   = ["externalssh"]
 }
 
@@ -33,7 +33,7 @@ resource "google_compute_firewall" "webserverrule" {
     protocol = "tcp"
     ports    = ["80","443"]
   }
-  source_ranges = [var.my_ip]
+  source_ranges = ["${chomp(data.http.my_ip.body)}/32"]
   target_tags   = ["webserver"]
 }
 
@@ -136,10 +136,10 @@ variable "private_key_path"{
   default = "./pub_key"
 }
 
-variable "my_ip"{
-  default = "2.205.80.104/32"
+data "http" "my_ip" {
+   url = "https://checkip.amazonaws.com"
 }
 
 output "ip" {
- value = google_compute_address.static.address #google_compute_instance.default.network_interface.0.access_config.0.nat_ip ##
+ value = google_compute_address.static.address
 }
