@@ -86,7 +86,7 @@ def _run_detection(args):
     args.thumbnails: str, default = 'data/thumbnails'
         The location of the thumbnails or an existing NMSLIB index.
     """
-    from .models.evaluation import evaluate_on_dataset
+    from models.evaluation import evaluate_on_dataset
 
     evaluate_on_dataset(args.path, args.thumbnails)
 

@@ -22,7 +22,7 @@ resource "google_compute_firewall" "firewall" {
     protocol = "tcp"
     ports    = ["22"]
   }
-  source_ranges = [var.my_ip] # Not So Secure. Limit the Source Range
+  source_ranges = [var.my_ip]
   target_tags   = ["externalssh"]
 }
 
@@ -33,7 +33,7 @@ resource "google_compute_firewall" "webserverrule" {
     protocol = "tcp"
     ports    = ["80","443"]
   }
-  source_ranges = [var.my_ip] # Not So Secure. Limit the Source Range
+  source_ranges = [var.my_ip]
   target_tags   = ["webserver"]
 }
 
@@ -59,6 +59,7 @@ resource "google_compute_instance" "default" {
   name         = "attached-disk-instance"
   machine_type = "e2-medium"
   zone         = "${var.region}-c"
+  tags         = ["externalssh","webserver"]
 
   boot_disk {
     initialize_params {
@@ -85,7 +86,6 @@ resource "google_compute_instance" "default" {
     connection {
       host        = google_compute_address.static.address
       type        = "ssh"
-      # username of the instance would vary for each account refer the OS Login in GCP documentation
       user        = var.gce_ssh_user 
       timeout     = "500s"
       private_key = file(var.private_key_path)
@@ -95,14 +95,10 @@ resource "google_compute_instance" "default" {
     connection {
       host        = google_compute_address.static.address
       type        = "ssh"
-      # username of the instance would vary for each account refer the OS Login in GCP documentation
       user        = var.gce_ssh_user
       timeout     = "500s"
-      # private_key being used to connect to the VM. ( the public key was copied earlier using metadata )
       private_key = file(var.private_key_path)
    }
-   # Commands to be executed as the instance gets ready.
-   # set execution permission and start the script
     inline = [
       "chmod a+x /tmp/startupscript.sh",
       "sed -i -e 's/\r$//' /tmp/startupscript.sh",
@@ -133,17 +129,17 @@ variable "gce_ssh_user" {
 }
 
 variable "gce_ssh_pub_key_file" {
-  default = "pub_key.pub"
+  default = "./pub_key.pub"
 }
 
 variable "private_key_path"{
-  default = "pub_key"
+  default = "./pub_key"
 }
 
 variable "my_ip"{
-  default = "88.76.252.218/32"
+  default = "2.205.80.104/32"
 }
 
 output "ip" {
- value = google_compute_address.static.address#google_compute_instance.default.network_interface.0.access_config.0.nat_ip
+ value = google_compute_address.static.address #google_compute_instance.default.network_interface.0.access_config.0.nat_ip ##
 }
