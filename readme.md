@@ -10,7 +10,10 @@ Team Project at the University of Mannheim
 
 In the root folder create ssh key using the following command
 
-ssh-keygen -t pub_key
+ssh-keygen -t rsa
+
+when asked about the file name, insert "pub_key"
+When asked for the passphrase, keep it empty
 
 Use the commands below to start the script
 
