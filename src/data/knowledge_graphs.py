@@ -8,6 +8,7 @@ from pandas import json_normalize
 from urllib.error import HTTPError
 import time
 from src.utils.utils import check_path_exists
+from src.utils.utils import name_norm
 
 LOGGER = logging.getLogger('knowledge-graphs')
 
