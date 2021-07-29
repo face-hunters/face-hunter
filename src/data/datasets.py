@@ -7,6 +7,7 @@ import scipy
 from scipy.io import loadmat
 import shutil
 from src.utils.utils import check_path_exists
+from src.preprocessing.file_preprocessing import name_norm
 
 LOGGER = logging.getLogger('dataset-downloader')
 
@@ -35,7 +36,8 @@ def download_seqamlab_dataset(path: str = 'data/datasets/ytcelebrity'):
     videos = pd.Series(os.listdir(path))
     information = pd.DataFrame(data={
         'file': videos,
-        'entities': videos.apply(lambda x: [' '.join([k.capitalize() for k in os.path.splitext(path + '/' + x)[0].split('_')[3:5]])])
+        'entities': name_norm(
+            videos.apply(lambda x: [' '.join([k.capitalize() for k in os.path.splitext(path + '/' + x)[0].split('_')[3:5]])]))
     })
     information = information.set_index('file')
     information.to_csv(path + '/information.csv')
@@ -66,7 +68,7 @@ def download_imdb_faces_dataset(path: str = 'data/datasets/imdb-faces'):
             LOGGER.warning(f'Could not download {row["url"]}')
     information = pd.DataFrame(data={
         'file': range(0, len(entities) - 1),
-        'entities': entities
+        'entities': name_norm(entities)
     })
     information = information.set_index('file')
     information.to_csv(os.path.join(path, 'information.csv'))
@@ -95,7 +97,7 @@ def download_imdb_wiki_dataset(path: str = 'data/datasets/imdb-wiki'):
     mat = scipy.io.loadmat(os.path.join(path, 'imdb/imdb.mat'))
     information = pd.DataFrame(data={
         'file': pd.Series(mat['imdb']['full_path'][0][0][0]).apply(lambda x: str(x[0])),
-        'entities': mat['imdb']['name'][0][0][0]
+        'entities': name_norm(mat['imdb']['name'][0][0][0])
     })
     information = information.set_index('file')
     information.to_csv(os.path.join(path, 'information.csv'))
@@ -158,7 +160,7 @@ def download_youtube_faces_db(path: str = 'data/datasets/youtube-faces-db'):
 
     information = pd.DataFrame(data={
         'file': videos,
-        'entities': entities
+        'entities': name_norm(entities)
     })
     information = information.set_index('file')
     information.to_csv(os.path.join(path, 'information.csv'))
