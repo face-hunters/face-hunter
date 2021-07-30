@@ -8,7 +8,7 @@ from pandas import json_normalize
 from urllib.error import HTTPError
 import time
 from src.utils.utils import check_path_exists
-from src.utils.utils import name_norm
+from src.preprocessing.file_preprocessing import name_norm
 
 LOGGER = logging.getLogger('knowledge-graphs')
 
@@ -94,7 +94,7 @@ def download_dbpedia_thumbnails(path: str = 'data/thumbnails/dbpedia_thumbnails'
         WHERE {
         ?entity a dbo:Person.
         ?entity dbo:thumbnail ?img.
-        OPTIONAL{?entity foaf:name ?name}
+        OPTIONAL{?entity dbp:name ?name}
         FILTER(LANG(?name) = 'en').
         }}
         '''

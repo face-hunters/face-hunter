@@ -35,7 +35,7 @@ def evaluate_on_dataset(path: str = 'data/datasets/ytcelebrity',
     data = pd.read_csv(os.path.join(path, 'information.csv'))
     entities = data['entities'].apply(eval)
     thumbnails = pd.read_csv(os.path.join(thumbnails, 'Thumbnails_links.csv'))
-    thumbnail_entities = thumbnails['name']
+    thumbnail_entities = thumbnails['name'].dropna().sort_values()
 
     # Sample Creation
     random.seed(seed)
