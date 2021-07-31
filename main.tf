@@ -63,7 +63,7 @@ resource "google_compute_instance" "default" {
 
   boot_disk {
     initialize_params {
-      image = "ubuntu-os-cloud/ubuntu-1404-trusty-v20160602"
+      image = "ubuntu-1604-xenial-v20210429"
     }
   }
   network_interface {
@@ -83,6 +83,18 @@ resource "google_compute_instance" "default" {
   provisioner "file" {
     source      = "startupscript.sh"
     destination = "/tmp/startupscript.sh"
+    connection {
+      host        = google_compute_address.static.address
+      type        = "ssh"
+      user        = var.gce_ssh_user 
+      timeout     = "500s"
+      private_key = file(var.private_key_path)
+   }
+ }
+
+  provisioner "file" {
+    source      = "face-hunter.json"
+    destination = "/root/face-hunter.json"
     connection {
       host        = google_compute_address.static.address
       type        = "ssh"
@@ -143,3 +155,4 @@ data "http" "my_ip" {
 output "ip" {
  value = google_compute_address.static.address
 }
+

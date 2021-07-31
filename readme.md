@@ -37,7 +37,8 @@ Then try to SSH again
 
 If it works, use the command below to start running the app
 
-sudo docker run -it shaban2lesh/face-hunter /bin/bash
+sudo docker run -v /mnt/face-hunter-bucket:/root/FACE-HUNTER/face-hunter-bucket --privileged -it shaban2lesh/face-hunter /bin/bash
+
 cd root/FACE-HUNTER
 
 and start running the commands
