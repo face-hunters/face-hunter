@@ -11,7 +11,7 @@ def extract_scenes(recognitions: list, timestamps: list, frame_threshold: int = 
     scenes = []
     current_scene = None
     for frame, entities in enumerate(recognitions):
-        if frame - 2 < 0:
+        if frame - (frame_threshold-1) < 0:
             continue
 
         if current_scene is not None and not np.any([np.all(np.char.equal(np.sort(pred), current_scene.names[0]))
