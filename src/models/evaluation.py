@@ -37,7 +37,8 @@ def evaluate_on_dataset(path: str = 'data/datasets/ytcelebrity', thumbnails: str
             y = hunter.recognize_video(path_to_file, recognizer_model)[1]
         else:
             y = [hunter.recognize_image(path_to_file, recognizer_model)]
-        scores = np.add(scores, get_evaluation_metrics(y, list(itertools.repeat(file['entities'], len(y))), missing_entities))
+        scores = np.add(scores, get_evaluation_metrics(y, list(map(eval, list(itertools.repeat(file['entities'])),
+                                                                   len(y))), missing_entities))
 
     scores = np.divide(scores, len(data))
     LOGGER.info(f'Total Accuracy: {scores[0]}, Total Precision: {scores[1]}, Total Recall: {scores[2]}, '
@@ -67,7 +68,8 @@ def get_evaluation_metrics(y_pred: list = None,
         [accuracy, precision, recall, f1]
     """
     frame_count = len(y_pred)
-    y_true = list(map(eval, y_true))
+    if missing_entities is None:
+        missing_entities = set()
 
     if frame_count == 0:
         scores = np.empty(4)

@@ -11,7 +11,7 @@ class TestSceneExtraction(base_test.BaseComponentTest):
     def test_default(self):
         expected_scenes = [Scene(['Ali', 'Bo']).set_start(3).set_end(8), Scene(['Bo']).set_start(8).set_end(9)]
 
-        scenes = extract_scenes(PREDICTIONS, TIMESTAMPS, frame_threshold=3)
+        scenes = extract_scenes(PREDICTIONS, TIMESTAMPS)
 
         assert repr(expected_scenes) == repr(scenes)
 
