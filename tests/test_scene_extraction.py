@@ -1,5 +1,5 @@
 from tests import base_test
-from src.postprocessing.graph_postprocessing import extract_scenes, Scene
+from postprocessing.graph_postprocessing import extract_scenes, Scene
 
 PREDICTIONS = [['Ali', 'Bo'], ['Ali', 'Bo'], ['Bo', 'Ali'], ['Bo', 'Ali'],
                ['Bo', 'Ali'], ['Bo'], ['Bo'], ['Bo'], ['Bo']]
