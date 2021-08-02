@@ -1,4 +1,6 @@
 # Face-Hunter
+[![Tests](https://github.com/face-hunters/face-hunter/actions/workflows/test.yml/badge.svg)](https://github.com/face-hunters/face-hunter/actions/workflows/test.yml)
+
 Team Project at the University of Mannheim
 
 ## Installation
