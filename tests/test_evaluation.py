@@ -1,5 +1,5 @@
 from tests import base_test
-from models.evaluation import get_evaluation_metrics
+from src.models.evaluation import get_evaluation_metrics
 import numpy as np
 
 
