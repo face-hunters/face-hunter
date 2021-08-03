@@ -6,8 +6,8 @@ import cv2
 from deepface import DeepFace
 from deepface.commons import functions
 from mtcnn import MTCNN
-from src.preprocessing.facial_preprocessing import face_alignment
-from src.utils.utils import image_files_in_folder
+from preprocessing.facial_preprocessing import face_alignment
+from utils.utils import image_files_in_folder
 
 LOGGER = logging.getLogger(__name__)
 

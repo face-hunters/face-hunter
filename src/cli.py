@@ -1,7 +1,7 @@
 import argparse
 import logging
-from src.hunter import Hunter
-from src.utils.utils import get_config
+from hunter import Hunter
+from utils.utils import get_config
 
 LOGGER = logging.getLogger('cli')
 CONFIG = get_config()
@@ -41,10 +41,10 @@ def _download_datasets(args):
     args.path: str, default = 'data/datasets/youtube-faces-db'
         The Location where the dataset should be saved at.
     """
-    from src.data.datasets import download_seqamlab_dataset
-    from src.data.datasets import download_imdb_faces_dataset
-    from src.data.datasets import download_youtube_faces_db
-    from src.data.datasets import download_imdb_wiki_dataset
+    from data.datasets import download_seqamlab_dataset
+    from data.datasets import download_imdb_faces_dataset
+    from data.datasets import download_youtube_faces_db
+    from data.datasets import download_imdb_wiki_dataset
 
     options = {
         'imdb-wiki': download_imdb_wiki_dataset,
@@ -63,7 +63,7 @@ def _download_thumbnails(args):
     args.path: str, default = 'data/thumbnails'
         The Location where the thumbnails should be saved at.
     """
-    from src.data.knowledge_graphs import download_dbpedia_thumbnails, download_wikidata_thumbnails
+    from data.knowledge_graphs import download_dbpedia_thumbnails, download_wikidata_thumbnails
 
     download_wikidata_thumbnails(args.path, download=False)
     download_dbpedia_thumbnails(args.path, download=False)
@@ -86,13 +86,13 @@ def _run_detection(args):
     args.thumbnails: str, default = 'data/thumbnails'
         The location of the thumbnails or an existing NMSLIB index.
     """
-    from src.models.evaluation import evaluate_on_dataset
+    from models.evaluation import evaluate_on_dataset
 
     evaluate_on_dataset(args.path, args.thumbnails)
 
 
 def _link(args):
-    from src.hunter import Hunter
+    from hunter import Hunter
     Hunter('https://www.youtube.com/watch?v=elz1J86AExY').link('virtuoso', '',
                                                                'http://localhost:8890/sparql-auth',
                                                                'http://localhost:8890/DAV/',
@@ -190,7 +190,7 @@ def main():
 
     _logging_setup(args.verbose, args.logfile)
 
-    if not args.action:
+    if not hasattr(args, 'action'):
         parser.print_help()
         parser.exit()
 

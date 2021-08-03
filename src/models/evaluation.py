@@ -6,8 +6,8 @@ from itertools import chain
 import numpy as np
 import mimetypes
 import random
-from src.models.approximate_k_nearest_neighbors import ApproximateKNearestNeighbors
-from src.models.face_recognition import FaceRecognition
+from models.approximate_k_nearest_neighbors import ApproximateKNearestNeighbors
+from models.face_recognition import FaceRecognition
 
 LOGGER = logging.getLogger('evaluation')
 
@@ -100,7 +100,8 @@ def get_evaluation_metrics(y_pred: list = None,
         [accuracy, precision, recall, f1]
     """
     frame_count = len(y_pred)
-    y_true = list(map(eval, y_true))
+    if missing_entities is None:
+        missing_entities = set()
 
     if frame_count == 0:
         scores = np.empty(4)

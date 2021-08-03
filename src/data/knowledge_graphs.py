@@ -7,8 +7,8 @@ import multiprocessing as mp
 from pandas import json_normalize
 from urllib.error import HTTPError
 import time
-from src.utils.utils import check_path_exists
-from src.preprocessing.file_preprocessing import name_norm
+from utils.utils import check_path_exists
+from preprocessing.file_preprocessing import name_norm
 
 LOGGER = logging.getLogger('knowledge-graphs')
 
