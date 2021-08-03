@@ -64,10 +64,9 @@ def _download_thumbnails(args):
         The Location where the thumbnails should be saved at.
     """
     from src.data.knowledge_graphs import download_dbpedia_thumbnails, download_wikidata_thumbnails
-    
-    
-    download_wikidata_thumbnails(args.path, 'wikidata')
-    download_dbpedia_thumbnails(args.path, 'dbpedia')
+
+    download_wikidata_thumbnails(args.path, download=False)
+    download_dbpedia_thumbnails(args.path, download=False)
 
 
 def _run_detection(args):
