@@ -30,13 +30,17 @@ class Hunter(object):
              virtuoso_url: str = None,
              virtuoso_graph: str = None,
              virtuoso_username: str = None,
-             virtuoso_password: str = None):
+             virtuoso_password: str = None,
+             dbpedia_csv: str = 'data/thumbnails/dbpedia_thumbnails/Thumbnails_links.csv',
+             wikidata_csv: str = 'data/thumbnails/wikidata_thumbnails/Thumbnails_links.csv'):
         graph = Graph(storage_type,
                       memory_path,
                       virtuoso_url,
                       virtuoso_graph,
                       virtuoso_username,
-                      virtuoso_password)
+                      virtuoso_password,
+                      dbpedia_csv,
+                      wikidata_csv)
 
         recognized_entities, frame_wise_entities, timestamps = self.recognize()
         if not graph.video_exists(self.identifier):
