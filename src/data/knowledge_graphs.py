@@ -147,9 +147,9 @@ def download_images(path, method='dbpedia'):
     results = []
     for i in query_results.index.to_list():
         if method == 'dbpedia':
-          entity_name = query_results.loc[i, 'entity'].split('/')[-1]
+            entity_name = query_results.loc[i, 'entity'].split('/')[-1]
         elif method == 'wikidata':
-          entity_name = query_results.loc[i, 'name'] + '_' + query_results.loc[i, 'entity'].split('/')[-1]
+            entity_name = query_results.loc[i, 'name'] + '_' + query_results.loc[i, 'entity'].split('/')[-1]
         thumbnail_url = query_results.loc[i, 'img']
         i_path = os.path.join(path, 'thumbnails', entity_name)
         file_name = f"{entity_name}{i}.{thumbnail_url.split('.')[-1]}"
@@ -161,7 +161,6 @@ def download_images(path, method='dbpedia'):
     results = pd.DataFrame(results, columns=["index", "url", "result"])
     results.to_csv(os.path.join(path, 'download_results.csv'), index=False)
 
-    
 
 def download_thumbnail(index: int, i_thumbnail_url: str, i_path: str, i_file_name: str):
     """ Downloads a thumbnail from dbpedia
@@ -315,5 +314,19 @@ def get_uri_from_label(label: str) -> tuple:
     except KeyError:
         LOGGER.info('no dbpedia entry found')
         wikidata_uri = None
+
+    return dbpedia_uri, wikidata_uri
+
+
+def get_uri_from_csv(name: str, data: pd.DataFrame):
+    uris = pd.unique(data[data['name'] == name]['entity'])
+
+    dbpedia_uri = None
+    wikidata_uri = None
+    for uri in uris:
+        if uri.startswith('http://dbpedia'):
+            dbpedia_uri = uri
+        else:
+            wikidata_uri = uri
 
     return dbpedia_uri, wikidata_uri
