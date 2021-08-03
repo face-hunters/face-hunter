@@ -58,9 +58,13 @@ def download_wikidata_thumbnails(path: str = 'data/thumbnails/wikidata_thumbnail
         query_results = query_results.reset_index()
         name_list = query_results['name'].tolist()
         norm_name = name_norm(name_list)
-        folder_name = [v + '_wiki_' + str(norm_name[:i].count(v) + 1) if norm_name.count(v) > 1 else v for i, v in enumerate(norm_name)]
         query_results['norm_name'] = norm_name
-        query_results['folder_name'] = folder_name
+        tmp_query_results = query_results.drop_duplicates(subset=['entity','norm_name'])
+        norm_name = tmp_query_results['norm_name'].tolist()
+        folder_name = [v + '_wiki_' + str(norm_name[:i].count(v) + 1) if norm_name.count(v) > 1 else v for i, v in enumerate(norm_name)]
+        tmp_query_results['folder_name'] = folder_name
+        tmp_query_results = tmp_query_results.drop(['img', 'name', 'index'],axis=1)
+        query_results = pd.merge(query_results, tmp_query_results, on = ['entity', 'norm_name'])
         query_results = query_results.drop(query_results[query_results['norm_name'] == 'missing'].index)
         query_results.to_csv(os.path.join(path, f'wikidata_Thumbnails_links.csv'), index=False)
     if download:
@@ -137,10 +141,13 @@ def download_dbpedia_thumbnails(path: str = 'data/thumbnails/dbpedia_thumbnails'
         query_results = query_results.reset_index()
         name_list = query_results['name'].tolist()
         norm_name = name_norm(name_list)
-        folder_name = [v + '_db_' + str(norm_name[:i].count(v) + 1) if norm_name.count(v) > 1 else v for i, v in
-                       enumerate(norm_name)]
         query_results['norm_name'] = norm_name
-        query_results['folder_name'] = folder_name
+        tmp_query_results = query_results.drop_duplicates(subset=['entity','norm_name'])
+        norm_name = tmp_query_results['norm_name'].tolist()
+        folder_name = [v + '_db_' + str(norm_name[:i].count(v) + 1) if norm_name.count(v) > 1 else v for i, v in enumerate(norm_name)]
+        tmp_query_results['folder_name'] = folder_name
+        tmp_query_results = tmp_query_results.drop(['img', 'name', 'index'],axis=1)
+        query_results = pd.merge(query_results, tmp_query_results, on = ['entity', 'norm_name'])
         query_results = query_results.drop(query_results[query_results['norm_name'] == 'missing'].index)
         query_results.to_csv(os.path.join(path, f'dbpedia_Thumbnails_links.csv'), index=False)
     if download:
