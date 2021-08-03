@@ -3,10 +3,10 @@ from datetime import timedelta
 from rdflib import URIRef, Literal
 from rdflib.namespace import DC, RDF, Namespace, FOAF, XSD
 import pandas as pd
-from knowledge_graph.memory_store import MemoryStore
-from knowledge_graph.virtuoso_store import VirtuosoStore
-from utils.utils import get_config
-from data.knowledge_graphs import get_same_as_link, get_uri_from_label
+from src.knowledge_graph.memory_store import MemoryStore
+from src.knowledge_graph.virtuoso_store import VirtuosoStore
+from src.utils.utils import get_config
+from src.data.knowledge_graphs import get_same_as_link, get_uri_from_label
 
 LOGGER = logging.getLogger('graph')
 CONFIG = get_config('src/utils/config.yaml')

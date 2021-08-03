@@ -1,10 +1,10 @@
 import os
 import tempfile
-from knowledge_graph.graph import Graph
-from data.youtube import download_youtube_video
-from models.approximate_k_nearest_neighbors import ApproximateKNearestNeighbors
-from models.face_recognition import FaceRecognition
-from postprocessing.graph_postprocessing import extract_scenes
+from src.knowledge_graph.graph import Graph
+from src.data.youtube import download_youtube_video
+from src.models.approximate_k_nearest_neighbors import ApproximateKNearestNeighbors
+from src.models.face_recognition import FaceRecognition
+from src.postprocessing.graph_postprocessing import extract_scenes
 
 
 class Hunter(object):

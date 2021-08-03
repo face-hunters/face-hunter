@@ -1,6 +1,6 @@
 from pytube import YouTube
 import logging
-from utils.utils import check_path_exists
+from src.utils.utils import check_path_exists
 
 LOGGER = logging.getLogger('youtube-downloader')
 
