@@ -8,6 +8,7 @@ from pandas import json_normalize
 from urllib.error import HTTPError
 import time
 from utils.utils import check_path_exists
+from preprocessing.file_preprocessing import name_norm
 
 LOGGER = logging.getLogger('knowledge-graphs')
 
@@ -55,7 +56,17 @@ def download_wikidata_thumbnails(path: str = 'data/thumbnails/wikidata_thumbnail
         query_results = query_results.rename(columns={col: col.split('.')[0] for col in query_results.columns})
         query_results = query_results.drop_duplicates()
         query_results = query_results.reset_index()
-        query_results.to_csv(os.path.join(path, f'Thumbnails_links.csv'), index=False)
+        name_list = query_results['name'].tolist()
+        norm_name = name_norm(name_list)
+        query_results['norm_name'] = norm_name
+        tmp_query_results = query_results.drop_duplicates(subset=['entity','norm_name'])
+        norm_name = tmp_query_results['norm_name'].tolist()
+        folder_name = [v + '_wiki_' + str(norm_name[:i].count(v) + 1) if norm_name.count(v) > 1 else v for i, v in enumerate(norm_name)]
+        tmp_query_results['folder_name'] = folder_name
+        tmp_query_results = tmp_query_results.drop(['img', 'name', 'index'],axis=1)
+        query_results = pd.merge(query_results, tmp_query_results, on = ['entity', 'norm_name'])
+        query_results = query_results.drop(query_results[query_results['norm_name'] == 'missing'].index)
+        query_results.to_csv(os.path.join(path, f'wikidata_Thumbnails_links.csv'), index=False)
     if download:
         LOGGER.info('Starting to download wikidata thumbnails')
         download_images(path, 'wikidata')
@@ -93,7 +104,7 @@ def download_dbpedia_thumbnails(path: str = 'data/thumbnails/dbpedia_thumbnails'
         WHERE {
         ?entity a dbo:Person.
         ?entity dbo:thumbnail ?img.
-        OPTIONAL{?entity foaf:name ?name}
+        OPTIONAL{?entity dbp:name ?name}
         FILTER(LANG(?name) = 'en').
         }}
         '''
@@ -128,30 +139,37 @@ def download_dbpedia_thumbnails(path: str = 'data/thumbnails/dbpedia_thumbnails'
         query_results['name'] = query_results.groupby(['entity', 'img']).transform(lambda x: ' / '.join(x))
         query_results = query_results.drop_duplicates()
         query_results = query_results.reset_index()
-        query_results.to_csv(os.path.join(path, f'Thumbnails_links.csv'), index=False)
+        name_list = query_results['name'].tolist()
+        norm_name = name_norm(name_list)
+        query_results['norm_name'] = norm_name
+        tmp_query_results = query_results.drop_duplicates(subset=['entity','norm_name'])
+        norm_name = tmp_query_results['norm_name'].tolist()
+        folder_name = [v + '_db_' + str(norm_name[:i].count(v) + 1) if norm_name.count(v) > 1 else v for i, v in enumerate(norm_name)]
+        tmp_query_results['folder_name'] = folder_name
+        tmp_query_results = tmp_query_results.drop(['img', 'name', 'index'],axis=1)
+        query_results = pd.merge(query_results, tmp_query_results, on = ['entity', 'norm_name'])
+        query_results = query_results.drop(query_results[query_results['norm_name'] == 'missing'].index)
+        query_results.to_csv(os.path.join(path, f'dbpedia_Thumbnails_links.csv'), index=False)
     if download:
         LOGGER.info('Starting to download dbpedia thumbnails')
         download_images(path, 'dbpedia')
 
 
-def download_images(path, method='dbpedia'):
+def download_images(path, method='wikidata'):
     def mycallback(result):
         global results
         results.append(result)
 
-    query_results = pd.read_csv(os.path.join(path, f'Thumbnails_links.csv'))
+    query_results = pd.read_csv(os.path.join(path, f'{method}_Thumbnails_links.csv'))
     pool = mp.Pool(mp.cpu_count())
     download_list = []
     global results
     results = []
     for i in query_results.index.to_list():
-        if method == 'dbpedia':
-          entity_name = query_results.loc[i, 'entity'].split('/')[-1]
-        elif method == 'wikidata':
-          entity_name = query_results.loc[i, 'name'] + '_' + query_results.loc[i, 'entity'].split('/')[-1]
+        folder_name = query_results.loc[i, 'folder_name']
         thumbnail_url = query_results.loc[i, 'img']
-        i_path = os.path.join(path, 'thumbnails', entity_name)
-        file_name = f"{entity_name}{i}.{thumbnail_url.split('.')[-1]}"
+        i_path = os.path.join(path, 'thumbnails', folder_name)
+        file_name = f"{folder_name}_{i}.{thumbnail_url.split('.')[-1]}"
         download_list.append([i, thumbnail_url, i_path, file_name])
     for i_entity, thumbnail_url, i_path, file_name in download_list:
         pool.apply_async(download_thumbnail, args=(i_entity, thumbnail_url, i_path, file_name), callback=mycallback)
@@ -160,7 +178,6 @@ def download_images(path, method='dbpedia'):
     results = pd.DataFrame(results, columns=["index", "url", "result"])
     results.to_csv(os.path.join(path, 'download_results.csv'), index=False)
 
-    
 
 def download_thumbnail(index: int, i_thumbnail_url: str, i_path: str, i_file_name: str):
     """ Downloads a thumbnail from dbpedia
@@ -314,5 +331,19 @@ def get_uri_from_label(label: str) -> tuple:
     except KeyError:
         LOGGER.info('no dbpedia entry found')
         wikidata_uri = None
+
+    return dbpedia_uri, wikidata_uri
+
+
+def get_uri_from_csv(name: str, data: pd.DataFrame):
+    uris = pd.unique(data[data['name'] == name]['entity'])
+
+    dbpedia_uri = None
+    wikidata_uri = None
+    for uri in uris:
+        if uri.startswith('http://dbpedia'):
+            dbpedia_uri = uri
+        else:
+            wikidata_uri = uri
 
     return dbpedia_uri, wikidata_uri

@@ -34,15 +34,17 @@ class FaceRecognition(object):
       target: encoder input layer image shape (w,h)
     """
 
-    def __init__(self, thumbnails_path='data/thumbnails/',
+    def __init__(self, thumbnail_list: list = None,
+                 thumbnails_path='data/thumbnails/',
                  # detector_name='mtcnn',
                  img_width=500,
                  align=True,  # for test performance improvement
                  distance_threshold=0.6,  # TODO(honglin): tune later
                  encoder_name='Dlib',
-                 labels_path='data/embeddings/labels.pickle',
-                 embeddings_path='data/embeddings/embeddings.pickle'):  # for#for
+                 labels_path=None,
+                 embeddings_path=None):  # for#for
         """ create or load kg_encodings. create detector, encoder """
+        self.thumbnail_list = thumbnail_list
         self.thumbnails_path = thumbnails_path
         self.img_width = img_width
         self.align = align
@@ -106,6 +108,9 @@ class FaceRecognition(object):
         embeddings = []
         labels = []
 
+        if self.thumbnail_list is not None:
+            entity_dir_list = self.thumbnail_list
+
         for entity_dir in entity_dir_list:  # for every celebrity: format of dir: ID_Name entity_id, entity_name = entity_dir.split('_')
             entity_path = os.path.join(self.thumbnails_path, entity_dir)
 
@@ -136,7 +141,7 @@ class FaceRecognition(object):
         return labels, embeddings
 
     def load_embeddings(self):
-        if os.path.exists(self.labels_path) and os.path.exists(self.embeddings_path):
+        if self.labels is not None and self.embeddings_path is not None and os.path.exists(self.labels_path) and os.path.exists(self.embeddings_path):
             labels = pickle.loads(open(self.labels_path, "rb").read())
             embeddings = pickle.loads(open(self.embeddings_path, "rb").read())
             return labels, embeddings
