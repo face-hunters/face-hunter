@@ -147,7 +147,10 @@ class Graph(object):
         if identifier.startswith('http://www.wikidata'):
             identifier = get_same_as_link(identifier)
         elif not identifier.startswith('http://dbpedia'):
-            uris = get_uri_from_label(identifier)
+            if self.entity_data is None:
+                uris = get_uri_from_label(identifier)
+            else:
+                uris = get_uri_from_csv(identifier, self.entity_data)
             identifier = uris[0] if uris[0] is not None else uris[1]
             if identifier is None:
                 LOGGER.warning('Could not identify entity using the label')
