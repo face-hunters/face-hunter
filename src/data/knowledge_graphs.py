@@ -60,6 +60,7 @@ def download_wikidata_thumbnails(path: str = 'data/thumbnails/wikidata_thumbnail
         norm_name = name_norm(name_list)
         query_results['norm_name'] = norm_name
         tmp_query_results = query_results.drop_duplicates(subset=['entity','norm_name'])
+        norm_name = tmp_query_results['norm_name'].tolist()
         folder_name = [v + '_wiki_' + str(norm_name[:i].count(v) + 1) if norm_name.count(v) > 1 else v for i, v in enumerate(norm_name)]
         tmp_query_results['folder_name'] = folder_name
         tmp_query_results = tmp_query_results.drop(['img', 'name', 'index'],axis=1)
@@ -142,6 +143,7 @@ def download_dbpedia_thumbnails(path: str = 'data/thumbnails/dbpedia_thumbnails'
         norm_name = name_norm(name_list)
         query_results['norm_name'] = norm_name
         tmp_query_results = query_results.drop_duplicates(subset=['entity','norm_name'])
+        norm_name = tmp_query_results['norm_name'].tolist()
         folder_name = [v + '_db_' + str(norm_name[:i].count(v) + 1) if norm_name.count(v) > 1 else v for i, v in enumerate(norm_name)]
         tmp_query_results['folder_name'] = folder_name
         tmp_query_results = tmp_query_results.drop(['img', 'name', 'index'],axis=1)
