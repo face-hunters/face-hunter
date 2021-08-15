@@ -50,7 +50,7 @@ def download_wikidata_thumbnails(path: str = 'data/thumbnails/wikidata_thumbnail
             }}
             '''
             r = requests.get(url, params={'format': 'json', 'query': query})
-            q_results = r.json()
+            q_results = r.json(strict=False)
             query_results = query_results.append(json_normalize(q_results['results']['bindings']))
         query_results = query_results[['entity.value', 'img.value', 'name.value']]
         query_results = query_results.rename(columns={col: col.split('.')[0] for col in query_results.columns})
