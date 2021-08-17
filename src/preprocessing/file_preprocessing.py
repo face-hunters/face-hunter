@@ -1,5 +1,6 @@
 import logging
 import wikipedia
+import multiprocessing as mp
 
 LOGGER = logging.getLogger('file-preprocessing')
 
