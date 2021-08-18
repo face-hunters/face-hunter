@@ -144,23 +144,31 @@ def download_youtube_faces_db(path: str = 'data/datasets/youtube-faces-db'):
     videos = []
     entities = []
     for entity in os.listdir(path):
+        entity_path = os.path.join(path, entity)
+        entity = entity.replace('_', ' ')
+
         if entity.startswith('.'):
             continue
 
-        for movie in os.listdir(os.path.join(path, entity)):
+        for movie in os.listdir(entity_path):
             if movie.startswith('.'):
                 continue
 
-            for frame in os.listdir(os.path.join(path, entity, movie)):
+            movie_path = os.path.join(entity_path, movie)
+            for frame in os.listdir(movie_path):
                 if frame.startswith('.'):
                     continue
 
-                videos.append(os.path.join(entity, movie, frame))
-                entities.append([entity.replace('_', ' ')])
+                videos.append(os.path.join(movie_path, frame))
+                entities.append(entity)
 
     information = pd.DataFrame(data={
         'file': videos,
-        'entities': name_norm(entities)
+        'original_entities': entities
     })
-    information = information.set_index('file')
-    information.to_csv(os.path.join(path, 'information.csv'))
+
+    entities_df = pd.DataFrame(information.original_entities.unique(), columns=['original_entities'])
+    entities_df['entities'] = name_norm(entities_df.original_entities.tolist())
+    information = information.merge(entities_df, how='left', on='original_entities')
+    
+    information[['file', 'entities']].to_csv(os.path.join(path, 'information.csv'))
