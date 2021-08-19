@@ -4,6 +4,7 @@ import tarfile
 import wget
 import pandas as pd
 import scipy
+import requests
 from scipy.io import loadmat
 import shutil
 from src.utils.utils import check_path_exists
