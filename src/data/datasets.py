@@ -141,6 +141,24 @@ def download_youtube_faces_db(path: str = 'data/datasets/youtube-faces-db'):
     """
     check_path_exists(path)
 
+    def download_file(url):
+        local_filename = url.split('/')[-1]
+        with requests.get(url, stream=True, auth=('wolftau', 'wtal997')) as r:
+            r.raise_for_status()
+            with open(os.path.join(path, local_filename), 'wb') as f:
+                for chunk in r.iter_content(chunk_size=8192):
+                    f.write(chunk)
+        return local_filename
+
+    LOGGER.info('Downloading ...')
+    download_file('http://www.cslab.openu.ac.il/download/wolftau/YouTubeFaces.tar.gz')
+
+    LOGGER.info('Extracting ...')
+    tar = tarfile.open(os.path.join(path, 'YouTubeFaces.tar.gz'))
+    tar.extractall(path)
+    tar.close()
+    os.remove(os.path.join(path, 'YouTubeFaces.tar.gz'))
+
     videos = []
     entities = []
     for entity in os.listdir(path):
