@@ -219,55 +219,67 @@ def download_thumbnail(index: int, i_thumbnail_url: str, i_path: str, i_file_nam
         return output
 
 
-def download_entity_list(path: str = './thumbnails', entity_list: list = None):
+def download_entity_list(path: str = 'data/thumbnails', entity_list: list = None):
     """ Download a list of entities'thumbnails from wikidata.
-
     Parameters
     ----------
-    path: str, default = './thumbnails'
+    path: str, default = 'data/thumbnails'
       Path where the thumbnails are stored.
-
     entity_list: list, default = None
       A list of entities required to download
     """
     url = 'https://query.wikidata.org/sparql'
+    sm = []
+    query_results = pd.DataFrame()
     for entity in entity_list:
+      try:
+        print(entity)
+        time.sleep(1)
         query = f'''
-        SELECT *
+        SELECT ?entity ?img ?name
         WHERE
-          {{
-              ?s rdfs:label '{entity}'@en;
-                wdt:P31 wd:Q5;
-                wdt:P18 ?img;
+          {{?entity rdfs:label '{entity}'@en;
+           wdt:P18 ?img.
+           BIND ('{entity}'@en AS ?name)
           }}
         '''
+
         r = requests.get(url, params={'format': 'json', 'query': query})
         q_results = r.json()
         missing_img = json_normalize(q_results['results']['bindings'])
         if missing_img.empty:
+            sm.append(entity)
             LOGGER.info(f'{entity} is not found in wikidata as well')
             continue
-        missing_img = missing_img[['img.value']]
-        missing_img = missing_img.rename(columns={col: col.split('.')[0] for col in missing_img.columns})
-        for index, row in missing_img.iterrows():
-            download_thumbnail(index=index, i_thumbnail_url=row['img'], i_path=os.path.join(path, entity),
-                               i_file_name=f'{entity}_{index}')
+        query_results = query_results.append(missing_img)
+      except:
+        sm.append(entity)
+        continue
+    query_results = query_results[['entity.value', 'img.value', 'name.value']]
+    query_results = query_results.rename(columns={col: col.split('.')[0] for col in query_results.columns})
+    query_results = query_results.drop_duplicates()
+    query_results = query_results.reset_index()
+    query_results['norm_name'] = query_results['name']
+    query_results['folder_name'] = query_results['name']
+    query_results.to_csv(os.path.join(path, f'missing_Thumbnails_links.csv'), index=False)
+    LOGGER.info('Starting to download missing thumbnails')
+    download_images(path, 'missing')
+    LOGGER.info(f'{len(sm)} people are still not found')
 
 
-def download_missing_thumbnails(path: str = './videos/ytcelebrity', loaded_entities: list = None):
+def download_missing_thumbnails(path: str = './videos/ytcelebrity', path_thumbnails: str = 'data/thumbnails'):
     """ Compares a list of entities with a dataset and downloads missing ones.
-
     Parameters
     ----------
     path: str, default = './videos/ytcelebrity'
         Path where the information.csv of the dataset is saved.
-
-    loaded_entities: list, default = None
-        Comparable list of entities.
+    path_thumbnails: str, default = 'data/thumbnails'
+        Path where the Thumbnails_links.csv is saved.
     """
     data = pd.read_csv(os.path.join(path, 'information.csv'))
+    thumbnails = pd.read_csv(os.path.join(path_thumbnails, 'wikidata_Thumbnails_links.csv'))
 
-    missing_entities = list(set(data['entities']) - set(loaded_entities))
+    missing_entities = list(set(data['entities']) - set(thumbnails['norm_name']))
     if len(missing_entities) != 0:
         LOGGER.info('Missing entities detected: {}'.format(missing_entities))
         download_entity_list(path='./thumbnails', entity_list=missing_entities)
