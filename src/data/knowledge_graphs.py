@@ -49,8 +49,10 @@ def download_wikidata_thumbnails(path: str = 'data/thumbnails/wikidata_thumbnail
               ?entity rdfs:label ?name FILTER (LANG(?name) = "en")
             }}
             '''
-            r = requests.get(url, params={'format': 'json', 'query': query})
-            q_results = r.json(strict=False)
+            sparql = SPARQLWrapper('http://query.wikidata.org/sparql')
+            sparql.setQuery(query)
+            sparql.setReturnFormat(JSON)
+            q_results = sparql.query().convert()
             query_results = query_results.append(json_normalize(q_results['results']['bindings']))
         query_results = query_results[['entity.value', 'img.value', 'name.value']]
         query_results = query_results.rename(columns={col: col.split('.')[0] for col in query_results.columns})
@@ -227,14 +229,17 @@ def download_entity_list(path: str = 'data/thumbnails', entity_list: list = None
       Path where the thumbnails are stored.
     entity_list: list, default = None
       A list of entities required to download
+     
+    Returns
+    ----------
+    sm: list
+        A list containing the still missing entities
     """
     url = 'https://query.wikidata.org/sparql'
     sm = []
     query_results = pd.DataFrame()
     for entity in entity_list:
       try:
-        print(entity)
-        time.sleep(1)
         query = f'''
         SELECT ?entity ?img ?name
         WHERE
@@ -243,9 +248,10 @@ def download_entity_list(path: str = 'data/thumbnails', entity_list: list = None
            BIND ('{entity}'@en AS ?name)
           }}
         '''
-
-        r = requests.get(url, params={'format': 'json', 'query': query})
-        q_results = r.json()
+        sparql = SPARQLWrapper('http://query.wikidata.org/sparql')
+        sparql.setQuery(query)
+        sparql.setReturnFormat(JSON)
+        q_results = sparql.query().convert()
         missing_img = json_normalize(q_results['results']['bindings'])
         if missing_img.empty:
             sm.append(entity)
@@ -265,6 +271,7 @@ def download_entity_list(path: str = 'data/thumbnails', entity_list: list = None
     LOGGER.info('Starting to download missing thumbnails')
     download_images(path, 'missing')
     LOGGER.info(f'{len(sm)} people are still not found')
+    return sm
 
 
 def download_missing_thumbnails(path: str = './videos/ytcelebrity', path_thumbnails: str = 'data/thumbnails'):
