@@ -118,12 +118,12 @@ def get_evaluation_metrics(y_pred: list = None,
         scores[0] += Y_intersection_Z / Y_union_Z
 
         # Precision
-        Z = len(true_clean)
-        scores[1] += Y_intersection_Z / Z
+        Y = len(y_pred[index])        
+        scores[1] += Y_intersection_Z / Y
 
         # Recall
-        Y = len(y_pred[index])
-        scores[2] += Y_intersection_Z / Y
+        Z = len(true_clean)
+        scores[2] += Y_intersection_Z / Z
 
         # F1
         scores[3] += (2 * Y_intersection_Z) / (Z + Y)
