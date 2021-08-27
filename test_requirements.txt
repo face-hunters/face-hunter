@@ -4,3 +4,5 @@ nmslib
 opencv-python
 deepface
 PyYAML
+gcloud
+google-cloud-storage
