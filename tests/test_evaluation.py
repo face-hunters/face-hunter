@@ -26,7 +26,7 @@ class TestEvaluation(base_test.BaseComponentTest):
     def test_metric_calculation_multiple_entities(self):
         y_pred = [['Sandler', 'Bullock'], ['Sandler', 'Bullock'], ['Sandler', 'Bullock']]
         y_true = [['Sandler'], ['Sandler', 'Bullock'], ['Sandler', 'Aniston']]
-        expected_metrics = [0.61111111, 0.83333333, 0.66666667, 0.72222222]
+        expected_metrics = [0.61111111, 0.66666667, 0.83333333, 0.72222222]
 
         metrics = get_evaluation_metrics(y_pred, y_true)
 
