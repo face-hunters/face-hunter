@@ -9,7 +9,6 @@ setup(
     license='',
     install_requires=[
         "wget~=3.2",
-        "cmake",
         "opencv-python~=4.5.1.48",
         "numpy~=1.19.2",
         "face_recognition~=1.3.0",
