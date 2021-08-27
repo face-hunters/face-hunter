@@ -15,7 +15,8 @@ LOGGER = logging.getLogger('evaluation')
 def evaluate_on_dataset(path: str = 'data/datasets/ytcelebrity',
                         thumbnails: str = 'data/thumbnails/dbpedia_thumbnails',
                         ratio: float = 1.0,
-                        seed: int = 42):
+                        seed: int = 42,
+                        single_true: bool = False):
     """ Detects entities in a dataset and calculates evaluation metrics
 
     Parameters
@@ -31,6 +32,9 @@ def evaluate_on_dataset(path: str = 'data/datasets/ytcelebrity',
 
     seed: int, default = 42
         Parameter to control randomness for repeatable experiments.
+
+    single_true: bool = False
+        Whether the evaluation dataset only gives single labels for images with multiple entities.
     """
     data = pd.read_csv(os.path.join(path, 'information.csv'))
     entities = data['entities'].apply(eval)
@@ -65,9 +69,9 @@ def evaluate_on_dataset(path: str = 'data/datasets/ytcelebrity',
             y = hunter.recognize_video(path_to_file, recognizer_model)[1]
         else:
             y = [hunter.recognize_image(path_to_file, recognizer_model)]
-            per_file_results.append(get_evaluation_metrics(y, list(itertools.repeat(file['entities'], len(y))),
-                                                           missing_entities))
-            files.append(file)
+        per_file_results.append(get_evaluation_metrics(y, list(itertools.repeat(file['entities'], len(y))),
+                                                       missing_entities, single_true))
+        files.append(file)
         scores = np.add(scores, per_file_results[-1])
 
     scores = np.divide(scores, len(data))
@@ -79,7 +83,8 @@ def evaluate_on_dataset(path: str = 'data/datasets/ytcelebrity',
 
 def get_evaluation_metrics(y_pred: list = None,
                            y_true: list = None,
-                           missing_entities: set = None):
+                           missing_entities: set = None,
+                           single_true: bool = False):
     """ Calculates the accuracy, recall and precision for predictions.
     Details: https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.364.5612&rep=rep1&type=pdf
 
@@ -93,6 +98,9 @@ def get_evaluation_metrics(y_pred: list = None,
 
     missing_entities: set, default = None
         List of entities to be handled as unknown.
+
+    single_true: bool  = False
+        Whether the evaluation dataset only gives single labels for images with multiple entities.
 
     Returns
     ----------
@@ -110,6 +118,12 @@ def get_evaluation_metrics(y_pred: list = None,
 
     scores = np.zeros(4)
     for index in range(frame_count):
+        if single_true:
+            if y_true[index][0] in y_pred[index]:
+                y_pred[index] = y_true[index]
+            elif len(y_pred[index]) > 0:
+                y_pred[index] = ['wrong_prediction']
+
         true_clean = ['unknown' if entity in missing_entities else entity for entity in y_true[index]]
 
         # Accuracy
