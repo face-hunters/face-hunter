@@ -160,6 +160,13 @@ def download_youtube_faces_db(path: str = 'data/datasets/youtube-faces-db'):
     tar.close()
     os.remove(os.path.join(path, 'YouTubeFaces.tar.gz'))
 
+    path = os.path.join(path, 'YouTubeFaces/frame_images_DB')
+
+    LOGGER.info('Removing unnecessary files ...')
+    for file_name in os.listdir(path):
+        if file_name.endswith('.txt'):
+            os.remove(os.path.join(path, file_name))
+
     videos = []
     entities = []
     for entity in os.listdir(path):
