@@ -129,7 +129,7 @@ def download_imdb_wiki_dataset(path: str = 'data/datasets/imdb-wiki'):
         tar.close()
 
 
-def download_youtube_faces_db(path: str = 'data/datasets/youtube-faces-db'):
+def download_youtube_faces_db(path: str = 'data/datasets/youtube-faces-db', download: bool = False):
     """ Parses a information.csv for the youtube-faces-db dataset. A homogeneous format for evaluation.
         Details about the dataset can be found here: https://www.cs.tau.ac.il/~wolf/ytfaces/.
 
@@ -139,33 +139,37 @@ def download_youtube_faces_db(path: str = 'data/datasets/youtube-faces-db'):
     ----------
     path: str, default = data/datasets/youtube-faces-db
         Path where the videos are located and the information.csv should be saved at.
+
+    download: bool, default = False
+        Whether the dataset should be downloaded automatically or only parsed.
     """
     check_path_exists(path)
 
-    def download_file(url):
-        local_filename = url.split('/')[-1]
-        with requests.get(url, stream=True, auth=('wolftau', 'wtal997')) as r:
-            r.raise_for_status()
-            with open(os.path.join(path, local_filename), 'wb') as f:
-                for chunk in r.iter_content(chunk_size=8192):
-                    f.write(chunk)
-        return local_filename
+    if download:
+        def download_file(url):
+            local_filename = url.split('/')[-1]
+            with requests.get(url, stream=True, auth=('wolftau', 'wtal997')) as r:
+                r.raise_for_status()
+                with open(os.path.join(path, local_filename), 'wb') as f:
+                    for chunk in r.iter_content(chunk_size=8192):
+                        f.write(chunk)
+            return local_filename
 
-    LOGGER.info('Downloading ...')
-    download_file('http://www.cslab.openu.ac.il/download/wolftau/YouTubeFaces.tar.gz')
+        LOGGER.info('Downloading ...')
+        download_file('http://www.cslab.openu.ac.il/download/wolftau/YouTubeFaces.tar.gz')
 
-    LOGGER.info('Extracting ...')
-    tar = tarfile.open(os.path.join(path, 'YouTubeFaces.tar.gz'))
-    tar.extractall(path)
-    tar.close()
-    os.remove(os.path.join(path, 'YouTubeFaces.tar.gz'))
+        LOGGER.info('Extracting ...')
+        tar = tarfile.open(os.path.join(path, 'YouTubeFaces.tar.gz'))
+        tar.extractall(path)
+        tar.close()
+        os.remove(os.path.join(path, 'YouTubeFaces.tar.gz'))
 
-    path = os.path.join(path, 'YouTubeFaces/frame_images_DB')
+        path = os.path.join(path, 'YouTubeFaces/frame_images_DB')
 
-    LOGGER.info('Removing unnecessary files ...')
-    for file_name in os.listdir(path):
-        if file_name.endswith('.txt'):
-            os.remove(os.path.join(path, file_name))
+        LOGGER.info('Removing unnecessary files ...')
+        for file_name in os.listdir(path):
+            if file_name.endswith('.txt'):
+                os.remove(os.path.join(path, file_name))
 
     videos = []
     entities = []
