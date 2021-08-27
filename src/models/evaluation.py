@@ -8,6 +8,7 @@ import mimetypes
 import random
 from src.models.approximate_k_nearest_neighbors import ApproximateKNearestNeighbors
 from src.models.face_recognition import FaceRecognition
+from src.postprocessing.graph_postprocessing import extract_scenes
 
 LOGGER = logging.getLogger('evaluation')
 
@@ -16,7 +17,8 @@ def evaluate_on_dataset(path: str = 'data/datasets/ytcelebrity',
                         thumbnails: str = 'data/thumbnails/dbpedia_thumbnails',
                         ratio: float = 1.0,
                         seed: int = 42,
-                        single_true: bool = False):
+                        single_true: bool = False,
+                        scene_extraction: int = 0):
     """ Detects entities in a dataset and calculates evaluation metrics
 
     Parameters
@@ -35,6 +37,9 @@ def evaluate_on_dataset(path: str = 'data/datasets/ytcelebrity',
 
     single_true: bool = False
         Whether the evaluation dataset only gives single labels for images with multiple entities.
+
+    scene_extraction: int = 0
+        Whether to postprocess detections using the scene extraction algorithm. Disabled with 0.
     """
     data = pd.read_csv(os.path.join(path, 'information.csv'))
     entities = data['entities'].apply(eval)
@@ -66,7 +71,14 @@ def evaluate_on_dataset(path: str = 'data/datasets/ytcelebrity',
     for index, file in data.iterrows():
         path_to_file = os.path.join(path, file['file'])
         if mimetypes.guess_type(path_to_file)[0].startswith('video'):
-            y = hunter.recognize_video(path_to_file, recognizer_model)[1]
+            y = hunter.recognize_video(path_to_file, recognizer_model)
+            if scene_extraction != 0:
+                scenes = extract_scenes(y[1], y[2], scene_extraction)
+                y = []
+                for scene in scenes:
+                    for name in scene.names:
+                        if name not in y:
+                            y.append(name)
         else:
             y = [hunter.recognize_image(path_to_file, recognizer_model)]
         per_file_results.append(get_evaluation_metrics(y, list(itertools.repeat(file['entities'], len(y))),
