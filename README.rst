@@ -2,6 +2,7 @@ Face-Hunter: Multi-Modal Entity Linking
 -----------------------------------------
 
 .. image:: https://img.shields.io/github/stars/face-hunters/face-hunter
+.. image:: https://github.com/face-hunters/face-hunter/actions/workflows/test.yml/badge.svg
 
 Table of Contents
 #################
