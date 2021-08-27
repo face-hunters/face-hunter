@@ -8,14 +8,26 @@ from src.postprocessing.graph_postprocessing import extract_scenes
 
 
 class Hunter(object):
+    """ Class to use the entity linking in other projects and on the website. """
 
     def __init__(self, url: str = None):
+        """
+        Args:
+            url (str): URL of the video on YouTube.
+        """
         self.url = url
         self.identifier = self.url.split('=')[1]
         self.path_to_video = None
         self.face_detection = FaceRecognition()
 
     def recognize(self, method: str = 'approximate_k_neighbors') -> list:
+        """ Get a list of entities that could be recognized in the video.
+
+        Args:
+            method (str): Chosen model for the recognition of entities. Should be 'appr' for approximate_k_neighbors,
+                            'knn' standard k-nearest neighbors.
+
+        """
         if method == 'approximate_k_neighbors':
             detector = ApproximateKNearestNeighbors()
         else:
