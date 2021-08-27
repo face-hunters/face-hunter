@@ -3,3 +3,4 @@ pandas
 nmslib
 opencv-python
 deepface
+PyYAML
