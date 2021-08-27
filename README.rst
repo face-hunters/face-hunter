@@ -31,7 +31,6 @@ Follow these steps:
 
     $ ssh-keygen -R IP_instance
     $ ssh -i pub_key root@IP_instance
-    $ conda install -c conda-forge lightgbm
 
 4. Run the app:
 
@@ -41,7 +40,7 @@ Follow these steps:
     $ cd root/FACE-HUNTER
     $ python cli.py ARGUMENTS
 
-5. Destroy the instance when shutting down:
+5. Destroy the instance when finished:
 
 .. code-block::
 
