@@ -7,9 +7,16 @@ from src.knowledge_graph.memory_store import MemoryStore
 from src.knowledge_graph.virtuoso_store import VirtuosoStore
 from src.utils.utils import get_config
 from src.data.knowledge_graphs import get_same_as_link, get_uri_from_label
+import os
+
+on_rtd = os.environ.get('READTHEDOCS') == 'True'
 
 LOGGER = logging.getLogger('graph')
-CONFIG = get_config('src/utils/config.yaml')
+
+if on_rtd:
+    CONFIG = get_config('../src/utils/config.yaml')
+else:
+    CONFIG = get_config('src/utils/config.yaml')
 
 HOME_URI = CONFIG['rdf']['uri']
 
