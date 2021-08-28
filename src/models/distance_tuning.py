@@ -188,7 +188,4 @@ def tune_distance_threshold(video_path='data/datasets/youtube_faces', sample_per
     precision = tp / dataset.prediction.sum()
     recall = tp / dataset.identical.sum()
     print(f'{distance} threshold: {distance_threshold}. precesion: {precision}. recall: {recall}')
-  
-  # 8 display the match pairs with high distance
-
-  dataset.sort_values(by='cosine_distances', ascending=False, inplace=True)
+ 
