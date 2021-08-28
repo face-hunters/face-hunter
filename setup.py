@@ -11,7 +11,6 @@ setup(
         "wget~=3.2",
         "opencv-python~=4.5.1.48",
         "numpy~=1.19.2",
-        "face_recognition~=1.3.0",
         "pytube==10.8.5",
         "pandas~=1.2.3",
         "nmslib~=2.1.1",
