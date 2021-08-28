@@ -48,3 +48,8 @@ Follow these steps:
 .. code-block::
 
     $ terraform destroy --auto-approve
+
+How to use
+##############
+
+A detailed documentation can be found `here <face-hunter.readthedocs.io/>`__.
