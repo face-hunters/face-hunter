@@ -52,4 +52,4 @@ Follow these steps:
 How to use
 ##############
 
-A detailed documentation can be found `here <face-hunter.readthedocs.io/>`__.
+A detailed documentation can be found `here <https://face-hunter.readthedocs.io/>`__.
