@@ -18,7 +18,6 @@ setup(
         "pip~=21.1",
         "cryptography==2.8",
         "keyring~=10.6.0",
-        "setuptools~=56.0.0",
         "requests~=2.23.0",
         "SPARQLWrapper~=1.8.5",
         "levenshtein~=0.12.0",
