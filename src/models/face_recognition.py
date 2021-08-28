@@ -14,7 +14,6 @@ LOGGER = logging.getLogger(__name__)
 
 class FaceRecognition(object):
     """recognize faces in videos
-
     Parameters:
       thumbnails_path
       #detector_model: default cnn, can be hog
@@ -25,7 +24,6 @@ class FaceRecognition(object):
       #detector_name: 'opencv', 'ssd', 'dlib', 'mtcnn', 'retinaface'
       labels_path
       embeddings_path
-
     Attributes:
       embeddings: list of entity embeddings
       labels: list of entity names
@@ -42,7 +40,7 @@ class FaceRecognition(object):
                  distance_threshold=0.6,  # TODO(honglin): tune later
                  encoder_name='Dlib',
                  labels_path=None,
-                 embeddings_path=None):  # for#for
+                 embeddings_path=None):
         """ create or load kg_encodings. create detector, encoder """
         self.thumbnail_list = thumbnail_list
         self.thumbnails_path = thumbnails_path
@@ -57,14 +55,15 @@ class FaceRecognition(object):
         self.target = functions.find_input_shape(self.encoder)  # (150,150) encoder input shape
         self.labels, self.embeddings = self.load_embeddings()  # store the 2 lists in labels.pickle encoddings.pickle
 
-    def _get_img_embedding(self, img, one_face=False):
+    def represent(self, img, one_face=False, return_face_number=False):
         """ create embedings from img
-
         Params:
           img: img object | img_path
           one_face: can be True, for func create_embeddings()
+          return_face_number: for distance tuning
         Returens:
-          embeddings: list of face embeddings
+          embeddings: list of face embeddings OR
+          face_number: if return_face_number & face_number>1
         """
         embeddings = []
 
@@ -73,8 +72,13 @@ class FaceRecognition(object):
 
         faces = self.detector.detect_faces(img)
 
+        face_number = len(faces)
+
+        if return_face_number and face_number != 1:  # for tuning distance threshold
+          return face_number
+
         # get biggest face from thumbnails
-        if one_face and len(faces) > 1:
+        if one_face and face_number > 1:
             height = [face['box'][3] for face in faces]  # box: [x, y, w, h]
             index = height.index(max(height))
             faces = [faces[index]]
@@ -98,7 +102,6 @@ class FaceRecognition(object):
 
     def create_embeddings(self):
         """ create and save face embeddings and entity labels of thumbnails in KnowledgeGraph
-
         Returns:
           embeddings: list of face embeddings
           labels: list of entity names [ID_NAME,...]
@@ -120,7 +123,7 @@ class FaceRecognition(object):
             for img_path in image_files_in_folder(
                     entity_path):  # for every img of celebrity, exactly one face in one pic
                 LOGGER.info(f'Encoding {entity_dir}, thumbnail: {img_path}')
-                entity_embedding = self._get_img_embedding(img_path, one_face=True)
+                entity_embedding = self.represent(img_path, one_face=True)
 
                 if not entity_embedding:
                     LOGGER.warning(f'Could not create encoding for image {img_path}')
@@ -141,7 +144,7 @@ class FaceRecognition(object):
         return labels, embeddings
 
     def load_embeddings(self):
-        if self.labels is not None and self.embeddings_path is not None and os.path.exists(self.labels_path) and os.path.exists(self.embeddings_path):
+        if os.path.exists(self.labels_path) and os.path.exists(self.embeddings_path):
             labels = pickle.loads(open(self.labels_path, "rb").read())
             embeddings = pickle.loads(open(self.embeddings_path, "rb").read())
             return labels, embeddings
@@ -149,16 +152,14 @@ class FaceRecognition(object):
 
     def recognize_image(self, unknown_img, recognizer_model=None):
         """ recognize faces in image
-
         Params:
           unknown_img: image_path or image object(frame)
           recognizer_model: face recognition model  .   interface for build other models on the top of embeddings
-
         Results:
           detected_faces: list of detected entity names in unknown_img
         """
         detected_faces = []
-        unknown_img_embeddings = self._get_img_embedding(unknown_img)
+        unknown_img_embeddings = self.represent(unknown_img)
 
         for unknown_img_embedding in unknown_img_embeddings:  # for each face in the image
             if not recognizer_model:  # run basic recognition
@@ -190,10 +191,8 @@ class FaceRecognition(object):
 
     def recognize_video(self, video_path, recognizer_model=None):
         """ recognize faces by frame
-
         Params:
           video_path
-
         Returns:
           frame_faces_list: list of list [[entity1, entity2], [], [entity1]]
           detected_faces: list of identical entities
