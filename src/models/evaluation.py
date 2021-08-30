@@ -55,7 +55,7 @@ def evaluate_on_dataset(path: str = 'data/datasets/ytcelebrity',
         thumbnail_sample = entities + additional_thumbnails
 
     # Model Training
-    hunter = FaceRecognition(thumbnail_sample)
+    hunter = FaceRecognition(thumbnail_list=thumbnail_sample, thumbnails_path=os.path.join(thumbnails, 'thumbnails'))
     recognizer_model = ApproximateKNearestNeighbors()
 
     # Check if there are still any thumbnails missing
