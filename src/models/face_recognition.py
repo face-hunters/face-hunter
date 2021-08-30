@@ -39,8 +39,8 @@ class FaceRecognition(object):
                  align=True,  # for test performance improvement
                  distance_threshold=0.6,  # TODO(honglin): tune later
                  encoder_name='Dlib',
-                 labels_path=None,
-                 embeddings_path=None):
+                 labels_path='data/embeddings/labels.pickle',
+                 embeddings_path='data/embeddings/embeddings.pickle'):
         """ create or load kg_encodings. create detector, encoder """
         self.thumbnail_list = thumbnail_list
         self.thumbnails_path = thumbnails_path
