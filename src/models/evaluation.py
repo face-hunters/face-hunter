@@ -14,7 +14,7 @@ LOGGER = logging.getLogger('evaluation')
 
 
 def evaluate_on_dataset(path: str = 'data/datasets/ytcelebrity',
-                        thumbnails: str = 'data/thumbnails/dbpedia_thumbnails',
+                        thumbnails: str = 'data/thumbnails',
                         ratio: float = 1.0,
                         seed: int = 42,
                         single_true: bool = False,
