@@ -14,7 +14,7 @@ LOGGER = logging.getLogger('evaluation')
 
 
 def evaluate_on_dataset(path: str = 'data/datasets/ytcelebrity',
-                        thumbnails: str = 'data/thumbnails',
+                        path_thumbnails: str = 'data/thumbnails',
                         ratio: float = 1.0,
                         seed: int = 42,
                         single_true: bool = False,
@@ -26,7 +26,7 @@ def evaluate_on_dataset(path: str = 'data/datasets/ytcelebrity',
     path: str, default = 'data/datasets/ytcelebrity'
         The Location of the dataset.
 
-    thumbnails: str, default = 'data/thumbnails'
+    path_thumbnails: str, default = 'data/thumbnails'
         The Location of the thumbnails.
 
     ratio: float, default = 1.0
@@ -43,7 +43,7 @@ def evaluate_on_dataset(path: str = 'data/datasets/ytcelebrity',
     """
     data = pd.read_csv(os.path.join(path, 'information.csv'))
     entities = data['entities'].apply(eval)
-    thumbnails = pd.read_csv(os.path.join(thumbnails, 'Thumbnails_links.csv'))
+    thumbnails = pd.read_csv(os.path.join(path_thumbnails, 'Thumbnails_links.csv'))
     thumbnail_entities = thumbnails['norm_name'].dropna().sort_values()
 
     # Sample Creation
@@ -55,7 +55,7 @@ def evaluate_on_dataset(path: str = 'data/datasets/ytcelebrity',
         thumbnail_sample = entities + additional_thumbnails
 
     # Model Training
-    hunter = FaceRecognition(thumbnail_list=thumbnail_sample, thumbnails_path=os.path.join(thumbnails, 'thumbnails'))
+    hunter = FaceRecognition(thumbnail_list=thumbnail_sample, thumbnails_path=os.path.join(path_thumbnails, 'thumbnails'))
     recognizer_model = ApproximateKNearestNeighbors()
 
     # Check if there are still any thumbnails missing
