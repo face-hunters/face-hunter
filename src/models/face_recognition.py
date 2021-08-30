@@ -134,7 +134,7 @@ class FaceRecognition(object):
                     continue
 
                 embeddings.append(entity_embedding[0])
-                labels.append(entity_dir)
+                labels.append(entity_dir.split('_')[0])
 
         # write to disk
         with open(self.labels_path, 'wb') as f:
