@@ -44,15 +44,16 @@ def evaluate_on_dataset(path: str = 'data/datasets/ytcelebrity',
     data = pd.read_csv(os.path.join(path, 'information.csv'))
     entities = data['entities']
     thumbnails = pd.read_csv(os.path.join(path_thumbnails, 'Thumbnails_links.csv'))
-    thumbnail_entities = thumbnails['folder_name'].dropna().sort_values()
-
+    thumbnail_entities = thumbnails['norm_name'].dropna().sort_values()
+    entities = set(entities)
+    thumbnail_entities = set(thumbnail_entities)
     # Sample Creation
     random.seed(seed)
     number_of_additional_thumbnails = int(len(entities) * ratio)
     thumbnail_sample = list(set(thumbnail_entities) - set(entities))
     if len(thumbnail_entities) >= number_of_additional_thumbnails:
         additional_thumbnails = random.sample(thumbnail_sample, int(len(entities) * ratio))
-        thumbnail_sample = entities + additional_thumbnails
+        thumbnail_sample = list(entities) + additional_thumbnails
 
     # Model Training
     hunter = FaceRecognition(thumbnail_list=thumbnail_sample, thumbnails_path=os.path.join(path_thumbnails, 'thumbnails'))
