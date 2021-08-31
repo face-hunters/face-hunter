@@ -42,7 +42,7 @@ def evaluate_on_dataset(path: str = 'data/datasets/ytcelebrity',
         Whether to postprocess detections using the scene extraction algorithm. Disabled with 0.
     """
     data = pd.read_csv(os.path.join(path, 'information.csv'))
-    entities = data['entities'].apply(eval)
+    entities = data['entities']
     thumbnails = pd.read_csv(os.path.join(path_thumbnails, 'Thumbnails_links.csv'))
     thumbnail_entities = thumbnails['folder_name'].dropna().sort_values()
 
