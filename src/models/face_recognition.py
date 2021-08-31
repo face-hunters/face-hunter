@@ -33,7 +33,7 @@ class FaceRecognition(object):
     """
 
     def __init__(self, thumbnail_list: list = None,
-                 thumbnails_path='data/thumbnails/',
+                 thumbnails_path='data/thumbnails/thumbnails',
                  # detector_name='mtcnn',
                  img_width=500,
                  align=True,  # for test performance improvement
