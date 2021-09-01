@@ -82,7 +82,7 @@ def evaluate_on_dataset(path: str = 'data/datasets/ytcelebrity',
                             y.append(name)
         else:
             y = [hunter.recognize_image(path_to_file, recognizer_model)]
-        per_file_results.append(get_evaluation_metrics(y, list(itertools.repeat(file['entities'], len(y))),
+        per_file_results.append(get_evaluation_metrics(y, list(itertools.repeat([file['entities']], len(y))),
                                                        missing_entities, single_true))
         files.append(file)
         scores = np.add(scores, per_file_results[-1])
