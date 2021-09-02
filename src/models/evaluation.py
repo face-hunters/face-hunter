@@ -60,7 +60,7 @@ def evaluate_on_dataset(path: str = 'data/datasets/ytcelebrity',
     recognizer_model = ApproximateKNearestNeighbors()
 
     # Check if there are still any thumbnails missing
-    required = set(chain.from_iterable(entities))
+    required = set(entities)
     missing_entities = required - set(hunter.labels)
     if len(missing_entities) >= 0:
         LOGGER.warning(f'Found unknown entities: {missing_entities}')
