@@ -1,32 +1,37 @@
-name: Deploy to GitHub Pages
+name: github pages
 
 on:
-  push: 
-    branches:   
+  workflow_dispatch:
+    branches:
+      - main
+  push:
+    branches:
       - main
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  deploy:
+    runs-on: ubuntu-18.04
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2 # If you're using actions/checkout@v2 you must set persist-credentials to false in most cases for the deployment to work correctly.
-      with:
-        persist-credentials: false
-    - name: Use Node.js 14.15
-      uses: actions/setup-node@v1
-      with:
-        node-version: '14.15'
-    - name: Build
-      run: |
-         cd website
-         npm install -g @angular/cli
-         npm install
-         ng build --prod --base-href="https://face-hunters.github.io/face-hunter"
-    - name: Deploy
-      uses: JamesIves/github-pages-deploy-action@releases/v2
-      env:
-        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        BASE_BRANCH: main
-        BRANCH: gh-pages
-        FOLDER: website/dist/website
+      - uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2.1.2
+        with:
+          node-version: '14.15'
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - run: npm install -g @angular/cli
+      - run: cd website && npm ci
+      - run: cd website && ng build --prod --base-href="https://face-hunters.github.io/face-hunter"
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.ACCESS_TOKEN }}
+          publish_dir: ./website/dist/website
