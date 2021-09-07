@@ -137,6 +137,30 @@ class Graph(object):
                  '}')
         return True if int(self.store.query(query)[0][0]) > 0 else False
 
+    def get_scenes_from_video(self, identifier: str):
+        """ Returns all scenes for a video
+
+        Parameters
+        ----------
+        identifier: str
+            Identifier of the video on YouTube
+
+        Returns
+        ----------
+        List
+            Returns a list of the scenes with a scene_uri, entity, start and end
+        """
+        query = ('SELECT ?scene ?entity ?start ?end'
+                 ' WHERE {'
+                 ' ?scene a video:Scene ;'
+                 f' video:sceneFrom <{HOME_URI/identifier}>;'
+                 ' foaf:depicts ?entity;'
+                 ' temporal:hasStartTime ?start;'
+                 ' temporal:hasFinishTime ?end'
+                 '}')
+
+        return self.store.query(query)
+
     def get_videos_with_entity(self, identifier: str):
         """ Returns all videos for an entity
 
