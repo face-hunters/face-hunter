@@ -20,7 +20,7 @@ jobs:
           # Github access token token used to deploy on gh_pages. You can find it on Github.
           github_access_token: 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
           # The directory of the angular project, in which all the commands will run
-          angular_project_dir: ./website
+          angular_project_dir: website
           # Build configuration for the angular app
           build_configuration: production
           # base href for the app
