@@ -174,35 +174,47 @@ class Graph(object):
                  '}')
         return self.store.query(query)
 
-    def get_videos_with_filters(self, filters: dict):
+    def get_videos_with_filters(self, query: str, filters: str):
         """ Returns videos for a user specific query.
             For example: Videos with actors born before 1970.
+
+        Examples:
+        select distinct ?title ?link ?dbpedia_entity
+        where {
+            ?scene a video:Scene;
+                foaf:depicts ?dbpedia_entity;
+                video:sceneFrom ?video.
+            ?video dc:identifier ?link;
+                    dc:title ?title.
+
+            service <http://dbpedia.org/sparql> {
+                ?dbpedia_entity dbo:birthDate ?date;
+                    owl:sameAs ?wikidata_entity
+            }
+
+            service <https://query.wikidata.org/sparql> {
+                ?wikidata_entity <http://www.wikidata.org/prop/direct/P21> ?sex .
+                ?sex rdfs:label ?sex_label
+            }
+
+            filter (regex(str(?wikidata_entity), "www.wikidata.org") && (?sex_label = "male"@en) && ?date < "19700101"^^xsd:date)
+        }
 
         Returns
         ----------
         List
             Returns a list of the videos in which a entity occurs. Format: [[<link>, <title>, <entity>], ...]
         """
-        query = '''
-        select distinct ?title ?link ?dbpedia_entity
-        where { 
-            ?scene a video:Scene; 
-                foaf:depicts ?dbpedia_entity; 
-                video:sceneFrom ?video. 
-            ?video dc:identifier ?link;
-                    dc:title ?title.
-            
-            service <http://dbpedia.org/sparql> { 
-                ?dbpedia_entity dbo:birthDate ?date;
-                    owl:sameAs ?wikidata_entity
-            } 
-            
-            service <https://query.wikidata.org/sparql> {
-                ?wikidata_entity <http://www.wikidata.org/prop/direct/P21> ?sex .
-                ?sex rdfs:label ?sex_label 
-            }
-            
-            filter (regex(str(?wikidata_entity), "www.wikidata.org") && (?sex_label = "male"@en) && ?date < "19700101"^^xsd:date) 
-        }
-        '''
+        query = (
+            'select distinct ?title ?link ?dbpedia_entity'
+            ' where { '
+            ' ?scene a video:Scene; '
+            ' foaf:depicts ?dbpedia_entity;'
+            ' video:sceneFrom ?video. '
+            ' ?video dc:identifier ?link;'
+            ' dc:title ?title.'
+            f' {query}'
+            f' filter {filters} )'
+            ' }'
+        )
         return self.store.query(query)
