@@ -28,7 +28,7 @@ jobs:
             ${{ runner.os }}-node-
       - run: npm install -g @angular/cli
       - run: cd website && npm ci
-      - run: cd website && ng build --prod --base-href="https://face-hunters.github.io/face-hunter"
+      - run: cd website && ng build --prod --base-href="https://face-hunters.github.io/face-hunter/"
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
