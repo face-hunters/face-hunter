@@ -1,37 +1,20 @@
 <p>
   <!-- #docregion toolbar-simple -->
   <mat-toolbar>
+    <mat-icon class="head_icon">track_changes</mat-icon>
     <span>Face-Hunter: Multi-Modal Entity Linking</span>
+    <span class="example-spacer"></span>
+    <button *ngIf="router.url === '/dashboard'" routerLink="/analyse"  mat-raised-button class="example-icon" aria-label="Example icon-button with share icon">
+      <span>Analyse</span>
+      <mat-icon>science</mat-icon>
+    </button>
+    <button *ngIf="router.url === '/analyse'" routerLink="/dashboard"  mat-raised-button class="example-icon" aria-label="Example icon-button with share icon">
+      <span>Search</span>
+      <mat-icon>science</mat-icon>
+    </button>
   </mat-toolbar>
 </p>
-
-<div *ngIf="videos.length == 0">
-  <div class="search_bar">
-    <mat-form-field class="example-form-field" appearance="fill">
-      <mat-label>Search for your favorite celebrity</mat-label>
-      <input matInput type="text">
-      <button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
-        <mat-icon>close</mat-icon>
-      </button>
-    </mat-form-field>
-  </div>
-
-  <div class="search_button">
-    <mat-icon aria-hidden="false" aria-label="Example home icon" (click)="get_videos_of_celebritiy()">search</mat-icon>
-  </div>
-
-  <p>.. or execute a SPARQL-Query directly</p>
+<div>
+  <router-outlet></router-outlet>
 </div>
 
-<div *ngFor="let video of videos" class="search_item">
-  <youtube-player videoId="{{video.id}}" [height]="250" [width]="350" [startSeconds]="video.start" [endSeconds]="video.end"></youtube-player>
-  <div>
-    <p><b>Start:</b></p><p class="inbl">{{video.start}}</p><br>
-    <p><b>End:</b></p><p class="inbl">{{video.end}}</p><br>
-    <p><b>Duration:</b></p><p class="inbl">{{video.duration}}</p>
-  </div>
-</div>
-
-<button mat-fab aria-label="Back button" color="primary" *ngIf="videos.length > 0" (click)="reset()">
-  <mat-icon>arrow_back</mat-icon>
-</button>

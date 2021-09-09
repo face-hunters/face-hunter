@@ -1,0 +1,34 @@
+<div class="query">
+
+  <p><b>select distinct ?title ?link ?dbpedia_entity</b></p>
+  <mat-divider></mat-divider>
+  <p>where {{'{'}}</p>
+  <p class="one">?scene a video:Scene;</p>
+  <p class="two">foaf:depicts ?dbpedia_entity;</p>
+  <p class="one">video:sceneFrom ?video.</p>
+  <p class="two">?video dc:identifier ?link;</p>
+
+
+  <mat-form-field class="one">
+    <mat-label>Wikidata and DBpedia Query</mat-label>
+    <textarea matInput></textarea>
+  </mat-form-field>
+
+  <p>filter (</p>
+
+  <mat-form-field>
+    <mat-label>Filter</mat-label>
+    <textarea matInput></textarea>
+  </mat-form-field>
+
+  <p>) {{'}'}}</p>
+
+</div>
+
+<button mat-raised-button class="example-icon" aria-label="Example icon-button with share icon" (click)="close()">
+  <span>Back</span>
+</button>
+
+<button mat-raised-button class="example-icon" aria-label="Example icon-button with share icon" (click)="close(query)">
+  <span>Query</span>
+</button>

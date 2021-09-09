@@ -10,10 +10,19 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatIconModule} from "@angular/material/icon";
 import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
+import {MatDialogModule} from "@angular/material/dialog";
+import {SparqlDialogComponent} from "../sparql-dialog/sparql-dialog.component";
+import {MatDividerModule} from "@angular/material/divider";
+import {AppRoutingModule} from "./app-routing.module";
+import {SearchComponent} from "../search/search.component";
+import {AnalyseComponent} from "../analyse/analyse.component";
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    SparqlDialogComponent,
+    SearchComponent,
+    AnalyseComponent
   ],
   imports: [
     BrowserModule,
@@ -23,7 +32,11 @@ import {MatButtonModule} from "@angular/material/button";
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatDividerModule,
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]
