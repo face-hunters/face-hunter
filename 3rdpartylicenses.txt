@@ -63,6 +63,9 @@ THE SOFTWARE.
 @angular/platform-browser
 MIT
 
+@angular/router
+MIT
+
 @angular/youtube-player
 MIT
 The MIT License
