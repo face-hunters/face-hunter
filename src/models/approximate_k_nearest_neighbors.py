@@ -109,8 +109,9 @@ class ApproximateKNearestNeighbors(object):
                 idx = neighbors[0]
                 entity = self.labels[idx]
                 entities.append(entity)
-				
-		if entities:
+        
+        if entities:
             return max(entities, key=entities.count)
         else:
             return 'unknown'
+			
