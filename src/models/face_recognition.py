@@ -14,30 +14,32 @@ LOGGER = logging.getLogger(__name__)
 
 class FaceRecognition(object):
     """recognize faces in videos
-    Parameters:
-      thumbnails_path
-      #detector_model: default cnn, can be hog
+
+    Parameters
+    -------
+      thumbnails_list: for sample use
+      thumbnails_path: path to thumbnail directory
       img_width: scale the image to fixed new width
-      align: whether apply face alignment
       distance_threshold
       encoder_name: "VGG-Face", "Facenet", "OpenFace", "DeepFace", "DeepID", "ArcFace", "Dlib"
       #detector_name: 'opencv', 'ssd', 'dlib', 'mtcnn', 'retinaface'
-      labels_path
-      embeddings_path
-    Attributes:
+      labels_path: path to save and load thumbnail labels
+      embeddings_path: path to save and load thumbnail embeddings
+
+    Attributes
+    ------
       embeddings: list of entity embeddings
       labels: list of entity names
       detector: face detector model MTCNN https://github.com/ipazc/mtcnn
-      encoder: face embedding encoder
-      target: encoder input layer image shape (w,h)
+      encoder: face encoder(face recognition model)
+      target: face recognition model's input layer image shape (w,h)
     """
 
     def __init__(self, thumbnail_list: list = None,
                  thumbnails_path='data/thumbnails/thumbnails',
                  # detector_name='mtcnn',
                  img_width=500,
-                 align=True,  # for test performance improvement
-                 distance_threshold=0.6,  # TODO(honglin): tune later
+                 distance_threshold=0.6,
                  encoder_name='Dlib',
                  labels_path='data/embeddings/labels.pickle',
                  embeddings_path='data/embeddings/embeddings.pickle'):
@@ -45,10 +47,10 @@ class FaceRecognition(object):
         self.thumbnail_list = thumbnail_list
         self.thumbnails_path = thumbnails_path
         self.img_width = img_width
-        self.align = align
         self.distance_threshold = distance_threshold
         self.labels_path = labels_path
         self.embeddings_path = embeddings_path
+
         self.detector = MTCNN()
         # self.detector = FaceDetector.build_model(detector_name)
         self.encoder = DeepFace.build_model(encoder_name)
@@ -93,7 +95,7 @@ class FaceRecognition(object):
             # plt.show()
 
             # aligned_face = FaceDetector.alignment_procedure(detected_face, left_eye, right_eye)
-            detected_face = face_alignment(img, self.target, face['keypoints'], align=self.align)
+            detected_face = face_alignment(img, self.target, face['keypoints'])
 
             embedding = self.encoder.predict(detected_face)[0]
             embeddings.append(embedding)
@@ -180,7 +182,7 @@ class FaceRecognition(object):
                     # if not isinstance(unknown_img, str):
                     # display(Image.fromarray(unknown_img))
 
-            else:  # build different standard ML model on top of embeddings
+            else:  # call ANN
                 if not recognizer_model.fitted:
                     recognizer_model.fit(embeddings=self.embeddings, labels=self.labels)
                 entity = recognizer_model.predict(unknown_img_embedding)
@@ -189,30 +191,40 @@ class FaceRecognition(object):
 
         return detected_faces
 
-    def recognize_video(self, video_path, recognizer_model=None):
+    def recognize_video(self, video_path, recognizer_model=None, by='second'):
         """ recognize faces by frame
+
         Params:
           video_path
+          recognizer_model: ANN
+          by: recognize by 'second' or 'frame'
+
         Returns:
           frame_faces_list: list of list [[entity1, entity2], [], [entity1]]
           detected_faces: list of identical entities
+          timestamps: [millisecond , ]
         """
+        if not os.path.exists(video_path):
+            LOGGER.info(f'{video_path} does not exists')
+
         LOGGER.info(f'Starting face recognition on {video_path}')
 
         video = cv2.VideoCapture(video_path)
-        fps = video.get(cv2.CAP_PROP_FPS)
-        timestamps = [0.0]
 
+        fps = video.get(cv2.CAP_PROP_FPS)
+        #frame_count = video.get(cv2.CAP_PROP_FRAME_COUNT)
+        frame_number = 0
+      
+        timestamps = []
         frame_faces_list = []
+
+
         # frames = []
         # batch_size = 128
 
-        while video.isOpened():
-            success, frame = video.read()
+        success, frame = video.read()
 
-            if not success:
-                break
-
+        while success:
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
             # scale the frame
@@ -225,7 +237,19 @@ class FaceRecognition(object):
             detected_faces = self.recognize_image(frame, recognizer_model)
             frame_faces_list.append(detected_faces)
 
-            timestamps.append(timestamps[-1] + 1000 / fps)
+            if by == 'frame':
+                timestamp = (timestamps[-1] + 1000 / fps) if timestamps else 0.0
+                timestamps.append(timestamp)
+
+                success, frame = video.read()
+            else:
+                # by second
+                timestamp = (timestamps[-1] + 1000) if timestamps else 0.0
+                timestamps.append(timestamp)
+
+                frame_number += fps
+                video.set(cv2.CAP_PROP_POS_FRAMES, frame_number)
+                success, image = video.read()
 
             # frames.append(frame)
             # if len(frames) == batch_size:
@@ -234,5 +258,5 @@ class FaceRecognition(object):
 
         detected_faces = {entity for l in frame_faces_list for entity in l}
 
-        return detected_faces, frame_faces_list, timestamps[1:]
+        return detected_faces, frame_faces_list, timestamps
 

@@ -6,7 +6,7 @@ import pandas as pd
 from src.knowledge_graph.memory_store import MemoryStore
 from src.knowledge_graph.virtuoso_store import VirtuosoStore
 from src.utils.utils import get_config
-from src.data.knowledge_graphs import get_same_as_link, get_uri_from_label
+from src.data.knowledge_graphs import get_same_as_link, get_uri_from_label, get_uri_from_csv
 import os
 
 on_rtd = os.environ.get('READTHEDOCS') == 'True'
@@ -153,7 +153,7 @@ class Graph(object):
         query = ('SELECT ?scene ?entity ?start ?end'
                  ' WHERE {'
                  ' ?scene a video:Scene ;'
-                 f' video:sceneFrom <{HOME_URI/identifier}>;'
+                 f' video:sceneFrom <{HOME_URI}/{identifier}>;'
                  ' foaf:depicts ?entity;'
                  ' temporal:hasStartTime ?start;'
                  ' temporal:hasFinishTime ?end'
