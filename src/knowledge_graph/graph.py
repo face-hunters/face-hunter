@@ -153,7 +153,7 @@ class Graph(object):
         query = ('SELECT ?scene ?entity ?start ?end'
                  ' WHERE {'
                  ' ?scene a video:Scene ;'
-                 f' video:sceneFrom <{HOME_URI/identifier}>;'
+                 f' video:sceneFrom <{HOME_URI + identifier}>;'
                  ' foaf:depicts ?entity;'
                  ' temporal:hasStartTime ?start;'
                  ' temporal:hasFinishTime ?end'
