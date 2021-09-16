@@ -10,7 +10,6 @@
    :caption: Contents:
 
    source/src.hunter
-   source/src.data.knowledge_graphs
 
 
 
