@@ -31,7 +31,7 @@ def _search(args):
 
 
 def _download_datasets(args):
-    """ Starts the download of thumbnails
+    """ Starts the download of video datasets
 
     Parameters
     ----------
@@ -65,8 +65,8 @@ def _download_thumbnails(args):
     """
     from src.data.knowledge_graphs import download_dbpedia_thumbnails, download_wikidata_thumbnails
 
-    download_dbpedia_thumbnails(args.path)
-    download_wikidata_thumbnails(args.path)
+    download_wikidata_thumbnails(args.path, download=False)
+    download_dbpedia_thumbnails(args.path, download=False)
 
 
 def _run_detection(args):
@@ -88,7 +88,7 @@ def _run_detection(args):
     """
     from src.models.evaluation import evaluate_on_dataset
 
-    evaluate_on_dataset(args.path, args.thumbnails)
+    evaluate_on_dataset(args.path, args.thumbnails, ratio=args.ratio, scene_extraction=args.scene_extraction)
 
 
 def _link(args):
@@ -142,6 +142,9 @@ def _get_parser():
                                           help='Run face detection on locally downloaded data')
     run_detection.add_argument('--path', help='Path to the videos', type=str, default='data/datasets/ytcelebrity')
     run_detection.add_argument('--thumbnails', help='Path to the thumbnails', type=str, default='data/thumbnails')
+    run_detection.add_argument('--ratio', help='Ratio of entities in the dataset and not', type=float, default=1.0)
+    run_detection.add_argument('--scene_extraction', help='Threshold for scene postprocessing. Should be 0 for no '
+                                                          'postprocessing', type=int, default=0)
     run_detection.set_defaults(action=_run_detection)
 
     # Parser to link a video
@@ -190,7 +193,7 @@ def main():
 
     _logging_setup(args.verbose, args.logfile)
 
-    if not args.action:
+    if not hasattr(args, 'action'):
         parser.print_help()
         parser.exit()
 

@@ -8,11 +8,13 @@ from pandas import json_normalize
 from urllib.error import HTTPError
 import time
 from src.utils.utils import check_path_exists
+from src.preprocessing.file_preprocessing import name_norm
 
 LOGGER = logging.getLogger('knowledge-graphs')
 
 
-def download_wikidata_thumbnails(path: str = 'data/thumbnails/wikidata_thumbnails', query_links: bool = True, download: bool = True):
+def download_wikidata_thumbnails(path: str = 'data/thumbnails/wikidata_thumbnails', query_links: bool = True,
+                                 download: bool = True):
     """ Queries the thumbnail links from wikidata and saves the links in a file path/Thumbnails_links.csv
     Downloads the thumbnails of wikidata and parses them in the following structure:
         <Entity1>
@@ -47,20 +49,33 @@ def download_wikidata_thumbnails(path: str = 'data/thumbnails/wikidata_thumbnail
               ?entity rdfs:label ?name FILTER (LANG(?name) = "en")
             }}
             '''
-            r = requests.get(url, params = {'format': 'json', 'query': query})
-            q_results = r.json()
+            sparql = SPARQLWrapper('http://query.wikidata.org/sparql')
+            sparql.setQuery(query)
+            sparql.setReturnFormat(JSON)
+            q_results = sparql.query().convert()
             query_results = query_results.append(json_normalize(q_results['results']['bindings']))
         query_results = query_results[['entity.value', 'img.value', 'name.value']]
         query_results = query_results.rename(columns={col: col.split('.')[0] for col in query_results.columns})
         query_results = query_results.drop_duplicates()
         query_results = query_results.reset_index()
-        query_results.to_csv(os.path.join(path, f'Thumbnails_links.csv'), index=False)
+        name_list = query_results['name'].tolist()
+        norm_name = name_norm(name_list)
+        query_results['norm_name'] = norm_name
+        tmp_query_results = query_results.drop_duplicates(subset=['entity','norm_name'])
+        norm_name = tmp_query_results['norm_name'].tolist()
+        folder_name = [v + '_wiki_' + str(norm_name[:i].count(v) + 1) if norm_name.count(v) > 1 else v for i, v in enumerate(norm_name)]
+        tmp_query_results['folder_name'] = folder_name
+        tmp_query_results = tmp_query_results.drop(['img', 'name', 'index'],axis=1)
+        query_results = pd.merge(query_results, tmp_query_results, on = ['entity', 'norm_name'])
+        query_results = query_results.drop(query_results[query_results['norm_name'] == 'missing'].index)
+        query_results.to_csv(os.path.join(path, f'wikidata_Thumbnails_links.csv'), index=False)
     if download:
         LOGGER.info('Starting to download wikidata thumbnails')
-        download_images(path)
+        download_images(path, 'wikidata')
 
 
-def download_dbpedia_thumbnails(path: str = 'data/thumbnails/dbpedia_thumbnails', query_links: bool = True, download: bool = True):
+def download_dbpedia_thumbnails(path: str = 'data/thumbnails/dbpedia_thumbnails', query_links: bool = True,
+                                download: bool = True):
     """ Queries the thumbnail links from dbpedia and saves the links in a file path/Thumbnails_links.csv
     Downloads the thumbnails of dbpedia and parses them in the following structure:
         <Entity1>
@@ -91,7 +106,7 @@ def download_dbpedia_thumbnails(path: str = 'data/thumbnails/dbpedia_thumbnails'
         WHERE {
         ?entity a dbo:Person.
         ?entity dbo:thumbnail ?img.
-        OPTIONAL{?entity foaf:name ?name}
+        OPTIONAL{?entity dbp:name ?name}
         FILTER(LANG(?name) = 'en').
         }}
         '''
@@ -126,27 +141,37 @@ def download_dbpedia_thumbnails(path: str = 'data/thumbnails/dbpedia_thumbnails'
         query_results['name'] = query_results.groupby(['entity', 'img']).transform(lambda x: ' / '.join(x))
         query_results = query_results.drop_duplicates()
         query_results = query_results.reset_index()
-        query_results.to_csv(os.path.join(path, f'Thumbnails_links.csv'), index=False)
+        name_list = query_results['name'].tolist()
+        norm_name = name_norm(name_list)
+        query_results['norm_name'] = norm_name
+        tmp_query_results = query_results.drop_duplicates(subset=['entity','norm_name'])
+        norm_name = tmp_query_results['norm_name'].tolist()
+        folder_name = [v + '_db_' + str(norm_name[:i].count(v) + 1) if norm_name.count(v) > 1 else v for i, v in enumerate(norm_name)]
+        tmp_query_results['folder_name'] = folder_name
+        tmp_query_results = tmp_query_results.drop(['img', 'name', 'index'],axis=1)
+        query_results = pd.merge(query_results, tmp_query_results, on = ['entity', 'norm_name'])
+        query_results = query_results.drop(query_results[query_results['norm_name'] == 'missing'].index)
+        query_results.to_csv(os.path.join(path, f'dbpedia_Thumbnails_links.csv'), index=False)
     if download:
         LOGGER.info('Starting to download dbpedia thumbnails')
-        download_images(path)
+        download_images(path, 'dbpedia')
 
 
-def download_images(path):
+def download_images(path, method='wikidata'):
     def mycallback(result):
         global results
         results.append(result)
 
-    query_results = pd.read_csv(os.path.join(path, f'Thumbnails_links.csv'))
+    query_results = pd.read_csv(os.path.join(path, f'{method}_Thumbnails_links.csv'))
     pool = mp.Pool(mp.cpu_count())
     download_list = []
     global results
     results = []
     for i in query_results.index.to_list():
-        entity_name = query_results.loc[i, 'entity'].split('/')[-1]
+        folder_name = query_results.loc[i, 'folder_name']
         thumbnail_url = query_results.loc[i, 'img']
-        i_path = os.path.join(path, 'thumbnails', entity_name)
-        file_name = f"{entity_name}{i}.{thumbnail_url.split('.')[-1]}"
+        i_path = os.path.join(path, 'thumbnails', folder_name)
+        file_name = f"{folder_name}_{i}.{thumbnail_url.split('.')[-1]}".split('?width')[0]
         download_list.append([i, thumbnail_url, i_path, file_name])
     for i_entity, thumbnail_url, i_path, file_name in download_list:
         pool.apply_async(download_thumbnail, args=(i_entity, thumbnail_url, i_path, file_name), callback=mycallback)
@@ -196,54 +221,148 @@ def download_thumbnail(index: int, i_thumbnail_url: str, i_path: str, i_file_nam
         return output
 
 
-def download_entity_list(path: str = './thumbnails', entity_list: list = None):
-  """ Download a list of entities'thumbnails from wikidata.
-  Parameters
-  ----------
-  path: str, default = './thumbnails'
+def download_entity_list(path: str = 'data/thumbnails', entity_list: list = None):
+    """ Download a list of entities'thumbnails from wikidata.
+    Parameters
+    ----------
+    path: str, default = 'data/thumbnails'
       Path where the thumbnails are stored.
-  entity_list: list, default = None
-      a list of entities required to download
-  """
-  url = 'https://query.wikidata.org/sparql'
-  for entity in entity_list:
-    query = f'''
-    SELECT *
-    WHERE
-      {{
-          ?s rdfs:label '{entity}'@en;
-            wdt:P31 wd:Q5;
-            wdt:P18 ?img;
-      }}
-    '''
-    r = requests.get(url, params = {'format': 'json', 'query': query})
-    q_results = r.json()
-    missing_img = json_normalize(q_results['results']['bindings'])
-    if missing_img.empty:
-      LOGGER.info(f'{entity} is not found in wikidata as well')
-      continue
-    missing_img = missing_img[['img.value']]
-    missing_img = missing_img.rename(columns={col: col.split('.')[0] for col in missing_img.columns})
-    for index, row in missing_img.iterrows():
-      download_thumbnail(index = index, i_thumbnail_url = row['img'], i_path = os.path.join(path,entity), i_file_name = f'{entity}_{index}')
-                           
-                                                    
-def download_missing_thumbnails(path: str = './videos/ytcelebrity', loaded_entities: list = None):
+    entity_list: list, default = None
+      A list of entities required to download
+     
+    Returns
+    ----------
+    sm: list
+        A list containing the still missing entities
+    """
+    url = 'https://query.wikidata.org/sparql'
+    sm = []
+    query_results = pd.DataFrame()
+    for entity in entity_list:
+      try:
+        query = f'''
+        SELECT ?entity ?img ?name
+        WHERE
+          {{?entity rdfs:label '{entity}'@en;
+           wdt:P18 ?img.
+           BIND ('{entity}'@en AS ?name)
+          }}
+        '''
+        sparql = SPARQLWrapper('http://query.wikidata.org/sparql')
+        sparql.setQuery(query)
+        sparql.setReturnFormat(JSON)
+        q_results = sparql.query().convert()
+        missing_img = json_normalize(q_results['results']['bindings'])
+        if missing_img.empty:
+            sm.append(entity)
+            LOGGER.info(f'{entity} is not found in wikidata as well')
+            continue
+        query_results = query_results.append(missing_img)
+      except:
+        sm.append(entity)
+        continue
+    query_results = query_results[['entity.value', 'img.value', 'name.value']]
+    query_results = query_results.rename(columns={col: col.split('.')[0] for col in query_results.columns})
+    query_results = query_results.drop_duplicates()
+    query_results = query_results.reset_index()
+    query_results['norm_name'] = query_results['name']
+    query_results['folder_name'] = query_results['name']
+    query_results.to_csv(os.path.join(path, f'missing_Thumbnails_links.csv'), index=False)
+    LOGGER.info('Starting to download missing thumbnails')
+    download_images(path, 'missing')
+    LOGGER.info(f'{len(sm)} people are still not found')
+    return sm
+
+
+def download_missing_thumbnails(path: str = './videos/ytcelebrity', path_thumbnails: str = 'data/thumbnails'):
     """ Compares a list of entities with a dataset and downloads missing ones.
     Parameters
     ----------
     path: str, default = './videos/ytcelebrity'
         Path where the information.csv of the dataset is saved.
-    loaded_entities: list, default = None
-        Comparable list of entities.
+    path_thumbnails: str, default = 'data/thumbnails'
+        Path where the Thumbnails_links.csv is saved.
     """
     data = pd.read_csv(os.path.join(path, 'information.csv'))
+    thumbnails = pd.read_csv(os.path.join(path_thumbnails, 'wikidata_Thumbnails_links.csv'))
 
-    missing_entities = list(set(data['entities']) - set(loaded_entities))
+    missing_entities = list(set(data['entities']) - set(thumbnails['norm_name']))
     if len(missing_entities) != 0:
         LOGGER.info('Missing entities detected: {}'.format(missing_entities))
-        download_entity_list(path = './thumbnails', entity_list = missing_entities)
+        download_entity_list(path='./thumbnails', entity_list=missing_entities)
     else:
         LOGGER.info('No missing entities found')
 
     return missing_entities
+
+
+def get_same_as_link(uri) -> str:
+    if uri.startswith('http://dbpedia'):
+        query = ('SELECT DISTINCT ?concept '
+                 'WHERE { '
+                 f'{uri} owl:sameAs ?concept . '
+                 'FILTER (regex(str(?concept), "www.wikidata.org")) '
+                 '} '
+                 'LIMIT 100')
+    else:
+        query = ('SELECT DISTINCT ?concept '
+                 'WHERE {'
+                 f'?concept owl:sameAs <{uri}> . '
+                 '} '
+                 'LIMIT 100')
+    sparql = SPARQLWrapper('http://dbpedia.org/sparql')
+    sparql.setQuery(query)
+    sparql.setReturnFormat(JSON)
+    q_results = sparql.query().convert()
+    try:
+        return str(json_normalize(q_results['results']['bindings']).loc[0, 'concept.value'])
+    except KeyError:
+        LOGGER.info(f'Could not find corresponding link for {uri}')
+        return ''
+
+
+def get_uri_from_label(label: str) -> tuple:
+    query = ('SELECT ?entity '
+             'WHERE { '
+             f'?entity rdfs:label "{label}"@en ; '
+             'a dbo:Person . '
+             '}')
+    sparql_dbpedia = SPARQLWrapper('http://dbpedia.org/sparql')
+    sparql_dbpedia.setQuery(query)
+    sparql_dbpedia.setReturnFormat(JSON)
+    q_results = sparql_dbpedia.query().convert()
+    try:
+        dbpedia_uri = str(json_normalize(q_results['results']['bindings']).loc[0, 'entity.value'])
+    except KeyError:
+        LOGGER.info('no dbpedia entry found')
+        dbpedia_uri = None
+
+    query = ('SELECT ?entity '
+             'WHERE { '
+             f'?entity rdfs:label "{label}"@en ; '
+             '}')
+    sparql_wikidata = SPARQLWrapper('https://query.wikidata.org/sparql')
+    sparql_wikidata.setQuery(query)
+    sparql_wikidata.setReturnFormat(JSON)
+    q_results = sparql_wikidata.query().convert()
+    try:
+        wikidata_uri = str(json_normalize(q_results['results']['bindings']).loc[0, 'entity.value'])
+    except KeyError:
+        LOGGER.info('no dbpedia entry found')
+        wikidata_uri = None
+
+    return dbpedia_uri, wikidata_uri
+
+
+def get_uri_from_csv(name: str, data: pd.DataFrame):
+    uris = pd.unique(data[data['name'] == name]['entity'])
+
+    dbpedia_uri = None
+    wikidata_uri = None
+    for uri in uris:
+        if uri.startswith('http://dbpedia'):
+            dbpedia_uri = uri
+        else:
+            wikidata_uri = uri
+
+    return dbpedia_uri, wikidata_uri

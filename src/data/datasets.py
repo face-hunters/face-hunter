@@ -4,9 +4,11 @@ import tarfile
 import wget
 import pandas as pd
 import scipy
+import requests
 from scipy.io import loadmat
 import shutil
 from src.utils.utils import check_path_exists
+from src.preprocessing.file_preprocessing import name_norm
 
 LOGGER = logging.getLogger('dataset-downloader')
 
@@ -35,7 +37,8 @@ def download_seqamlab_dataset(path: str = 'data/datasets/ytcelebrity'):
     videos = pd.Series(os.listdir(path))
     information = pd.DataFrame(data={
         'file': videos,
-        'entities': videos.apply(lambda x: [' '.join([k.capitalize() for k in os.path.splitext(path + '/' + x)[0].split('_')[3:5]])])
+        'entities': name_norm(
+            videos.apply(lambda x: [' '.join([k.capitalize() for k in os.path.splitext(path + '/' + x)[0].split('_')[3:5]])]))
     })
     information = information.set_index('file')
     information.to_csv(path + '/information.csv')
@@ -66,7 +69,7 @@ def download_imdb_faces_dataset(path: str = 'data/datasets/imdb-faces'):
             LOGGER.warning(f'Could not download {row["url"]}')
     information = pd.DataFrame(data={
         'file': range(0, len(entities) - 1),
-        'entities': entities
+        'entities': name_norm(entities)
     })
     information = information.set_index('file')
     information.to_csv(os.path.join(path, 'information.csv'))
@@ -95,7 +98,7 @@ def download_imdb_wiki_dataset(path: str = 'data/datasets/imdb-wiki'):
     mat = scipy.io.loadmat(os.path.join(path, 'imdb/imdb.mat'))
     information = pd.DataFrame(data={
         'file': pd.Series(mat['imdb']['full_path'][0][0][0]).apply(lambda x: str(x[0])),
-        'entities': mat['imdb']['name'][0][0][0]
+        'entities': name_norm(mat['imdb']['name'][0][0][0])
     })
     information = information.set_index('file')
     information.to_csv(os.path.join(path, 'information.csv'))
@@ -126,7 +129,7 @@ def download_imdb_wiki_dataset(path: str = 'data/datasets/imdb-wiki'):
         tar.close()
 
 
-def download_youtube_faces_db(path: str = 'data/datasets/youtube-faces-db'):
+def download_youtube_faces_db(path: str = 'data/datasets/youtube-faces-db', download: bool = False):
     """ Parses a information.csv for the youtube-faces-db dataset. A homogeneous format for evaluation.
         Details about the dataset can be found here: https://www.cs.tau.ac.il/~wolf/ytfaces/.
 
@@ -136,29 +139,66 @@ def download_youtube_faces_db(path: str = 'data/datasets/youtube-faces-db'):
     ----------
     path: str, default = data/datasets/youtube-faces-db
         Path where the videos are located and the information.csv should be saved at.
+
+    download: bool, default = False
+        Whether the dataset should be downloaded automatically or only parsed.
     """
     check_path_exists(path)
+
+    if download:
+        def download_file(url):
+            local_filename = url.split('/')[-1]
+            with requests.get(url, stream=True, auth=('wolftau', 'wtal997')) as r:
+                r.raise_for_status()
+                with open(os.path.join(path, local_filename), 'wb') as f:
+                    for chunk in r.iter_content(chunk_size=8192):
+                        f.write(chunk)
+            return local_filename
+
+        LOGGER.info('Downloading ...')
+        download_file('http://www.cslab.openu.ac.il/download/wolftau/YouTubeFaces.tar.gz')
+
+        LOGGER.info('Extracting ...')
+        tar = tarfile.open(os.path.join(path, 'YouTubeFaces.tar.gz'))
+        tar.extractall(path)
+        tar.close()
+        os.remove(os.path.join(path, 'YouTubeFaces.tar.gz'))
+
+        path = os.path.join(path, 'YouTubeFaces/frame_images_DB')
+
+        LOGGER.info('Removing unnecessary files ...')
+        for file_name in os.listdir(path):
+            if file_name.endswith('.txt'):
+                os.remove(os.path.join(path, file_name))
 
     videos = []
     entities = []
     for entity in os.listdir(path):
+        entity_path = os.path.join(path, entity)
+        entity = entity.replace('_', ' ')
+
         if entity.startswith('.'):
             continue
 
-        for movie in os.listdir(os.path.join(path, entity)):
+        for movie in os.listdir(entity_path):
             if movie.startswith('.'):
                 continue
 
-            for frame in os.listdir(os.path.join(path, entity, movie)):
+            movie_path = os.path.join(entity_path, movie)
+            for frame in os.listdir(movie_path):
                 if frame.startswith('.'):
                     continue
 
-                videos.append(os.path.join(entity, movie, frame))
-                entities.append([entity.replace('_', ' ')])
+                videos.append(os.path.join(movie_path, frame))
+                entities.append(entity)
 
     information = pd.DataFrame(data={
         'file': videos,
-        'entities': entities
+        'original_entities': entities
     })
-    information = information.set_index('file')
-    information.to_csv(os.path.join(path, 'information.csv'))
+
+    entities_df = pd.DataFrame(information.original_entities.unique(), columns=['original_entities'])
+    entities_df['entities'] = name_norm(entities_df.original_entities.tolist())
+    information = information.merge(entities_df, how='left', on='original_entities')
+    
+    information[['file', 'entities']].to_csv(os.path.join(path, 'information.csv'))

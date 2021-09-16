@@ -1,9 +1,9 @@
 import numpy as np
 import cv2
-from keras.preprocessing.image import img_to_array
+from tensorflow.keras.preprocessing.image import img_to_array
 
 
-def face_alignment(img, shape, keypoints, blank=0.3, align=True):  # TODO(honglin):delete align parameters later
+def face_alignment(img, shape, keypoints, blank=0.3):
     left_eye = keypoints['left_eye']
     right_eye = keypoints['right_eye']
     mouth_left = keypoints['mouth_left']
@@ -26,10 +26,6 @@ def face_alignment(img, shape, keypoints, blank=0.3, align=True):  # TODO(hongli
 
     M = cv2.getRotationMatrix2D(eye_center, angle, scale)
 
-    # TODO(honglin): performance comparision use , delete later
-    if not align:
-        M = cv2.getRotationMatrix2D(keypoints['nose'], 0, scale)
-
     # translation
     tX = shape[0] * 0.5
     tY = shape[1] * blank
@@ -38,7 +34,6 @@ def face_alignment(img, shape, keypoints, blank=0.3, align=True):  # TODO(hongli
 
     aligned_face = cv2.warpAffine(img, M, shape, flags=cv2.INTER_CUBIC)
 
-    # TODO(honglin):face alignment test use, delete later
     # plt.imshow(aligned_face)
     # plt.show()
 

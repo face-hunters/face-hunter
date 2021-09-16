@@ -66,7 +66,7 @@ class MemoryStore(object):
         """
         prepared_query = prepareQuery(query,
                                       initNs={'dc': DC, 'foaf': FOAF, 'video': VIDEO, 'mpeg7': MPEG7, 'dbo': DBO,
-                                              'dbr': DBR, 'rdf': RDF, 'rdfs': RDFS})
+                                              'dbr': DBR, 'rdf': RDF, 'rdfs': RDFS, 'temporal': TEMPORAL})
         results = []
         for row in self.graph.query(prepared_query):
             elements = []

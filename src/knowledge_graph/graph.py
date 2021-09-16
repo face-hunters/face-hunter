@@ -2,12 +2,21 @@ import logging
 from datetime import timedelta
 from rdflib import URIRef, Literal
 from rdflib.namespace import DC, RDF, Namespace, FOAF, XSD
+import pandas as pd
 from src.knowledge_graph.memory_store import MemoryStore
 from src.knowledge_graph.virtuoso_store import VirtuosoStore
 from src.utils.utils import get_config
+from src.data.knowledge_graphs import get_same_as_link, get_uri_from_label, get_uri_from_csv
+import os
+
+on_rtd = os.environ.get('READTHEDOCS') == 'True'
 
 LOGGER = logging.getLogger('graph')
-CONFIG = get_config()
+
+if on_rtd:
+    CONFIG = get_config('../src/utils/config.yaml')
+else:
+    CONFIG = get_config('src/utils/config.yaml')
 
 HOME_URI = CONFIG['rdf']['uri']
 
@@ -31,13 +40,23 @@ class Graph(object):
                  virtuoso_url: str = None,
                  virtuoso_graph: str = None,
                  virtuoso_username: str = None,
-                 virtuoso_password: str = None):
+                 virtuoso_password: str = None,
+                 dbpedia_csv: str = None,
+                 wikidata_csv: str = None):
         if storage_type == 'memory':
             self.store = MemoryStore(memory_path)
         elif storage_type == 'virtuoso':
             self.store = VirtuosoStore(virtuoso_url, virtuoso_graph, virtuoso_username, virtuoso_password)
         else:
             raise Exception('Unknown storage type')
+
+        self.entity_data = None
+        if dbpedia_csv is not None and wikidata_csv is not None:
+            self.entity_data = pd.concat([pd.read_csv(dbpedia_csv), pd.read_csv(wikidata_csv)])
+        elif  wikidata_csv is not None:
+            self.entity_data = pd.read_csv(wikidata_csv)
+        elif dbpedia_csv is not None:
+            self.entity_data = pd.read_csv(dbpedia_csv)
 
     def insert_video(self, youtube_id: str, title: str):
         """ Creates the rdf triples for a new video.
@@ -86,8 +105,16 @@ class Graph(object):
         self.store.insert((scene_uri, TEMPORAL['hasFinishTime'], Literal(str(end_time).split('.', 2)[0],
                                                                          datatype=XSD['dateTime'])))
         for entity in entities:
-            entity_uri_dbpedia = URIRef(f'http://dbpedia.org/resource/{entity.replace(" ", "_")}')
-            self.store.insert((scene_uri, FOAF['depicts'], entity_uri_dbpedia))
+            if self.entity_data is None:
+                dbpedia_uri, wikidata_uri = get_uri_from_label(entity)
+            else:
+                dbpedia_uri, wikidata_uri = get_uri_from_csv(entity, self.entity_data)
+            if dbpedia_uri is not None:
+                self.store.insert((scene_uri, FOAF['depicts'], dbpedia_uri))
+            elif wikidata_uri is not None:
+                self.store.insert((scene_uri, FOAF['depicts'], wikidata_uri))
+            else:
+                LOGGER.info(f'Failed to create link to {entity} for video {youtube_id}')
         self.store.commit()
 
     def video_exists(self, youtube_id: str) -> bool:
@@ -110,23 +137,60 @@ class Graph(object):
                  '}')
         return True if int(self.store.query(query)[0][0]) > 0 else False
 
-    def get_videos_with_entity_name(self, entity: str):
+    def get_scenes_from_video(self, identifier: str):
+        """ Returns all scenes for a video
+
+        Parameters
+        ----------
+        identifier: str
+            Identifier of the video on YouTube
+
+        Returns
+        ----------
+        List
+            Returns a list of the scenes with a scene_uri, entity, start and end
+        """
+        query = ('SELECT ?scene ?entity ?start ?end'
+                 ' WHERE {'
+                 ' ?scene a video:Scene ;'
+                 f' video:sceneFrom <{HOME_URI} + {identifier}>;'
+                 ' foaf:depicts ?entity;'
+                 ' temporal:hasStartTime ?start;'
+                 ' temporal:hasFinishTime ?end'
+                 '}')
+
+        return self.store.query(query)
+
+    def get_videos_with_entity(self, identifier: str):
         """ Returns all videos for an entity
 
         Parameters
         ----------
-        entity: str
-            Name of the entity.
+        identifier: str
+            Can be the name of the entity or a dbpedia/wikidata link.
 
         Returns
         ----------
         List
             Returns a list of the videos in which a entity occurs. Format: [[<link>, <title>], ...]
         """
+
+        if identifier.startswith('http://www.wikidata'):
+            identifier = get_same_as_link(identifier)
+        elif not identifier.startswith('http://dbpedia'):
+            if self.entity_data is None:
+                uris = get_uri_from_label(identifier)
+            else:
+                uris = get_uri_from_csv(identifier, self.entity_data)
+            identifier = uris[0] if uris[0] is not None else uris[1]
+            if identifier is None:
+                LOGGER.warning('Could not identify entity using the label')
+                return None
+
         query = ('SELECT DISTINCT ?link ?title'
                  'WHERE {'
                  '?scene a video:Scene ;'
-                 f'foaf:depicts <http://dbpedia.org/resource/{entity.replace(" ", "_")}> ;'
+                 f'foaf:depicts <{identifier}> ;'
                  'video:sceneFrom ?video .'
                  '?video a mpeg7:Video ;'
                  'dc:identifier ?link ;'
@@ -134,29 +198,47 @@ class Graph(object):
                  '}')
         return self.store.query(query)
 
-    def get_videos_with_dbpedia_data(self, filters: dict):
+    def get_videos_with_filters(self, query: str, filters: str):
         """ Returns videos for a user specific query.
             For example: Videos with actors born before 1970.
+
+        Examples:
+        select distinct ?title ?link ?dbpedia_entity
+        where {
+            ?scene a video:Scene;
+                foaf:depicts ?dbpedia_entity;
+                video:sceneFrom ?video.
+            ?video dc:identifier ?link;
+                    dc:title ?title.
+
+            service <http://dbpedia.org/sparql> {
+                ?dbpedia_entity dbo:birthDate ?date;
+                    owl:sameAs ?wikidata_entity
+            }
+
+            service <https://query.wikidata.org/sparql> {
+                ?wikidata_entity <http://www.wikidata.org/prop/direct/P21> ?sex .
+                ?sex rdfs:label ?sex_label
+            }
+
+            filter (regex(str(?wikidata_entity), "www.wikidata.org") && (?sex_label = "male"@en) && ?date < "19700101"^^xsd:date)
+        }
 
         Returns
         ----------
         List
             Returns a list of the videos in which a entity occurs. Format: [[<link>, <title>, <entity>], ...]
         """
-        query = '''
-        select distinct ?title ?link ?entity 
-        where { 
-            ?scene a video:Scene; 
-                foaf:depicts ?entity; 
-                video:sceneFrom ?video. 
-            ?video dc:identifier ?link;
-                    dc:title ?title.
-            
-            service <http://dbpedia.org/sparql> { 
-                ?entity dbo:birthDate ?date 
-            } 
-            
-            filter (?date < "19700101"^^xsd:date) 
-        }
-        '''
+        query = (
+            'select distinct ?title ?link ?dbpedia_entity'
+            ' where { '
+            ' ?scene a video:Scene; '
+            ' foaf:depicts ?dbpedia_entity;'
+            ' video:sceneFrom ?video. '
+            ' ?video dc:identifier ?link;'
+            ' dc:title ?title.'
+            f' {query}'
+            f' filter {filters} )'
+            ' }'
+        )
         return self.store.query(query)

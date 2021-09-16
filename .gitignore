@@ -20,15 +20,17 @@ __pycache__
 
 # Mac OS-specific storage files
 .DS_Store
+
 # Local .terraform directories
 **/.terraform/*
-.terraform
+
 # .tfstate files
 *.tfstate
 *.tfstate.*
 
 # Lock file
 *.lock.*
-
-#GCP credentials
 face-hunter.json
+
+* SSH keys
+*pub_key*
