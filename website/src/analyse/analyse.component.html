@@ -1,0 +1,27 @@
+<div *ngIf="videos.length == 0">
+  <div class="search_bar">
+    <mat-form-field class="example-form-field" appearance="fill">
+      <mat-label>Input the URL of your video on YouTube</mat-label>
+      <input matInput type="text">
+    </mat-form-field>
+  </div>
+
+  <div class="search_button">
+    <mat-icon aria-hidden="false" aria-label="Example home icon" (click)="get_videos_of_celebritiy()">radar</mat-icon>
+  </div>
+</div>
+
+<div *ngFor="let video of videos" class="search_item">
+  <youtube-player videoId="{{video.id}}" [height]="250" [width]="350" [startSeconds]="video.start" [endSeconds]="video.end"></youtube-player>
+  <div>
+    <p><b>Entity:</b></p><p class="inbl">{{video.entity}}</p><br>
+    <p><b>Title:</b></p><p class="inbl">{{video.video}}</p><br>
+    <p><b>Start:</b></p><p class="inbl">{{video.start}}</p><br>
+    <p><b>End:</b></p><p class="inbl">{{video.end}}</p><br>
+    <p><b>Duration:</b></p><p class="inbl">{{video.duration}}</p>
+  </div>
+</div>
+
+<button class="bback" mat-fab aria-label="Back button" color="primary" *ngIf="videos.length > 0" (click)="reset()">
+  <mat-icon>arrow_back</mat-icon>
+</button>
