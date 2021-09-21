@@ -4,8 +4,8 @@ from flask import (
     request,
     make_response
 )
-from flask_ngrok import run_with_ngro
-from .flask_api import FlaskApi
+from flask_ngrok import run_with_ngrok
+from flask_api import FlaskApi
 
 #  todo: from config
 BY = 'frame'
@@ -53,7 +53,7 @@ api = FlaskApi(
 @app.route('/api/youtube/<id>', methods=['GET'])
 def recognize_youtube_video(id):
     result = api.recognize_youtube_video(id, BY, FRAME_THRESHOLD)
-    return jsonify({'success': True, 'result': result}
+    return jsonify({'success': True, 'result': result})
 
 @app.route('/api/query', methods=['POST'])
 def get_videos_by_sparql():
@@ -76,4 +76,3 @@ def iternal_error(error):
 
 if __name__ == '__main__':
     app.run()
-	
