@@ -201,14 +201,31 @@ def download_thumbnail(index: int, i_thumbnail_url: str, i_path: str, i_file_nam
         A list containing the index, the thumbnail url and the result outcome (success, HTTPError or UnicodeEncodeError)
     """
     try:
-        if index % 10000 == 0:
-            LOGGER.info(f'Downloaded {index} thumbnails')
-        time.sleep(0.001)
+        if index % 10 == 0:
+            LOGGER.info(f'{index} downloaded')
         check_path_exists(os.path.join(i_path))
         headers = {'user-agent': 'bot'}
-        r = requests.get(i_thumbnail_url, headers=headers)
-        with open(os.path.join(i_path, i_file_name), 'wb') as f:
-            f.write(r.content)
+        if not os.path.exists(os.path.join(i_path, i_file_name)):
+            while True:
+                time.sleep(3)
+                r = requests.get(i_thumbnail_url, headers=headers)
+                with open(os.path.join(i_path, i_file_name), 'wb') as f:
+                    f.write(r.content)
+                if os.path.getsize(os.path.join(i_path, i_file_name))!=1820:
+                    break
+                else:
+                    LOGGER.info(r)
+        else:
+            if os.path.getsize(os.path.join(i_path, i_file_name))==1820:
+                while True:
+                    time.sleep(3)
+                    r = requests.get(i_thumbnail_url, headers=headers)
+                    with open(os.path.join(i_path, i_file_name), 'wb') as f:
+                        f.write(r.content)
+                    if os.path.getsize(os.path.join(i_path, i_file_name))!=1820:
+                        break
+                    else:
+                        LOGGER.info(f'{r}:{len(r.content)}')
         output = [index, i_thumbnail_url, 'success']
         return output
     except HTTPError:
