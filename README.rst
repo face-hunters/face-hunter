@@ -52,4 +52,17 @@ Follow these steps:
 How to use
 ##############
 
+The module can be imported and used directly in Python or by accessing the command line interface.
+
 A detailed documentation can be found `here <https://face-hunter.readthedocs.io/>`__.
+
+Credits
+##############
+
+This project started at the end of March 2021 as a Team Project at the University of Mannheim.
+The team consists of:
+
+* `Ali Shaban <https://github.com/Alishaba/>`__
+* `Bo Tong <https://github.com/bbbbtong/>`__
+* `Honglin Li <https://github.com/Honglin-Li/>`__
+* `Tim Grams <https://github.com/timg339/>`__
