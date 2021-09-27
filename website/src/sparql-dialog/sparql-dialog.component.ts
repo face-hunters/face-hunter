@@ -2,7 +2,7 @@ import {Component, Inject} from "@angular/core";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 
 @Component({
-  selector: 'dialog-overview-example-dialog',
+  selector: 'sparql-dialog',
   templateUrl: 'sparql-dialog.component.html',
   styleUrls: ['./sparql-dialog.component.scss']
 })

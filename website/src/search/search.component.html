@@ -2,7 +2,7 @@
   <div class="search_bar">
     <mat-form-field class="example-form-field" appearance="fill">
       <mat-label>Search for your favorite celebrity</mat-label>
-      <input matInput type="text">
+      <input matInput [(ngModel)]="entity" type="text" >
       <button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
         <mat-icon>close</mat-icon>
       </button>
@@ -10,7 +10,7 @@
   </div>
 
   <div class="search_button">
-    <mat-icon aria-hidden="false" aria-label="Example home icon" (click)="get_videos_of_celebritiy()">search</mat-icon>
+    <mat-icon aria-hidden="false" aria-label="Example home icon" (click)="get_videos_of_celebritiy(entity)">search</mat-icon>
   </div>
 
   <p (click)="openDialog()" class="sparql">.. or execute a SPARQL-Query directly</p>

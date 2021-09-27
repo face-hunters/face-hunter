@@ -15,16 +15,17 @@ import {SparqlDialogComponent} from "../sparql-dialog/sparql-dialog.component";
 import {MatDividerModule} from "@angular/material/divider";
 import {AppRoutingModule} from "./app-routing.module";
 import {SearchComponent} from "../search/search.component";
-import {AnalyseComponent} from "../analyse/analyse.component";
 import {HttpClientModule} from "@angular/common/http";
 import {HunterService} from "../services/hunter.service";
+import {FormsModule} from "@angular/forms";
+import {NotFoundDialogComponent} from "../not-found-dialog/not-found-dialog.component";
 
 @NgModule({
   declarations: [
     AppComponent,
     SparqlDialogComponent,
-    SearchComponent,
-    AnalyseComponent
+    NotFoundDialogComponent,
+    SearchComponent
   ],
   imports: [
     BrowserModule,
@@ -39,7 +40,8 @@ import {HunterService} from "../services/hunter.service";
     MatFormFieldModule,
     MatDividerModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
   ],
   providers: [
     HunterService

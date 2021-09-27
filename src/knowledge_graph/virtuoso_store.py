@@ -76,5 +76,5 @@ class VirtuosoStore(object):
                  'WHERE {'
                  '?video a mpeg7:Video ;'
                  f'dc:identifier "http://www.youtube.com/watch?v={youtube_id}" .'
-                 '} group by ?video')
+                 '}')
         return True if int(self.query(query)[0][0]) > 0 else False

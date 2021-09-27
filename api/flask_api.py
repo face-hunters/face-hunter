@@ -85,3 +85,7 @@ class FlaskApi(object):
 
     def get_videos_by_sparql(self, sparql):
         return self.graph.get_videos_with_filters(sparql)
+
+    def get_videos_by_entity(self, entity):
+        print(entity)
+        return self.graph.get_videos_with_entity(entity)

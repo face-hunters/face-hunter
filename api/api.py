@@ -69,6 +69,14 @@ def get_videos_by_sparql():
     return jsonify({'success': False, 'result': 'wrong request type'})
 
 
+@app.route('/api/entity/<entity>', methods=['GET'])
+def get_scenes_by_entity(entity):
+    result = api.get_videos_by_entity(entity)
+    response = jsonify({'success': True, 'result': result})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
+
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)

@@ -10,7 +10,11 @@ export class HunterService {
   ) { }
 
   get_scenes_of_entity(name: string) {
-    return name;
+    return this.http.get<any>('http://localhost:5000/api/entity/' + name);
+  }
+
+  execute_query(query: string) {
+    return this.http.post('http://localhost:5000/api/query', {sparql: query})
   }
 
 }
