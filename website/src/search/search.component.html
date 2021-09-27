@@ -19,11 +19,11 @@
 <div *ngFor="let video of videos" class="search_item">
   <youtube-player videoId="{{video.id}}" [height]="250" [width]="350" [startSeconds]="video.start" [endSeconds]="video.end"></youtube-player>
   <div>
-    <p><b>Entity:</b></p><p class="inbl">{{video.entity}}</p><br>
     <p><b>Title:</b></p><p class="inbl">{{video.video}}</p><br>
     <p><b>Start:</b></p><p class="inbl">{{video.start}}</p><br>
     <p><b>End:</b></p><p class="inbl">{{video.end}}</p><br>
-    <p><b>Duration:</b></p><p class="inbl">{{video.duration}}</p>
+    <p><b>Duration:</b></p><p class="inbl">{{video.duration}}</p><br>
+    <p><b>Entity:</b></p><p class="inbl">{{video.entity}}</p>
   </div>
 </div>
 

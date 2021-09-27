@@ -10,7 +10,7 @@ export class SparqlDialogComponent {
 
   query: any = {
     query: '',
-    filter: ''
+    filters: ''
   };
 
   constructor(

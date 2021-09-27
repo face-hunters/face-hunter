@@ -157,7 +157,7 @@ class Graph(object):
         print(query)
         return self.store.query(query)
 
-    def get_videos_with_entity(self, identifier: str):
+    def get_scenes_with_entity(self, identifier: str):
         """ Returns all videos for an entity
 
         Parameters
@@ -183,15 +183,17 @@ class Graph(object):
                 LOGGER.warning('Could not identify entity using the label')
                 return None
 
-        query = ('SELECT DISTINCT ?link ?title'
-                 'WHERE {'
-                 '?scene a video:Scene ;'
-                 f'foaf:depicts <{identifier}> ;'
-                 'video:sceneFrom ?video .'
-                 '?video a mpeg7:Video ;'
-                 'dc:identifier ?link ;'
-                 'dc:title ?title .'
-                 '}')
+        query = ('SELECT ?title ?link ?start ?end'
+                 ' WHERE {'
+                 ' ?scene a video:Scene ;'
+                 f' foaf:depicts <{identifier}> ;'
+                 ' temporal:hasStartTime ?start ;'
+                 ' temporal:hasFinishTime ?end ;' 
+                 ' video:sceneFrom ?video .'
+                 ' ?video a mpeg7:Video ;'
+                 ' dc:identifier ?link ;'
+                 ' dc:title ?title .'
+                 ' }')
         return self.store.query(query)
 
     def get_videos_with_filters(self, query: str, filters: str):
@@ -234,7 +236,7 @@ class Graph(object):
             ' ?video dc:identifier ?link;'
             ' dc:title ?title.'
             f' {query}'
-            f' filter {filters} )'
+            f' {"filter ( "+filters+" )" if filters is not None else ""}'
             ' }'
         )
         return self.store.query(query)

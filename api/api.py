@@ -4,8 +4,10 @@ from flask import (
     request,
     make_response
 )
+import json
 from flask_ngrok import run_with_ngrok
 from flask_api import FlaskApi
+from flask_cors import CORS
 
 #  todo: from config
 BY = 'frame'
@@ -17,7 +19,7 @@ VIRTUOSO_GRAPH = 'http://localhost:8890/DAV/'
 VIRTUOSO_USERNAME = 'dba'
 VIRTUOSO_PASSWORD = 'dba'
 DBPEDIA_CSV = None
-WIKIDATA_CSV = '../data/thumbnails/Thumbnails_links.csv'
+WIKIDATA_CSV = None
 
 THUMBNAIL_LIST = None
 THUMBNAILS_PATH = '../data/thumbnails'
@@ -29,6 +31,7 @@ EMBEDDINGS_PATH = '../data/embeddings/embeddings_facenet.pickle'
 INDEX_PATH = '../data/embeddings/index.bin'
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}})
 run_with_ngrok(app)
 
 api = FlaskApi(
@@ -59,12 +62,15 @@ def recognize_youtube_video(id):
 
 @app.route('/api/query', methods=['POST'])
 def get_videos_by_sparql():
-    sparql = None
-
     if request.headers['Content-Type'] == 'application/json':
-        sparql = json.loads(request.data).get('sparql')
-        result = api.get_videos_by_sparql(sparql)
-        return jsonify({'success': True, 'result': result})
+        query = json.loads(request.data).get('query')
+        filters = json.loads(request.data).get('filters').rstrip('\n')
+        if filters == '':
+            filters = None
+        result = api.get_videos_by_sparql(query, filters)
+        response = jsonify({'success': True, 'result': result})
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
 
     return jsonify({'success': False, 'result': 'wrong request type'})
 

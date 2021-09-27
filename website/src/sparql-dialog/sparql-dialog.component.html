@@ -5,20 +5,21 @@
   <p>where {{'{'}}</p>
   <p class="one">?scene a video:Scene;</p>
   <p class="two">foaf:depicts ?dbpedia_entity;</p>
-  <p class="one">video:sceneFrom ?video.</p>
-  <p class="two">?video dc:identifier ?link;</p>
+  <p class="two">video:sceneFrom ?video.</p>
+  <p class="one">?video dc:identifier ?link;</p>
+  <p class="two">dc:title ?title.</p>
 
 
   <mat-form-field class="one">
     <mat-label>Wikidata and DBpedia Query</mat-label>
-    <textarea matInput></textarea>
+    <textarea [(ngModel)]="query.query" matInput></textarea>
   </mat-form-field>
 
   <p>filter (</p>
 
   <mat-form-field>
     <mat-label>Filter</mat-label>
-    <textarea matInput></textarea>
+    <textarea [(ngModel)]="query.filters" matInput></textarea>
   </mat-form-field>
 
   <p>) {{'}'}}</p>

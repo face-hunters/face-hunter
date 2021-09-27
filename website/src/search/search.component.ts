@@ -35,9 +35,20 @@ export class SearchComponent implements OnInit {
       if (data['result'] == null) {
         this.dialog.open(NotFoundDialogComponent);
       } else {
-        this.videos.push({id: 'LKvlfxVC210', start: 3, end: 15, duration: 12, video: 'Test', entity: 'Adam Sandler'});
-        this.videos.push({id: 'N_gD9-Oa0fg', start: 3, end: 20, duration: 17, video: 'Test', entity: 'Adam Sandler'});
-        this.videos.push({id: 'N_gD9-Oa0fg', start: 3, end: 20, duration: 17, video: 'Test', entity: 'Adam Sandler'});
+        for (let scene in data.result) {
+          let start_split = data.result[scene][2].split(':');
+          let end_split = data.result[scene][3].split(':');
+          let start = +start_split[0]*24*60 + +start_split[1]*60 + +start_split[2];
+          let end = +end_split[0]*24*60 + +end_split[1]*60 + +end_split[2];
+
+          this.videos.push({video: data.result[0][0],
+            id: data.result[scene][1].split('=')[data.result[scene][1].split('=').length - 1],
+            start: start,
+            end: end,
+            duration: end - start,
+            entity: name})
+        }
+        console.log(this.videos)
       }
     });
   }
@@ -54,7 +65,10 @@ export class SearchComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result != null) {
-        this.get_videos_of_celebritiy('Adam Sandler')
+        console.log(result);
+        this.hunter.execute_query(result).subscribe(data => {
+          console.log(data);
+        })
       }
     });
   }

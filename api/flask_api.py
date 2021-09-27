@@ -79,13 +79,12 @@ class FlaskApi(object):
         for scene in scenes:
             result.append([scene.names[0].tolist(), str(scene.start[0]).split('.')[0],
                            str(scene.end[0]).split('.')[0]])  # accurate to second
-            graph.insert_scene(scene.names[0], identifier, scene.start[0], scene.end[0])
+            self.graph.insert_scene(scene.names[0], identifier, scene.start[0], scene.end[0])
 
         return result
 
-    def get_videos_by_sparql(self, sparql):
-        return self.graph.get_videos_with_filters(sparql)
+    def get_videos_by_sparql(self, query, filters):
+        return self.graph.get_videos_with_filters(query, filters)
 
     def get_videos_by_entity(self, entity):
-        print(entity)
-        return self.graph.get_videos_with_entity(entity)
+        return self.graph.get_scenes_with_entity(entity)
