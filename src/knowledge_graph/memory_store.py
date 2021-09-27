@@ -1,12 +1,21 @@
 import logging
 import os
 
-from src.utils.utils import check_path_exists
-from rdflib import Graph
+from src.utils.utils import check_path_exists, get_config
+from rdflib import Graph, URIRef, Literal
 from rdflib.namespace import DC, RDF, Namespace, FOAF, XSD, RDFS
 from rdflib.plugins.sparql import prepareQuery
 
 LOGGER = logging.getLogger('memory-store')
+
+on_rtd = os.environ.get('READTHEDOCS') == 'True'
+
+if on_rtd:
+    CONFIG = get_config('../src/utils/config.yaml')
+else:
+    CONFIG = get_config('../src/utils/config.yaml')
+
+HOME_URI = CONFIG['rdf']['uri']
 
 MPEG7 = Namespace('http://purl.org/ontology/mpeg7/')
 VIDEO = Namespace('http://purl.org/ontology/video/')
@@ -74,3 +83,7 @@ class MemoryStore(object):
                 elements.append(str(element))
             results.append(elements)
         return results
+
+    def exists(self, youtube_id):
+        video_uri = URIRef(f'{HOME_URI}{youtube_id}')
+        return (video_uri, DC['identifier'], Literal(f'http://www.youtube.com/watch?v={youtube_id}')) in self.graph

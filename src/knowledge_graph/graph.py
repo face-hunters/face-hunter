@@ -16,7 +16,7 @@ LOGGER = logging.getLogger('graph')
 if on_rtd:
     CONFIG = get_config('../src/utils/config.yaml')
 else:
-    CONFIG = get_config('src/utils/config.yaml')
+    CONFIG = get_config('../src/utils/config.yaml')
 
 HOME_URI = CONFIG['rdf']['uri']
 
@@ -43,6 +43,7 @@ class Graph(object):
                  virtuoso_password: str = None,
                  dbpedia_csv: str = None,
                  wikidata_csv: str = None):
+        self.storage_type = storage_type
         if storage_type == 'memory':
             self.store = MemoryStore(memory_path)
         elif storage_type == 'virtuoso':
@@ -130,12 +131,7 @@ class Graph(object):
         Boolean
             Whether it exists or not.
         """
-        query = ('SELECT COUNT(?video)'
-                 'WHERE {'
-                 '?video a mpeg7:Video ;'
-                 f'dc:identifier "http://www.youtube.com/watch?v={youtube_id}" .'
-                 '}')
-        return True if int(self.store.query(query)[0][0]) > 0 else False
+        return self.store.exists(youtube_id)
 
     def get_scenes_from_video(self, identifier: str):
         """ Returns all scenes for a video
@@ -156,9 +152,9 @@ class Graph(object):
                  f' video:sceneFrom <{HOME_URI + identifier}>;'
                  ' foaf:depicts ?entity;'
                  ' temporal:hasStartTime ?start;'
-                 ' temporal:hasFinishTime ?end'
+                 ' temporal:hasFinishTime ?end.'
                  '}')
-
+        print(query)
         return self.store.query(query)
 
     def get_videos_with_entity(self, identifier: str):

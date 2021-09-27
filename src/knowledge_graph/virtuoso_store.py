@@ -70,3 +70,11 @@ class VirtuosoStore(object):
         for index, row in query_results.iterrows():
             results.append([row[col] for col in value_columns])
         return results
+
+    def exists(self, youtube_id):
+        query = ('SELECT count(?video)'
+                 'WHERE {'
+                 '?video a mpeg7:Video ;'
+                 f'dc:identifier "http://www.youtube.com/watch?v={youtube_id}" .'
+                 '} group by ?video')
+        return True if int(self.query(query)[0][0]) > 0 else False

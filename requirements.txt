@@ -1,7 +1,7 @@
 wget~=3.2
 opencv-python~=4.5.1.48
 numpy~=1.19.2
-pytube==10.8.5
+pytube==11.0.1
 pandas~=1.2.3
 nmslib~=2.1.1
 scipy~=1.6.1
