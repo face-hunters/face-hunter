@@ -2,9 +2,16 @@ import argparse
 import logging
 from src.hunter import Hunter
 from src.utils.utils import get_config
+import os
 
 LOGGER = logging.getLogger('cli')
-CONFIG = get_config()
+
+on_rtd = os.environ.get('READTHEDOCS') == 'True'
+
+if on_rtd:
+    CONFIG = get_config('../src/utils/config.yaml')
+else:
+    CONFIG = get_config('../src/utils/config.yaml')
 
 
 def _search(args):
@@ -92,12 +99,22 @@ def _run_detection(args):
 
 
 def _link(args):
+    """ Allows to link a video to the knowledge graph
+
+    Parameters
+    ----------
+    args.url: str, default = 'https://www.youtube.com/watch?v=elz1J86AExY'
+        The link to the video on YouTube to add.
+    """
     from src.hunter import Hunter
-    Hunter('https://www.youtube.com/watch?v=elz1J86AExY').link('virtuoso', '',
-                                                               'http://localhost:8890/sparql-auth',
-                                                               'http://localhost:8890/DAV/',
-                                                               'dba',
-                                                               'dba')
+    if 'virtuoso' in CONFIG:
+        LOGGER.info(Hunter(args.url).link('virtuoso',
+                                          virtuoso_url=CONFIG['virtuoso']['sparql-auth'],
+                                          virtuoso_graph=CONFIG['virtuoso']['graph'],
+                                          virtuoso_username=CONFIG['virtuoso']['user'],
+                                          virtuoso_password=CONFIG['virtuoso']['password']))
+    else:
+        LOGGER.info(Hunter(args.url).link('memory', memory_path=CONFIG['memory']['path']))
 
 
 def _get_parser():
@@ -150,6 +167,9 @@ def _get_parser():
     # Parser to link a video
     link = subparsers.add_parser('link',
                                  help='Link entities of a video to a knowledge graph')
+    link.add_argument('--url', help='Link to the youtube video',
+                      type=str,
+                      default='https://www.youtube.com/watch?v=elz1J86AExY')
     link.set_defaults(action=_link)
     return parser
 

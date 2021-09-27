@@ -45,6 +45,20 @@ class Hunter(object):
              virtuoso_password: str = None,
              dbpedia_csv: str = 'data/thumbnails/dbpedia_thumbnails/Thumbnails_links.csv',
              wikidata_csv: str = 'data/thumbnails/wikidata_thumbnails/Thumbnails_links.csv'):
+        """ Recognize entities in a video and add corresponding links to the knowledge graph.
+
+        Args:
+            storage_type (str): Whether to save links to a local rdf-file or a Virtuoso database. Should be 'memory' for a local file,
+                            'virtuoso' for Virtuoso.
+            memory_path (str): Path to which the links should be written. Only necessary if storage_type = memory.
+            virtuoso_url (str): URL of the Virtuoso-SPARQL-instance. Only necessary if storage_type = virtuoso.
+            virtuoso_graph (str): URL of the Virtuoso-Graph in which the links should be saved. Only necessary if storage_type = virtuoso.
+            virtuoso_username (str): Username to access the Virtuoso instance. Only necessary if storage_type = virtuoso.
+            virtuoso_password (str): Password to access the Virtuoso instance. Only necessary if storage_type = virtuoso.
+            dbpedia_csv (str): Path of the normalized DBpedia-thumbnail-information.
+            wikidata_csv (str): Path of the normalized Wikidata-thumbnail-information
+
+        """
         graph = Graph(storage_type,
                       memory_path,
                       virtuoso_url,
@@ -69,6 +83,18 @@ class Hunter(object):
                virtuoso_graph: str = None,
                virtuoso_username: str = None,
                virtuoso_password: str = None):
+        """ Allows to search for scenes in a knowledge graph using the entity name.
+
+        Args:
+            entity (str): Name of the entity to search for. Should be the label, DBpedia- or Wikidata-URI.
+            storage_type (str): Whether to save links to a local rdf-file or a Virtuoso database. Should be 'memory' for a local file,
+                            'virtuoso' for Virtuoso.
+            memory_path (str): Path to which the links should be written. Only necessary if storage_type = memory.
+            virtuoso_url (str): URL of the Virtuoso-SPARQL-instance. Only necessary if storage_type = virtuoso.
+            virtuoso_graph (str): URL of the Virtuoso-Graph in which the links should be saved. Only necessary if storage_type = virtuoso.
+            virtuoso_username (str): Username to access the Virtuoso instance. Only necessary if storage_type = virtuoso.
+            virtuoso_password (str): Password to access the Virtuoso instance. Only necessary if storage_type = virtuoso.
+        """
         return Graph(storage_type,
                      memory_path,
                      virtuoso_url,
