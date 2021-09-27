@@ -23,10 +23,6 @@ class ApproximateKNearestNeighbors(object):
         The vector space NMSLIB uses for comparing data points.
         Details can be found here: https://github.com/nmslib/nmslib/blob/master/manual/spaces.md.
 
-    model: str, default = 'hog'
-        Defines the model of the face recognition library.
-        Can be 'hog' or 'CNN'.
-
     distance_threshold: float, default = 0.4
         Defines the maximum distance face embeddings can have to be detected as similar.
 
@@ -43,14 +39,12 @@ class ApproximateKNearestNeighbors(object):
     def __init__(self,
                  method='hnsw',
                  space='cosinesimil',
-                 model='hog',
                  distance_threshold=0.4,
                  index_path='data/embeddings/index.bin',
                  k=1
                  ):
         self.method = method
         self.space = space
-        self.model = model
         self.recognizer = None
         self.index_path = index_path
         self.labels = []
@@ -109,9 +103,8 @@ class ApproximateKNearestNeighbors(object):
                 idx = neighbors[0]
                 entity = self.labels[idx]
                 entities.append(entity)
-        
+
         if entities:
             return max(entities, key=entities.count)
         else:
             return 'unknown'
-			

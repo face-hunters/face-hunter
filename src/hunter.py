@@ -18,25 +18,76 @@ class Hunter(object):
         self.url = url
         self.identifier = self.url.split('=')[1]
         self.path_to_video = None
-        self.face_detection = FaceRecognition()
+        self.face_detection = None
 
-    def recognize(self, method: str = 'approximate_k_neighbors') -> list:
+    def fit(self,
+            thumbnail_list=None,
+            thumbnails_path='data/thumbnails/thumbnails',
+            img_width=500,
+            encoder_name='Dlib',
+            labels_path='data/embeddings/labels.pickle',
+            embeddings_path='data/embeddings/embeddings.pickle'
+            ):
+        """ Creates the embeddings for a dictionary of thumbnails.
+
+        Args:
+            thumbnail_list (list): list of thumbnails to load.
+            thumbnails_path (str): Path to the directory containing the thumbnails.
+            img_width (int): Size to which the thumbnails should be resized.
+            encoder_name (str): Specifies the method to create embeddings of faces in an image.
+            labels_path (str): Path where the label-information should be saved.
+            embeddings_path (str): Path where the embeddings should be saved.
+
+        """
+        self.face_detection = FaceRecognition(
+            thumbnail_list,
+            thumbnails_path,
+            img_width,
+            encoder_name,
+            labels_path,
+            embeddings_path
+        )
+
+    def recognize(self,
+                  algorithm='appr',
+                  method='hnsw',
+                  space='cosinesimil',
+                  distance_threshold=0.4,
+                  index_path='data/embeddings/index.bin',
+                  k=1
+                  ) -> list:
         """ Get a list of entities that could be recognized in the video.
 
         Args:
-            method (str): Chosen model for the recognition of entities. Should be 'appr' for approximate_k_neighbors,
-                            'knn' standard k-nearest neighbors.
+            algorithm (str): Algorithm to use for the similarity-calculation. Should be '1nn' for 1-Nearest Neighbors with euclidean distance, 'appr' for approximate k-Nearest Neighbors.
+            distance_threshold (float): The threshold above which faces are recognized as being similar.
+            method (str): Type of graph to use for the k-nearest neighbor approximation. See https://github.com/nmslib/nmslib/blob/master/manual/methods.md for available options. Only necessary if algorithm = 'appr'.
+            space (str): Similarity measure to use in the space. Only necessary if algorithm = 'appr'.
+            index_path (str): Path to an existing nmslib-index. Only necessary if algorithm = 'appr'.
+            k (int): The number of k-nearest neighbors to consider for the detection. Only necessary if algorithm = 'appr'.
 
         """
-        if method == 'approximate_k_neighbors':
-            detector = ApproximateKNearestNeighbors()
+        if algorithm == 'appr':
+            detector = ApproximateKNearestNeighbors(method,
+                                                    space,
+                                                    distance_threshold,
+                                                    index_path,
+                                                    k)
+        elif algorithm == '1nn':
+            detector = None
         else:
-            raise Exception('Unknown Detector')
+            raise Exception('Unknown Predictor')
 
         self.path_to_video = download_youtube_video(self.url, tempfile.gettempdir())
-        return self.face_detection.recognize_video(self.path_to_video, detector)
+        return self.face_detection.recognize_video(self.path_to_video, detector, distance_threshold)
 
     def link(self,
+             algorithm='appr',
+             method='hnsw',
+             space='cosinesimil',
+             distance_threshold=0.4,
+             index_path='data/embeddings/index.bin',
+             k=1,
              storage_type: str = 'memory',
              memory_path: str = 'models/store',
              virtuoso_url: str = None,
@@ -48,6 +99,12 @@ class Hunter(object):
         """ Recognize entities in a video and add corresponding links to the knowledge graph.
 
         Args:
+            algorithm (str): Algorithm to use for the similarity-calculation. Should be '1nn' for 1-Nearest Neighbors with euclidean distance, 'appr' for approximate k-Nearest Neighbors.
+            distance_threshold (float): The threshold above which faces are recognized as being similar.
+            method (str): Type of graph to use for the k-nearest neighbor approximation. See https://github.com/nmslib/nmslib/blob/master/manual/methods.md for available options. Only necessary if algorithm = 'appr'.
+            space (str): Similarity measure to use in the space. Only necessary if algorithm = 'appr'.
+            index_path (str): Path to an existing nmslib-index. Only necessary if algorithm = 'appr'.
+            k (int): The number of k-nearest neighbors to consider for the detection. Only necessary if algorithm = 'appr'.
             storage_type (str): Whether to save links to a local rdf-file or a Virtuoso database. Should be 'memory' for a local file,
                             'virtuoso' for Virtuoso.
             memory_path (str): Path to which the links should be written. Only necessary if storage_type = memory.
@@ -56,7 +113,7 @@ class Hunter(object):
             virtuoso_username (str): Username to access the Virtuoso instance. Only necessary if storage_type = virtuoso.
             virtuoso_password (str): Password to access the Virtuoso instance. Only necessary if storage_type = virtuoso.
             dbpedia_csv (str): Path of the normalized DBpedia-thumbnail-information.
-            wikidata_csv (str): Path of the normalized Wikidata-thumbnail-information
+            wikidata_csv (str): Path of the normalized Wikidata-thumbnail-information.
 
         """
         graph = Graph(storage_type,
@@ -68,7 +125,8 @@ class Hunter(object):
                       dbpedia_csv,
                       wikidata_csv)
 
-        recognized_entities, frame_wise_entities, timestamps = self.recognize()
+        recognized_entities, frame_wise_entities, timestamps = self.recognize(algorithm, method, space,
+                                                                              distance_threshold, index_path, k)
         if not graph.video_exists(self.identifier):
             graph.insert_video(self.identifier, os.path.split(self.path_to_video)[1])
             scenes = extract_scenes(frame_wise_entities, timestamps)
@@ -82,7 +140,9 @@ class Hunter(object):
                virtuoso_url: str = None,
                virtuoso_graph: str = None,
                virtuoso_username: str = None,
-               virtuoso_password: str = None):
+               virtuoso_password: str = None,
+               dbpedia_csv: str = None,
+               wikidata_csv: str = None):
         """ Allows to search for scenes in a knowledge graph using the entity name.
 
         Args:
@@ -94,10 +154,14 @@ class Hunter(object):
             virtuoso_graph (str): URL of the Virtuoso-Graph in which the links should be saved. Only necessary if storage_type = virtuoso.
             virtuoso_username (str): Username to access the Virtuoso instance. Only necessary if storage_type = virtuoso.
             virtuoso_password (str): Password to access the Virtuoso instance. Only necessary if storage_type = virtuoso.
+            dbpedia_csv (str): Path of the normalized DBpedia-thumbnail-information.
+            wikidata_csv (str): Path of the normalized Wikidata-thumbnail-information
         """
         return Graph(storage_type,
                      memory_path,
                      virtuoso_url,
                      virtuoso_graph,
                      virtuoso_username,
-                     virtuoso_password).get_scenes_with_entity(entity)
+                     virtuoso_password,
+                     dbpedia_csv,
+                     wikidata_csv).get_scenes_with_entity(entity)

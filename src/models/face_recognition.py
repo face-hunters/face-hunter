@@ -39,7 +39,6 @@ class FaceRecognition(object):
                  thumbnails_path='data/thumbnails/thumbnails',
                  # detector_name='mtcnn',
                  img_width=500,
-                 distance_threshold=0.6,
                  encoder_name='Dlib',
                  labels_path='data/embeddings/labels.pickle',
                  embeddings_path='data/embeddings/embeddings.pickle'):
@@ -47,7 +46,6 @@ class FaceRecognition(object):
         self.thumbnail_list = thumbnail_list
         self.thumbnails_path = thumbnails_path
         self.img_width = img_width
-        self.distance_threshold = distance_threshold
         self.labels_path = labels_path
         self.embeddings_path = embeddings_path
 
@@ -152,7 +150,7 @@ class FaceRecognition(object):
             return labels, embeddings
         return self.create_embeddings()
 
-    def recognize_image(self, unknown_img, recognizer_model=None):
+    def recognize_image(self, unknown_img, recognizer_model=None, distance_threshold=0.6):
         """ recognize faces in image
         Params:
           unknown_img: image_path or image object(frame)
@@ -172,7 +170,7 @@ class FaceRecognition(object):
                 face_distances = 1 - a / (b * c)
                 min_distance = np.min(face_distances)
 
-                if min_distance < self.distance_threshold:
+                if min_distance < distance_threshold:
                     entity = self.labels[np.argmin(face_distances)]
                     detected_faces.append(entity)
 
