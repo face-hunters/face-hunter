@@ -183,10 +183,11 @@ class Graph(object):
                 LOGGER.warning('Could not identify entity using the label')
                 return None
 
-        query = ('SELECT ?title ?link ?start ?end'
+        query = ('SELECT  distinct ?title ?link ?dbpedia_entity ?start ?end'
                  ' WHERE {'
                  ' ?scene a video:Scene ;'
                  f' foaf:depicts <{identifier}> ;'
+                 f' foaf:depicts ?dbpedia_entity ;'
                  ' temporal:hasStartTime ?start ;'
                  ' temporal:hasFinishTime ?end ;' 
                  ' video:sceneFrom ?video .'
@@ -228,10 +229,12 @@ class Graph(object):
             Returns a list of the videos in which a entity occurs. Format: [[<link>, <title>, <entity>], ...]
         """
         query = (
-            'select distinct ?title ?link ?dbpedia_entity'
+            'select distinct ?title ?link ?dbpedia_entity ?start ?end'
             ' where { '
             ' ?scene a video:Scene; '
             ' foaf:depicts ?dbpedia_entity;'
+            ' temporal:hasStartTime ?start;'
+            ' temporal:hasFinishTime ?end;'
             ' video:sceneFrom ?video. '
             ' ?video dc:identifier ?link;'
             ' dc:title ?title.'

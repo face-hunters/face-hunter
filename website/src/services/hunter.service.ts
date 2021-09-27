@@ -14,7 +14,7 @@ export class HunterService {
   }
 
   execute_query(query: string) {
-    return this.http.post('http://localhost:5000/api/query', query)
+    return this.http.post<any>('http://localhost:5000/api/query', query)
   }
 
 }

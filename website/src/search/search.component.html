@@ -23,7 +23,7 @@
     <p><b>Start:</b></p><p class="inbl">{{video.start}}</p><br>
     <p><b>End:</b></p><p class="inbl">{{video.end}}</p><br>
     <p><b>Duration:</b></p><p class="inbl">{{video.duration}}</p><br>
-    <p><b>Entity:</b></p><p class="inbl">{{video.entity}}</p>
+    <p><b>Entity:</b></p><p class="inbl clickable" (click)="document.location.href = video.entity">{{video.entity}}</p>
   </div>
 </div>
 

@@ -1,8 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {MatDialog} from "@angular/material/dialog";
 import {SparqlDialogComponent} from "../sparql-dialog/sparql-dialog.component";
 import {HunterService} from "../services/hunter.service";
 import {NotFoundDialogComponent} from "../not-found-dialog/not-found-dialog.component";
+import {DOCUMENT} from "@angular/common";
 
 @Component({
   selector: 'search',
@@ -18,7 +19,8 @@ export class SearchComponent implements OnInit {
   videos: any[] = [];
 
   constructor(public dialog: MatDialog,
-              private hunter: HunterService) {
+              private hunter: HunterService,
+              @Inject(DOCUMENT) public document: Document) {
     this.value = '';
     this.videos = [];
   }
@@ -29,26 +31,29 @@ export class SearchComponent implements OnInit {
     document.body.appendChild(tag);
   }
 
+  process_scene(raw_data: any) {
+    for (let scene in raw_data) {
+      let start_split = raw_data[scene][3].split(':');
+      let end_split = raw_data[scene][4].split(':');
+      let start = +start_split[0]*24*60 + +start_split[1]*60 + +start_split[2];
+      let end = +end_split[0]*24*60 + +end_split[1]*60 + +end_split[2];
+
+      this.videos.push({video: raw_data[0][0],
+        id: raw_data[scene][1].split('=')[raw_data[scene][1].split('=').length - 1],
+        start: start,
+        end: end,
+        duration: end - start,
+        entity: raw_data[scene][2]})
+    }
+  }
+
   get_videos_of_celebritiy(name: string) {
     console.log(name);
     this.hunter.get_scenes_of_entity(name).subscribe(data => {
       if (data['result'] == null) {
         this.dialog.open(NotFoundDialogComponent);
       } else {
-        for (let scene in data.result) {
-          let start_split = data.result[scene][2].split(':');
-          let end_split = data.result[scene][3].split(':');
-          let start = +start_split[0]*24*60 + +start_split[1]*60 + +start_split[2];
-          let end = +end_split[0]*24*60 + +end_split[1]*60 + +end_split[2];
-
-          this.videos.push({video: data.result[0][0],
-            id: data.result[scene][1].split('=')[data.result[scene][1].split('=').length - 1],
-            start: start,
-            end: end,
-            duration: end - start,
-            entity: name})
-        }
-        console.log(this.videos)
+        this.process_scene(data.result)
       }
     });
   }
@@ -63,11 +68,12 @@ export class SearchComponent implements OnInit {
       data: {}
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result != null) {
-        console.log(result);
-        this.hunter.execute_query(result).subscribe(data => {
+    dialogRef.afterClosed().subscribe(query_data => {
+      if (query_data != null) {
+        console.log(query_data);
+        this.hunter.execute_query(query_data).subscribe(data => {
           console.log(data);
+          this.process_scene(data.result)
         })
       }
     });
