@@ -47,6 +47,7 @@ class Hunter(object):
             labels_path,
             embeddings_path
         )
+        return self
 
     def recognize(self,
                   algorithm='appr',
