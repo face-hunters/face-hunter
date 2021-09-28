@@ -1,5 +1,5 @@
 Hunter
-=============
+======
 
     You can import the Hunter class into your own projects using the following lines of code:
             >>> from src.hunter import Hunter

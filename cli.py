@@ -15,16 +15,10 @@ else:
 
 
 def _search(args):
-    """ Starts the download of youtube videos
+    """ Search in an existing knowledge graph for scenes of an entity.
 
-    Parameters
-    ----------
-    args.url: str, default = 'data/datasets/youtube/urls.txt'
-        Location of a text-file containing line-wise URLs of youtube videos and entities that occur in it.
-        Format should be: <url>;<entity1>,<entity2>,..
-
-    args.path: str, default = 'data/datasets/youtube'
-        The Location where the videos should be saved at.
+    Args:
+        args.entity (str): Name of the entity to look up.
     """
     if 'virtuoso' in CONFIG:
         LOGGER.info(Hunter.search(args.entity,
@@ -38,15 +32,11 @@ def _search(args):
 
 
 def _download_datasets(args):
-    """ Starts the download of video datasets
+    """ Search in an existing knowledge graph for scenes of an entity.
 
-    Parameters
-    ----------
-    args.dataset: str, default = 'youtube-faces-db'
-        The dataset to download and parse. Can be: imdb-wiki, imdb-faces, yt-celebrity or youtube-faces-db.
-
-    args.path: str, default = 'data/datasets/youtube-faces-db'
-        The Location where the dataset should be saved at.
+    Args:
+        args.dataset (str): Name of the Dataset to download. Should be 'imdb-wiki' for the IMDB-Wiki dataset, 'imdb-faces' for IMDB-Faces, 'yt-celebrity'  for YouTube Celebrities Face Tracking and Recognition Datqset, 'youtube-faces-db' for YouTube Faces Database.
+        args.path (str): Location where the dataset should be saved.
     """
     from src.data.datasets import download_seqamlab_dataset
     from src.data.datasets import download_imdb_faces_dataset
@@ -63,12 +53,10 @@ def _download_datasets(args):
 
 
 def _download_thumbnails(args):
-    """ Starts the download of thumbnails
+    """ Download thumbnails from Wikidata and DBpedia.
 
-    Parameters
-    ----------
-    args.path: str, default = 'data/thumbnails'
-        The Location where the thumbnails should be saved at.
+    Args:
+        args.path (str): Location where the thumbnails should be saved.
     """
     from src.data.knowledge_graphs import download_dbpedia_thumbnails, download_wikidata_thumbnails
 
@@ -77,21 +65,13 @@ def _download_thumbnails(args):
 
 
 def _run_detection(args):
-    """ Starts the face detection
+    """ Run the evaluation of face recognition on a downloaded dataset.
 
-    Parameters
-    ----------
-    args.index: str, default = None
-        Specifies the name of an existing NMSLIB index if it should be loaded.
-
-    args.save: str, default = None
-        Specifies the path where the embeddings should be saved locally if they should be saved.
-
-    args.path: str, default = 'data/datasets/yt-celebrity'
-        The Location of videos or images to analyze.
-
-    args.thumbnails: str, default = 'data/thumbnails'
-        The location of the thumbnails or an existing NMSLIB index.
+    Args:
+        args.path (str): Path to the generated information.csv for a downloaded dataset.
+        args.thumbnails (str): Location where the thumbnails are saved.
+        args.ratio (float): Parameter specifying how many random thumbnails that are not in the dataset should be learned.
+        args.scene_extraction (int): The threshold for the scene extraction postprocessing. Should be 0 for no postprocessing.
     """
     from src.models.evaluation import evaluate_on_dataset
 
@@ -99,12 +79,10 @@ def _run_detection(args):
 
 
 def _link(args):
-    """ Allows to link a video to the knowledge graph
+    """ Recognize entities in a video from YouTube and add the information to a knowledge graph.
 
-    Parameters
-    ----------
-    args.url: str, default = 'https://www.youtube.com/watch?v=elz1J86AExY'
-        The link to the video on YouTube to add.
+    Args:
+        args.url (str): Location of the video on YouTube.
     """
     from src.hunter import Hunter
     if 'virtuoso' in CONFIG:
@@ -120,9 +98,8 @@ def _link(args):
 def _get_parser():
     """ Sets up a command line interface.
 
-    Returns
-    ----------
-    parser: ArgumentParser
+    Args:
+        parser (ArgumentParser): Argument parser.
     """
     logging_args = argparse.ArgumentParser(add_help=False)
     logging_args.add_argument('-v', '--verbose', action='count', default=0)
@@ -175,15 +152,11 @@ def _get_parser():
 
 
 def _logging_setup(verbosity: int = 1, logfile: str = None):
-    """ Sets up a logger.
+    """ Sets up a logging interface.
 
-    Parameters
-    ----------
-    verbosity: int, default = 1
-        Defines the log level. A higher verbosity shows more details.
-
-    logfile: str, default = None
-        Location to save the logs.
+    Args:
+        verbosity (int): Verbosity level of the logging output.
+        logfile (str): Location of a logfile in which the logs can be saved.
     """
     logger = logging.getLogger()
     log_level = (2 - verbosity) * 10
