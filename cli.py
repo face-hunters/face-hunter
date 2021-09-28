@@ -32,7 +32,7 @@ def _search(args):
 
 
 def _download_datasets(args):
-    """ Search in an existing knowledge graph for scenes of an entity.
+    """ Download video datasets for the evaluation.
 
     Args:
         args.dataset (str): Name of the Dataset to download. Should be 'imdb-wiki' for the IMDB-Wiki dataset, 'imdb-faces' for IMDB-Faces, 'yt-celebrity'  for YouTube Celebrities Face Tracking and Recognition Datqset, 'youtube-faces-db' for YouTube Faces Database.
