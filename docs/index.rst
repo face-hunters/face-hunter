@@ -9,6 +9,7 @@
    :maxdepth: 2
    :caption: Contents:
 
+   source/cli
    source/src.hunter
    source/src.preprocessing
    source/src.postprocessing
