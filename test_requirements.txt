@@ -6,3 +6,4 @@ deepface
 PyYAML
 gcloud
 google-cloud-storage
+matplotlib
