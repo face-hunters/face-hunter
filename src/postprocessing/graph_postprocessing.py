@@ -6,6 +6,15 @@ LOGGER = logging.getLogger('graph-postprocessing')
 
 
 def extract_scenes(recognitions: list, timestamps: list, frame_threshold: int = 3):
+    """ Extract scenes out of frame-wise predictions.
+
+    Args:
+        recognitions (list): List of lists containing the frame-wise predictions.
+        timestamps (list): List with the corresponding timestamps for the predictions.
+        frame_threshold (int): Number of similar/not similar consecutive frames to start/end a scene.
+    Returns:
+        scenes (list): A number of Scenes.
+    """
     assert len(recognitions) == len(timestamps), 'recognitions do not fit timestamps'
 
     scenes = []
@@ -29,20 +38,40 @@ def extract_scenes(recognitions: list, timestamps: list, frame_threshold: int = 
 
 
 class Scene(object):
+    """ Class that represents a scene with its occurring entities, a start and an ending timestamp. """
 
     def __init__(self, names: list):
+        """
+        Args:
+            names (list): Names of the occurring entities.
+        """
         self.names = np.sort(names),
         self.start = None
         self.end = None
 
     def set_names(self, names: list):
+        """ Set the names of entities in the scene.
+
+        Args:
+            names (list): Names of the occurring entities.
+        """
         self.names = np.sort(names)
 
     def set_start(self, milliseconds):
+        """ Set the start-timestamp in the scene.
+
+        Args:
+            milliseconds (int): Milliseconds that have passed since the beginning of the video.
+        """
         self.start = timedelta(milliseconds=milliseconds),
         return self
 
     def set_end(self, milliseconds):
+        """ Set the end-timestamp in the scene.
+
+        Args:
+            milliseconds (int): Milliseconds that have passed since the beginning of the video.
+        """
         self.end = timedelta(milliseconds=milliseconds),
         return self
 
