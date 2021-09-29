@@ -9,8 +9,32 @@ Table of Contents
 
 .. contents::
 
+Description
+###########
+
+Entity linking allows leveraging information about named entities from a knowledge base.
+
+This work shows that face recognition methods can be used to identify entities in videos allowing users to
+formulate more detailed queries with information from DBpedia and Wikidata. The focus of this project lies on
+videos from YouTube.
+
+To address this issue we use publicity available thumbnails from DBpedia and Wikidata to create face-embeddings
+for a large number of celebrities using the `Deepface <https://github.com/serengil/deepface/>`__ library.
+Additionally, our project allows to scrape material from Google Images to represent entities in different scenes.
+Experiments have shown that recognition based on approximate k-nearest neighbors lead to the best balance
+between accuracy and runtime. Finally, the detected entities are used to build a knowledge graph based on the paper
+`VidOnt: a core reference ontology for reasoning over video scenes <https://www.tandfonline.com/doi/full/10.1080/24751839.2018.1437696/>`__ which represents
+the links between videos, entities and timestamps. This gives the advantage of queries consisting of occurrences.
+The figure below illustrates the structure of the generated graphs.
+
+Using the `YouTube Faces Database <https://www.cs.tau.ac.il/~wolf/ytfaces/>`__ and
+`YouTube Celebrities Face Tracking and Recognition Dataset <http://seqamlab.com/youtube-celebrities-face-tracking-and-recognition-dataset/>`__
+we achieved an accuracy of X and X respectively. Scraping additional images improved the results to X and X.
+Evaluation steps for the `IMDb-Face <https://github.com/fwang91/IMDb-Face/>`__ and `IMDb-Wiki <https://data.vision.ee.ethz.ch/cvl/rrothe/imdb-wiki/>`__
+are implemented and allow future performance tests.
+
 How to setup on Google Cloud
-##############
+############################
 
 Follow these steps:
 
@@ -50,14 +74,14 @@ Follow these steps:
     $ terraform destroy --auto-approve
 
 How to use
-##############
+##########
 
 The module can be imported and used directly in Python or by accessing the command line interface.
 
 A detailed documentation can be found `here <https://face-hunter.readthedocs.io/>`__.
 
 Credits
-##############
+#######
 
 This project started at the end of March 2021 as a Team Project at the University of Mannheim.
 The team consists of:
