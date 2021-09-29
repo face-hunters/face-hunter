@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 
 def face_alignment(img, shape, keypoints, blank=0.3, show=False):
     """ Aligns an image according to keypoints.
-
     Args:
         img (cv2 Image): The original image.
         shape(tuple): Tuple of two floats that show the target image shape.
@@ -52,7 +51,9 @@ def face_alignment(img, shape, keypoints, blank=0.3, show=False):
 
     # input layer shape
     # img_pixels = img_to_array(aligned_face)
-    img_pixels = np.expand_dims(aligned_face, axis=0)
-    img_pixels = img_pixels / 255
+    # img_pixels = np.expand_dims(aligned_face, axis=0)
+    # img_pixels = img_pixels / 255
+    img_pixels = aligned_face / 255
 
     return img_pixels
+	
