@@ -4,6 +4,8 @@ Face-Hunter: Multi-Modal Entity Linking
 .. image:: https://img.shields.io/github/stars/face-hunters/face-hunter
 .. image:: https://github.com/face-hunters/face-hunter/actions/workflows/test.yml/badge.svg
 
+A project allowing to create and query a knowledge graph of videos and their Dbpedia and Wikidata entities with timestamps.
+
 Table of Contents
 #################
 
@@ -26,6 +28,8 @@ between accuracy and runtime. Finally, the detected entities are used to build a
 `VidOnt: a core reference ontology for reasoning over video scenes <https://www.tandfonline.com/doi/full/10.1080/24751839.2018.1437696/>`__ which represents
 the links between videos, entities and timestamps. This gives the advantage of queries consisting of occurrences.
 The figure below illustrates the structure of the generated graphs.
+
+.. image:: https://i.ibb.co/Q6Fxk0s/Untitled-Diagram-drawio.png
 
 Using the `YouTube Faces Database <https://www.cs.tau.ac.il/~wolf/ytfaces/>`__ and
 `YouTube Celebrities Face Tracking and Recognition Dataset <http://seqamlab.com/youtube-celebrities-face-tracking-and-recognition-dataset/>`__
