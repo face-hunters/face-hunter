@@ -32,6 +32,8 @@ setup(
         "pyOpenSSL==19.1.0",
         "gcloud==0.18.3",
         "google-cloud-storage==1.41.0",
-        "wikipedia~=1.4.0"
+        "wikipedia~=1.4.0",
+        "flask-ngrok~=0.0.25",
+        "facenet-pytorch~=2.4.1"
     ]
 )

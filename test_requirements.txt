@@ -7,3 +7,4 @@ PyYAML
 gcloud
 google-cloud-storage
 matplotlib
+facenet-pytorch~=2.4.1
