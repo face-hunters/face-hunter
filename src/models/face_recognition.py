@@ -35,7 +35,6 @@ class FaceRecognition(object):
     def __init__(self, thumbnail_list: list = None,
                  thumbnails_path='data/thumbnails/thumbnails',
                  img_width=500,
-                 distance_threshold=0.6,
                  encoder_name='Dlib',
                  labels_path='data/embeddings/labels.pickle',
                  embeddings_path='data/embeddings/embeddings.pickle'):
@@ -45,13 +44,12 @@ class FaceRecognition(object):
         self.img_width = img_width
         self.labels_path = labels_path
         self.embeddings_path = embeddings_path
-        self.distance_threshold = distance_threshold
         self.detector = MTCNN(keep_all=True, post_process=False, device='cuda:0')
         self.encoder = DeepFace.build_model(encoder_name)
         self.target = functions.find_input_shape(self.encoder)  # (150,150) encoder input shape
         self.labels, self.embeddings = self.load_embeddings()  # store the 2 lists in labels.pickle encoddings.pickle
 
-    def recognize_video(self, video_path, recognizer_model=None, by='second'):
+    def recognize_video(self, video_path, recognizer_model=None, distance_threshold=0.6, by='second'):
         """ recognize faces by frame
         Params:
           video_path
@@ -70,8 +68,8 @@ class FaceRecognition(object):
         video = cv2.VideoCapture(video_path)
 
         fps = video.get(cv2.CAP_PROP_FPS)
-        frame_number = 0 # for recognize by second
-      
+        frame_number = 0  # for recognize by second
+
         timestamps = []
         frame_faces_list = []
 
@@ -90,12 +88,12 @@ class FaceRecognition(object):
                 r = self.img_width / w
                 dsize = (self.img_width, int(h * r))
                 frame = cv2.resize(frame, dsize)
-            
+
             frames.append(frame)
 
             # batch detect
             if len(frames) == batch_size:
-                frame_faces_list.extend(self.batch_recognize_images(frames, recognizer_model))
+                frame_faces_list.extend(self.batch_recognize_images(frames, recognizer_model, distance_threshold))
                 frames.clear()
 
             # detected_faces = self.recognize_image(frame, recognizer_model)
@@ -125,13 +123,13 @@ class FaceRecognition(object):
 
         return detected_faces, frame_faces_list, timestamps
 
-    def batch_recognize_images(self, unknown_imgs, recognizer_model=None):
+    def batch_recognize_images(self, unknown_imgs, recognizer_model=None, distance_threshold=0.6):
         detected_faces = []
         embeddings = self.batch_represent(unknown_imgs)
-        
+
         # recognize img by frame
         for frame_embeddings in embeddings:
-            detected_faces.append(self.recognize_image(frame_embeddings, recognizer_model))
+            detected_faces.append(self.recognize_image(frame_embeddings, recognizer_model, distance_threshold))
 
         return detected_faces
 
@@ -152,9 +150,9 @@ class FaceRecognition(object):
 
         for i in range(len(boxes)):
             # there is face in the frame
-            if boxes[i] is not None: 
+            if boxes[i] is not None:
                 frame_faces = [{
-                    'box': [box[0], box[1], box[2]-box[0], box[3]-box[1]],
+                    'box': [box[0], box[1], box[2] - box[0], box[3] - box[1]],
                     'confidence': confidence,
                     'keypoints': {
                         'left_eye': tuple(keypoints[0]),
@@ -162,7 +160,7 @@ class FaceRecognition(object):
                         'nose': tuple(keypoints[2]),
                         'mouth_left': tuple(keypoints[3]),
                         'mouth_right': tuple(keypoints[4]),
-                        }} 
+                    }}
                     for box, confidence, keypoints in zip(boxes[i], confidence[i], keypoints[i])]
 
                 frames_faces_detection.append(frame_faces)
@@ -171,7 +169,7 @@ class FaceRecognition(object):
                 frames_faces_detection.append([])
 
         aligned_faces = []
-        for img, frame_faces in zip(imgs, frames_faces_detection): # per frame, align face
+        for img, frame_faces in zip(imgs, frames_faces_detection):  # per frame, align face
 
             frame_aligned_faces = []
 
@@ -181,12 +179,11 @@ class FaceRecognition(object):
                 frame_aligned_faces.append(aligned_face)
 
             aligned_faces.append(frame_aligned_faces)
-        
-        
+
         flat_aligned_faces = [face for l in aligned_faces for face in l]
 
         # batch encoding
-        if len(flat_aligned_faces) > 1: # otherwise, no face in the batch
+        if len(flat_aligned_faces) > 1:  # otherwise, no face in the batch
             flat_aligned_faces = np.array(flat_aligned_faces)
             flat_embeddings = self.encoder.predict(flat_aligned_faces)
 
@@ -249,7 +246,7 @@ class FaceRecognition(object):
             return labels, embeddings
         return self.create_embeddings()
 
-    def recognize_image(self, unknown_img, recognizer_model=None):
+    def recognize_image(self, unknown_img, recognizer_model=None, distance_threshold=0.6):
         """ recognize faces in image
         Params:
           unknown_img: image_path or image object(frame) . in batch processing, the param is embeddings of one frame
@@ -260,11 +257,10 @@ class FaceRecognition(object):
         detected_faces = []
         unknown_img_embeddings = None
 
-        if isinstance(unknown_img, list): # batch
+        if isinstance(unknown_img, list):  # batch
             unknown_img_embeddings = unknown_img
-        else: # encode single image
+        else:  # encode single image
             unknown_img_embeddings = self.represent(unknown_img)
-        
 
         for unknown_img_embedding in unknown_img_embeddings:  # for each face in the image
             if not recognizer_model:  # run basic recognition
@@ -274,7 +270,7 @@ class FaceRecognition(object):
                 face_distances = 1 - a / (b * c)
                 min_distance = np.min(face_distances)
 
-                if min_distance < self.distance_threshold:
+                if min_distance < distance_threshold:
                     entity = self.labels[np.argmin(face_distances)]
                     detected_faces.append(entity)
 
@@ -290,7 +286,7 @@ class FaceRecognition(object):
                     detected_faces.append(entity)
 
         return detected_faces
-    
+
     def represent(self, img, one_face=False, return_face_number=False):
         """ create embedings from img
         Params:
@@ -310,7 +306,7 @@ class FaceRecognition(object):
         # Compatible with the MTCNN from facenet_pytorch
         boxes, confidence, keypoints = self.detector.detect(Image.fromarray(img), landmarks=True)
         faces = [{
-            'box': [box[0], box[1], box[2]-box[0], box[3]-box[1]],
+            'box': [box[0], box[1], box[2] - box[0], box[3] - box[1]],
             'confidence': confidence,
             'keypoints': {
                 'left_eye': tuple(keypoints[0]),
@@ -318,13 +314,13 @@ class FaceRecognition(object):
                 'nose': tuple(keypoints[2]),
                 'mouth_left': tuple(keypoints[3]),
                 'mouth_right': tuple(keypoints[4]),
-                }} 
+            }}
             for box, confidence, keypoints in zip(boxes, confidence, keypoints)]
 
         face_number = len(faces)
 
         if return_face_number and face_number != 1:  # for tuning distance threshold
-          return face_number
+            return face_number
 
         # get biggest face from thumbnails
         if one_face and face_number > 1:
@@ -342,5 +338,3 @@ class FaceRecognition(object):
             embeddings.append(embedding)
 
         return embeddings
-		
-
