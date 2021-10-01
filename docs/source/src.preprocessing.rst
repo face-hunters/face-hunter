@@ -1,6 +1,8 @@
 Data Preprocessing
 ==================
 
+Preprocessing steps include facial alignment and name normalization using Wikipedia.
+
 .. automodule:: src.preprocessing.facial_preprocessing
    :members:
    :undoc-members:

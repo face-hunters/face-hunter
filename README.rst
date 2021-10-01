@@ -5,7 +5,7 @@ Face-Hunter: Multi-Modal Entity Linking
 .. image:: https://github.com/face-hunters/face-hunter/actions/workflows/test.yml/badge.svg
 .. image:: https://github.com/face-hunters/face-hunter/actions/workflows/gh-release.yaml/badge.svg
 
-A project allowing to create and query a knowledge graph of videos and their Dbpedia and Wikidata entities with timestamps.
+A project that allows to create and query a knowledge graph of videos and their Dbpedia and Wikidata entities with timestamps.
 
 Table of Contents
 #################
@@ -17,8 +17,8 @@ Description
 
 Entity linking allows leveraging information about named entities from a knowledge base.
 
-This work shows that face recognition methods can be used to identify entities in videos allowing users to
-formulate more detailed queries with information from DBpedia and Wikidata. The focus of this project lies on
+This work shows that face recognition methods can be used to identify entities in videos such that users can formulate
+detailed queries with information from DBpedia and Wikidata. The focus of this project lies on
 videos from YouTube.
 
 To address this issue we use publicity available thumbnails from DBpedia and Wikidata to create face-embeddings
@@ -27,7 +27,8 @@ Additionally, our project allows to scrape material from Google Images to repres
 Experiments have shown that recognition based on approximate k-nearest neighbors leads to the best balance
 between accuracy and runtime. Finally, the detected entities are used to build a knowledge graph based on the paper
 `VidOnt: a core reference ontology for reasoning over video scenes <https://www.tandfonline.com/doi/full/10.1080/24751839.2018.1437696/>`__ which represents
-the links between videos, entities and timestamps. This gives the advantage of queries consisting of occurrences.
+the links between videos, entities and timestamps. This gives the advantage of queries which include co-occurrences of actors
+or other video-related information.
 The figure below illustrates the structure of the generated graphs.
 
 .. image:: https://i.ibb.co/Q6Fxk0s/Untitled-Diagram-drawio.png
