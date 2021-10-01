@@ -10,6 +10,7 @@
    :caption: Contents:
 
    source/cli
+   source/website
    source/src.hunter
    source/src.preprocessing
    source/src.postprocessing
