@@ -24,7 +24,7 @@ videos from YouTube.
 To address this issue we use publicity available thumbnails from DBpedia and Wikidata to create face-embeddings
 for a large number of celebrities using the `Deepface <https://github.com/serengil/deepface/>`__ library.
 Additionally, our project allows to scrape material from Google Images to represent entities in different scenes.
-Experiments have shown that recognition based on approximate k-nearest neighbors lead to the best balance
+Experiments have shown that recognition based on approximate k-nearest neighbors leads to the best balance
 between accuracy and runtime. Finally, the detected entities are used to build a knowledge graph based on the paper
 `VidOnt: a core reference ontology for reasoning over video scenes <https://www.tandfonline.com/doi/full/10.1080/24751839.2018.1437696/>`__ which represents
 the links between videos, entities and timestamps. This gives the advantage of queries consisting of occurrences.
