@@ -5,7 +5,7 @@ Face-Hunter: Multi-Modal Entity Linking
 .. image:: https://github.com/face-hunters/face-hunter/actions/workflows/test.yml/badge.svg
 .. image:: https://github.com/face-hunters/face-hunter/actions/workflows/gh-release.yaml/badge.svg
 
-A project that allows to create and query a knowledge graph of videos and their Dbpedia and Wikidata entities with timestamps.
+A project that allows to create and query a knowledge graph of videos and their Dbpedia and Wikidata entities.
 
 Table of Contents
 #################

@@ -25,12 +25,8 @@ DBR = Namespace('http://dbpedia.org/resource/')
 
 
 class MemoryStore(object):
-    """
-    Local Store
+    """ Implementation to store and query rdf-triples in a local file. """
 
-    Implementation to store and query rdf-triples locally in a file.
-
-    """
     def __init__(self, path: str = './models/store'):
         self.path = path
         self.graph = Graph()
@@ -47,31 +43,24 @@ class MemoryStore(object):
     def insert(self, triple: tuple):
         """ Add a triple to the knowledge graph
 
-        Parameters
-        ----------
-        triple: tuple
-            The triple to save.
+        Args:
+            triple (tuple): The triple to be saved.
         """
         self.graph.add(triple)
 
     def commit(self):
-        """ Make the changes persistent and available
-        """
+        """ Make the changes persistent and available """
         check_path_exists(os.path.split(self.path)[0])
         self.graph.serialize(self.path, format='n3')
 
-    def query(self, query: str):
+    def query(self, query: str) -> list:
         """ Execute a SPARQL query on a local file
 
-        Parameters
-        ----------
-        query: str
-            A valid SPARQL query.
+        Args:
+            query: (str): A valid SPARQL query.
 
-        Returns
-        ----------
-        results: List
-            Returns a list of lists with the queried properties. Format: [[<property1>, <property2>, ...], ...]
+        Returns:
+            results (list): Returns a list of lists with the queried properties. Format: [[<property1>, <property2>, ...], ...]
         """
         prepared_query = prepareQuery(query,
                                       initNs={'dc': DC, 'foaf': FOAF, 'video': VIDEO, 'mpeg7': MPEG7, 'dbo': DBO,
@@ -84,6 +73,11 @@ class MemoryStore(object):
             results.append(elements)
         return results
 
-    def exists(self, youtube_id):
+    def exists(self, youtube_id: str) -> bool:
+        """ Checks if a video already exists in the graph
+
+        Args:
+            youtube_id (str): The id of the video to check.
+        """
         video_uri = URIRef(f'{HOME_URI}{youtube_id}')
         return (video_uri, DC['identifier'], Literal(f'http://www.youtube.com/watch?v={youtube_id}')) in self.graph

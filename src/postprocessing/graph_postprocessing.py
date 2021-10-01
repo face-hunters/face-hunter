@@ -12,6 +12,7 @@ def extract_scenes(recognitions: list, timestamps: list, frame_threshold: int = 
         recognitions (list): List of lists containing the frame-wise predictions.
         timestamps (list): List with the corresponding timestamps for the predictions.
         frame_threshold (int): Number of similar/not similar consecutive frames to start/end a scene.
+
     Returns:
         scenes (list): A number of Scenes.
     """

@@ -24,7 +24,7 @@ class Hunter(object):
             thumbnail_list=None,
             thumbnails_path='data/thumbnails/thumbnails',
             img_width=500,
-            encoder_name='Dlib',
+            encoder_name: str ='Dlib',
             labels_path='data/embeddings/labels.pickle',
             embeddings_path='data/embeddings/embeddings.pickle'
             ):
@@ -38,6 +38,8 @@ class Hunter(object):
             labels_path (str): Path where the label-information should be saved.
             embeddings_path (str): Path where the embeddings should be saved.
 
+        Returns:
+            self
         """
         self.face_detection = FaceRecognition(
             thumbnail_list,
@@ -67,6 +69,8 @@ class Hunter(object):
             index_path (str): Path to an existing nmslib-index. Only necessary if algorithm = 'appr'.
             k (int): The number of k-nearest neighbors to consider for the detection. Only necessary if algorithm = 'appr'.
 
+        Returns:
+            entities (list): Entities found in the video.
         """
         if algorithm == 'appr':
             detector = ApproximateKNearestNeighbors(method,
@@ -115,7 +119,6 @@ class Hunter(object):
             virtuoso_password (str): Password to access the Virtuoso instance. Only necessary if storage_type = virtuoso.
             dbpedia_csv (str): Path of the normalized DBpedia-thumbnail-information.
             wikidata_csv (str): Path of the normalized Wikidata-thumbnail-information.
-
         """
         graph = Graph(storage_type,
                       memory_path,
@@ -157,6 +160,9 @@ class Hunter(object):
             virtuoso_password (str): Password to access the Virtuoso instance. Only necessary if storage_type = virtuoso.
             dbpedia_csv (str): Path of the normalized DBpedia-thumbnail-information.
             wikidata_csv (str): Path of the normalized Wikidata-thumbnail-information
+
+        Returns:
+            scenes (list): The scenes in which the entity occurs.
         """
         return Graph(storage_type,
                      memory_path,

@@ -11,6 +11,7 @@ def norm(name, j):
     Args:
         name (str): The name to normalize.
         j (int): Helper variable to identify the  origin process.
+
     Returns:
         name (str): Normalized name.
         j (int): Helper variable to identify the  origin process.
@@ -39,6 +40,7 @@ def name_norm(name_list):
 
     Args:
         name_list (list): List of names to be normalized.
+
     Returns:
         wiki_name (list): List of normalized names.
     """

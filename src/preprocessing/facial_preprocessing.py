@@ -6,12 +6,14 @@ import matplotlib.pyplot as plt
 
 def face_alignment(img, shape, keypoints, blank=0.3, show=False):
     """ Aligns an image according to keypoints.
+
     Args:
         img (cv2 Image): The original image.
         shape(tuple): Tuple of two floats that show the target image shape.
         keypoints (dict): The coordinates of the detected face. (left_eye, right_eye, mouth_left, mouth_right).
         blank (float): Scaling Parameter.
         show (bool): Whether  the aligned Image should be displayed or not.
+
     Returns:
         img_pixels (cv2 Image): Aligned Image
     """
@@ -56,4 +58,3 @@ def face_alignment(img, shape, keypoints, blank=0.3, show=False):
     img_pixels = aligned_face / 255
 
     return img_pixels
-	

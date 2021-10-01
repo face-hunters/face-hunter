@@ -8,32 +8,14 @@ LOGGER = logging.getLogger('approximate_k_neighbors')
 
 
 class ApproximateKNearestNeighbors(object):
-    """
-    ApproximateKNearestNeighbors
+    """ Provides a fast way to perform k-Nearest-Neighbor-search to predict entities in videos or images
 
-    Can be used to create embeddings of thumbnails and predict entities in videos or images
-
-    Parameters
-    ----------
-    method: str, default = 'hnsw'
-        The method that NMSLIB uses for the k-Nearest Neighbor search.
-        Details can be found here: https://github.com/nmslib/nmslib/blob/master/manual/methods.md.
-
-    space: str, default = 'l2'
-        The vector space NMSLIB uses for comparing data points.
-        Details can be found here: https://github.com/nmslib/nmslib/blob/master/manual/spaces.md.
-
-    distance_threshold: float, default = 0.4
-        Defines the maximum distance face embeddings can have to be detected as similar.
-
-    Attributes
-    ----------
-    estimator, default = None
-        Contains the reference to the created or loaded NMSLIB-Index.
-
-    labels: list, default = []
-        An ordered list of entities. The indices allow to link embeddings in the NMSLIB index to entities.
-
+    Args:
+        method (str): The method that NMSLIB uses for the k-Nearest Neighbor search. Details can be found here: https://github.com/nmslib/nmslib/blob/master/manual/methods.md.
+        space (str): The vector space NMSLIB uses for comparing data points. Details can be found here: https://github.com/nmslib/nmslib/blob/master/manual/spaces.md.
+        distance_threshold (float): Defines the maximum distance face embeddings can have to be detected as similar.
+        index_path (str): Optional path to an existing model to load.
+        k (int): The number of nearest neighbors to consider.
     """
 
     def __init__(self,
@@ -53,18 +35,14 @@ class ApproximateKNearestNeighbors(object):
         self.fitted = False
 
     def fit(self, embeddings, labels):
-        """ Transform the embeddings into the index parameter of nmslib
+        """ Uses embeddings to train the algorithm.
 
-        Parameters
-        ----------
-        embeddings: list,
-            The embeddings of all face images.
-        labels: list,
-            List of entities in our datasets
+        Args:
+            embeddings (list): The ordered embeddings of all face images.
+            labels (list): Ordered List of entities in our datasets
 
-        Returns
-        ----------
-        self
+        Returns:
+            self
         """
         self.recognizer = nmslib.init(method=self.method, space=self.space, data_type=nmslib.DataType.DENSE_VECTOR)
         self.labels = labels
@@ -84,15 +62,14 @@ class ApproximateKNearestNeighbors(object):
         self.fitted = True
         return self
 
-    def predict(self, embedding):
-        """ Predict entity of embedding
-        Parameters
-        ----------
-        embedding:
-            The embedding to analyze
-        Returns
-        ----------
-        The entity with maximum probability to match the embedding
+    def predict(self, embedding) -> str:
+        """ Predict the entity of an embedding
+
+        Args:
+            embedding: The embedding to analyze
+
+        Returns:
+            entity (str): The entity with maximum probability to match the embedding
         """
         entities = []
         embedding = np.expand_dims(embedding, axis=0)

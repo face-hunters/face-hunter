@@ -5,7 +5,6 @@ import wget
 import pandas as pd
 import scipy
 import requests
-from scipy.io import loadmat
 import shutil
 from src.utils.utils import check_path_exists
 from src.preprocessing.file_preprocessing import name_norm
@@ -14,13 +13,10 @@ LOGGER = logging.getLogger('dataset-downloader')
 
 
 def download_seqamlab_dataset(path: str = 'data/datasets/ytcelebrity'):
-    """ Downloads the video dataset ytcelebrity and parses a information.csv. A homogeneous format for evaluation.
-        Details about the dataset can be found here: http://seqamlab.com/youtube-celebrities-face-tracking-and-recognition-dataset/.
+    """ Downloads the YouTube Celebrities Face Tracking and Recognition Dataset and parses a information.csv. Details about the dataset can be found here: http://seqamlab.com/youtube-celebrities-face-tracking-and-recognition-dataset/.
 
-    Parameters
-    ----------
-    path: str, default = data/datasets/ytcelebrity
-        Path where the videos and information.csv should be saved.
+    Args:
+        path (str): Path where the videos and information.csv should be saved.
     """
     check_path_exists(path)
 
@@ -45,15 +41,12 @@ def download_seqamlab_dataset(path: str = 'data/datasets/ytcelebrity'):
 
 
 def download_imdb_faces_dataset(path: str = 'data/datasets/imdb-faces'):
-    """ Downloads the video dataset imdb-face and parses a information.csv. A homogeneous format for evaluation.
-        Details about the dataset can be found here:  https://github.com/fwang91/IMDb-Face.
+    """ Downloads the IMDb-Faces dataset and parses a information.csv. Details about the dataset can be found here:  https://github.com/fwang91/IMDb-Face.
 
-    !!! Many links are outdated. Only half of the dataset can still be downloaded. !!!
+        !!! Many links are outdated. Only half of the dataset can still be downloaded. !!!
 
-    Parameters
-    ----------
-    path: str, default = data/datasets/imdb-faces
-        Path where the videos and information.csv should be saved.
+    Args:
+        path (str): Path where the videos and information.csv should be saved.
     """
     imdb_faces = pd.read_csv(os.path.join(path, 'IMDb-Face.csv'))
 
@@ -76,13 +69,10 @@ def download_imdb_faces_dataset(path: str = 'data/datasets/imdb-faces'):
 
 
 def download_imdb_wiki_dataset(path: str = 'data/datasets/imdb-wiki'):
-    """ Downloads the video dataset imdb-wiki and parses a information.csv. A homogeneous format for evaluation.
-        Details about the dataset can be found here: https://data.vision.ee.ethz.ch/cvl/rrothe/imdb-wiki/.
+    """ Downloads the IMDb-Wiki dataset and parses a information.csv. Details about the dataset can be found here: https://data.vision.ee.ethz.ch/cvl/rrothe/imdb-wiki/.
 
-    Parameters
-    ----------
-    path: str, default = data/datasets/imdb-wiki
-        Path where the videos and information.csv should be saved
+    Args:
+        path (str): Path where the videos and information.csv should be saved
     """
     check_path_exists(path)
 
@@ -130,18 +120,11 @@ def download_imdb_wiki_dataset(path: str = 'data/datasets/imdb-wiki'):
 
 
 def download_youtube_faces_db(path: str = 'data/datasets/youtube-faces-db', download: bool = False):
-    """ Parses a information.csv for the youtube-faces-db dataset. A homogeneous format for evaluation.
-        Details about the dataset can be found here: https://www.cs.tau.ac.il/~wolf/ytfaces/.
+    """ Downloads the YouTube Faces Database and parses a information.csv. Details about the dataset can be found here: https://www.cs.tau.ac.il/~wolf/ytfaces/.
 
-    !!! Dataset must be downloaded manually from https://www.cs.tau.ac.il/~wolf/ytfaces/.
-
-    Parameters
-    ----------
-    path: str, default = data/datasets/youtube-faces-db
-        Path where the videos are located and the information.csv should be saved at.
-
-    download: bool, default = False
-        Whether the dataset should be downloaded automatically or only parsed.
+    Args:
+        path (str): Path where the videos are located and the information.csv should be saved at.
+        download (bool): Whether the dataset should be downloaded automatically or only parsed. The download can take long.
     """
     check_path_exists(path)
 

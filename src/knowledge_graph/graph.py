@@ -28,13 +28,8 @@ DBR = Namespace('http://dbpedia.org/resource/')
 
 
 class Graph(object):
-    """
-    Store
+    """ Links new videos with their entities in a knowledge graph and allows to look up user queries. """
 
-    Links new videos with their entities in the knowledge graph and allows to look up user queries.
-    The data format is based on the paper: https://www.tandfonline.com/doi/full/10.1080/24751839.2018.1437696
-
-    """
     def __init__(self, storage_type: str = 'memory',
                  memory_path: str = 'models/store',
                  virtuoso_url: str = None,
@@ -62,13 +57,9 @@ class Graph(object):
     def insert_video(self, youtube_id: str, title: str):
         """ Creates the rdf triples for a new video.
 
-        Parameters
-        ----------
-        youtube_id: str
-            Id of a youtube video to be linked.
-            For example a4T5ylNQk6g for https://www.youtube.com/watch?v=a4T5ylNQk6g.
-        title: str
-            The title of the youtube video.
+        Args:
+            youtube_id (str): Id of a youtube video to be linked. For example a4T5ylNQk6g for https://www.youtube.com/watch?v=a4T5ylNQk6g.
+            title (str): The title of the video.
         """
         video_uri = URIRef(f'{HOME_URI}{youtube_id}')
 
@@ -80,17 +71,11 @@ class Graph(object):
     def insert_scene(self, entities: list, youtube_id: str, start_time: timedelta, end_time: timedelta):
         """ Creates the link between an entity and a video from youtube.
 
-        Parameters
-        ----------
-        entities: list
-            Names of the occurring entities.
-        youtube_id: str
-            Id of a youtube video to be linked.
-            For example a4T5ylNQk6g for https://www.youtube.com/watch?v=a4T5ylNQk6g.
-        start_time: timedelta
-            Start time of the scene in the respective video.
-        end_time: timedelta
-            End time of the scene in the respective video.
+        Args:
+            entities (list): Names of the occurring entities.
+            youtube_id (str): Id of a youtube video to be linked. For example a4T5ylNQk6g for https://www.youtube.com/watch?v=a4T5ylNQk6g.
+            start_time (timedelta): Start time of the scene in the respective video.
+            end_time (timedelta): End time of the scene in the respective video.
         """
         video_uri = URIRef(f'{HOME_URI}{youtube_id}')
         scene_uri = URIRef(f'{HOME_URI}{youtube_id}#t={str(start_time).split(".", 2)[0]},{str(end_time).split(".", 2)[0]}')
@@ -121,30 +106,22 @@ class Graph(object):
     def video_exists(self, youtube_id: str) -> bool:
         """ Returns whether a video is already in the graph or not
 
-        Parameters
-        ----------
-        youtube_id: str
-            Id of the YouTube-Video.
+        Args:
+            youtube_id (str): Id of the YouTube-Video.
 
-        Returns
-        ----------
-        Boolean
-            Whether it exists or not.
+        Returns:
+            exists (bool): Whether it exists or not.
         """
         return self.store.exists(youtube_id)
 
     def get_scenes_from_video(self, identifier: str):
         """ Returns all scenes for a video
 
-        Parameters
-        ----------
-        identifier: str
-            Identifier of the video on YouTube
+        Args:
+            identifier (str): Identifier of the video on YouTube
 
-        Returns
-        ----------
-        List
-            Returns a list of the scenes with a scene_uri, entity, start and end
+        Returns:
+            scenes (list): Returns a list of the scenes with a scene_uri, entity, start and end
         """
         query = ('SELECT ?scene ?entity ?start ?end'
                  ' WHERE {'
@@ -158,17 +135,13 @@ class Graph(object):
         return self.store.query(query)
 
     def get_scenes_with_entity(self, identifier: str):
-        """ Returns all videos for an entity
+        """ Returns all scenes for an entity
 
-        Parameters
-        ----------
-        identifier: str
-            Can be the name of the entity or a dbpedia/wikidata link.
+        Args:
+            identifier (str): Can be the name of the entity or a dbpedia/wikidata link.
 
-        Returns
-        ----------
-        List
-            Returns a list of the videos in which a entity occurs. Format: [[<link>, <title>], ...]
+        Returns:
+            scenes (list): Returns a list of the videos in which a entity occurs. Format: [[<link>, <title>], ...]
         """
 
         if identifier.startswith('http://www.wikidata'):
@@ -199,34 +172,35 @@ class Graph(object):
 
     def get_videos_with_filters(self, query: str, filters: str):
         """ Returns videos for a user specific query.
-            For example: Videos with actors born before 1970.
 
-        Examples:
-        select distinct ?title ?link ?dbpedia_entity
-        where {
-            ?scene a video:Scene;
-                foaf:depicts ?dbpedia_entity;
-                video:sceneFrom ?video.
-            ?video dc:identifier ?link;
-                    dc:title ?title.
+            Example:
+            select distinct ?title ?link ?dbpedia_entity
+            where {
+                ?scene a video:Scene;
+                    foaf:depicts ?dbpedia_entity;
+                    video:sceneFrom ?video.
+                ?video dc:identifier ?link;
+                        dc:title ?title.
 
-            service <http://dbpedia.org/sparql> {
-                ?dbpedia_entity dbo:birthDate ?date;
-                    owl:sameAs ?wikidata_entity
+                service <http://dbpedia.org/sparql> {
+                    ?dbpedia_entity dbo:birthDate ?date;
+                        owl:sameAs ?wikidata_entity
+                }
+
+                service <https://query.wikidata.org/sparql> {
+                    ?wikidata_entity <http://www.wikidata.org/prop/direct/P21> ?sex .
+                    ?sex rdfs:label ?sex_label
+                }
+
+                filter (regex(str(?wikidata_entity), "www.wikidata.org") && (?sex_label = "male"@en) && ?date < "19700101"^^xsd:date)
             }
 
-            service <https://query.wikidata.org/sparql> {
-                ?wikidata_entity <http://www.wikidata.org/prop/direct/P21> ?sex .
-                ?sex rdfs:label ?sex_label
-            }
+        Args:
+            query (str): Further query details which are being inserted into the main query.
+            filters (str): Allows the specification of filters to apply in the query.
 
-            filter (regex(str(?wikidata_entity), "www.wikidata.org") && (?sex_label = "male"@en) && ?date < "19700101"^^xsd:date)
-        }
-
-        Returns
-        ----------
-        List
-            Returns a list of the videos in which a entity occurs. Format: [[<link>, <title>, <entity>], ...]
+        Returns:
+            scenes (list): Returns a list of the scenes in which a entity occurs. Format: [[<title>, <link>, <dbpedia_entity>, <start>, <end>], ...]
         """
         query = (
             'select distinct ?title ?link ?dbpedia_entity ?start ?end'

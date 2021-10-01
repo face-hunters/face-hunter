@@ -4,6 +4,7 @@ import logging
 import numpy as np
 import cv2
 from deepface import DeepFace
+from PIL import Image
 from deepface.commons import functions
 from facenet_pytorch import MTCNN
 from src.preprocessing.facial_preprocessing import face_alignment
@@ -13,32 +14,25 @@ LOGGER = logging.getLogger(__name__)
 
 
 class FaceRecognition(object):
-    """recognize faces in videos
+    """ Allows to recognize faces in videos """
 
-    Parameters:
-      thumbnails_list: for sample use
-      thumbnails_path: path to thumbnail directory
-      img_width: scale the image to fixed new width
-      distance_threshold
-      encoder_name: "VGG-Face", "Facenet", "OpenFace", "DeepFace", "DeepID", "ArcFace", "Dlib"
-      labels_path: path to save and load thumbnail labels
-      embeddings_path: path to save and load thumbnail embeddings
+    def __init__(self,
+                 thumbnail_list: list = None,
+                 thumbnails_path: str = 'data/thumbnails/thumbnails',
+                 img_width: int = 500,
+                 encoder_name: str = 'Dlib',
+                 labels_path: str = 'data/embeddings/labels.pickle',
+                 embeddings_path: str = 'data/embeddings/embeddings.pickle'):
+        """ create or load kg_encodings. create detector, encoder
 
-    Attributes:
-      embeddings: list of entity embeddings
-      labels: list of entity names
-      detector: face detector model MTCNN https://github.com/ipazc/mtcnn
-      encoder: face encoder(face recognition model)
-      target: face recognition model's input layer image shape (w,h)
-    """
-
-    def __init__(self, thumbnail_list: list = None,
-                 thumbnails_path='data/thumbnails/thumbnails',
-                 img_width=500,
-                 encoder_name='Dlib',
-                 labels_path='data/embeddings/labels.pickle',
-                 embeddings_path='data/embeddings/embeddings.pickle'):
-        """ create or load kg_encodings. create detector, encoder """
+        Args:
+            thumbnail_list (list): For sample use.
+            thumbnails_path (str): Path to thumbnail directory.
+            img_width (int): Scale the image to fixed new width.
+            encoder_name (int): Options are "VGG-Face", "Facenet", "OpenFace", "DeepFace", "DeepID", "ArcFace", "Dlib".
+            labels_path (str): Path to save and load thumbnail labels
+            embeddings_path (str): Path to save and load thumbnail embeddings
+        """
         self.thumbnail_list = thumbnail_list
         self.thumbnails_path = thumbnails_path
         self.img_width = img_width
@@ -49,16 +43,19 @@ class FaceRecognition(object):
         self.target = functions.find_input_shape(self.encoder)  # (150,150) encoder input shape
         self.labels, self.embeddings = self.load_embeddings()  # store the 2 lists in labels.pickle encoddings.pickle
 
-    def recognize_video(self, video_path, recognizer_model=None, distance_threshold=0.6, by='second'):
-        """ recognize faces by frame
-        Params:
-          video_path
-          recognizer_model: ANN
-          by: recognize by 'second' or 'frame'
+    def recognize_video(self, video_path: str, recognizer_model=None, distance_threshold=0.6, by='second'):
+        """ recognize faces on a frame or second level
+
+        Args:
+            video_path (str): Path to the video.
+            recognizer_model (any model): Model trained with embeddings to predict entities.
+            distance_threshold (float): The threshold below which recognitions are marked as unknown.
+            by (str): Recognize by 'second' or 'frame'.
+
         Returns:
-          frame_faces_list: list of list [[entity1, entity2], [], [entity1]]
-          detected_faces: list of identical entities
-          timestamps: [millisecond , ]
+            frame_faces_list (list): List of recognized entities per frame/second.
+            detected_faces (list): List of identical entities.
+            timestamps (float): The corresponding timestamps to the detections.
         """
         if not os.path.exists(video_path):
             LOGGER.info(f'{video_path} does not exists')
@@ -123,7 +120,17 @@ class FaceRecognition(object):
 
         return detected_faces, frame_faces_list, timestamps
 
-    def batch_recognize_images(self, unknown_imgs, recognizer_model=None, distance_threshold=0.6):
+    def batch_recognize_images(self, unknown_imgs: list, recognizer_model=None, distance_threshold=0.6):
+        """ Recognize entities in batches of embeddings
+
+        Args:
+            unknown_imgs (list): List of embeddings.
+            recognizer_model (any model): Model trained with embeddings to predict entities.
+            distance_threshold (float): The threshold below which recognitions are marked as unknown.
+
+        Returns:
+            detected_faces (list): List of detected entities.
+        """
         detected_faces = []
         embeddings = self.batch_represent(unknown_imgs)
 
@@ -133,13 +140,14 @@ class FaceRecognition(object):
 
         return detected_faces
 
-    def batch_represent(self, imgs):
-        """ create embedings from img
-        Params:
-          imgs: list of frames
+    def batch_represent(self, imgs: list):
+        """ create embeddings from images in batches
 
-        Returens:
-          embeddings: list of face embeddings
+        Args:
+            imgs (list): List of frames.
+
+        Returns:
+            embeddings: List of face embeddings.
         """
         embeddings = []
 
@@ -198,10 +206,11 @@ class FaceRecognition(object):
         return embeddings
 
     def create_embeddings(self):
-        """ create and save face embeddings and entity labels of thumbnails in KnowledgeGraph
+        """ create and save face embeddings and entity labels
+
         Returns:
-          embeddings: list of face embeddings
-          labels: list of entity names [ID_NAME,...]
+            embeddings (list): List of face embeddings.
+            labels (list): List of entity names.
         """
         entity_dir_list = os.listdir(self.thumbnails_path)
         embeddings = []
@@ -240,6 +249,12 @@ class FaceRecognition(object):
         return labels, embeddings
 
     def load_embeddings(self):
+        """ Loads already existing embeddings
+
+        Returns:
+            labels (list): List of entity names.
+            embeddings (list): List of face embeddings.
+        """
         if os.path.exists(self.labels_path) and os.path.exists(self.embeddings_path):
             labels = pickle.loads(open(self.labels_path, "rb").read())
             embeddings = pickle.loads(open(self.embeddings_path, "rb").read())
@@ -247,12 +262,15 @@ class FaceRecognition(object):
         return self.create_embeddings()
 
     def recognize_image(self, unknown_img, recognizer_model=None, distance_threshold=0.6):
-        """ recognize faces in image
-        Params:
-          unknown_img: image_path or image object(frame) . in batch processing, the param is embeddings of one frame
-          recognizer_model: face recognition model  .   interface for build other models on the top of embeddings
+        """ Recognize entities in an image
+
+        Args:
+            unknown_img (image_path or image object): The image to detect entities in.
+            recognizer_model (any model): Model trained with embeddings to predict entities.
+            distance_threshold (float): The threshold below which recognitions are marked as unknown.
+
         Results:
-          detected_faces: list of detected entity names in unknown_img
+            detected_faces (list): List of detected entities.
         """
         detected_faces = []
         unknown_img_embeddings = None
@@ -288,14 +306,16 @@ class FaceRecognition(object):
         return detected_faces
 
     def represent(self, img, one_face=False, return_face_number=False):
-        """ create embedings from img
-        Params:
-          img: img object | img_path
-          one_face: can be True, for func create_embeddings()
-          return_face_number: for distance tuning
-        Returens:
-          embeddings: list of face embeddings OR
-          face_number: if return_face_number & face_number>1
+        """ create an embedding from an image
+
+        Args:
+            img (img object | img_path): The image to create the embedding for.
+            one_face (bool): If only the largest face should be considered.
+            return_face_number (bool): If the number of faces should be returned for distance tuning.
+
+        Returns:
+            embeddings (list): List of face embeddings. OR
+            face_number (int): Returns number of faces if return_face_number is True and number of faces > 1.
         """
         embeddings = []
 

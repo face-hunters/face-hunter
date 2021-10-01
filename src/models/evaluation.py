@@ -2,7 +2,6 @@ import itertools
 import os
 import logging
 import pandas as pd
-from itertools import chain
 import numpy as np
 import mimetypes
 import random
@@ -21,25 +20,18 @@ def evaluate_on_dataset(path: str = 'data/datasets/ytcelebrity',
                         scene_extraction: int = 0):
     """ Detects entities in a dataset and calculates evaluation metrics
 
-    Parameters
-    ----------
-    path: str, default = 'data/datasets/ytcelebrity'
-        The Location of the dataset.
+    Args:
+        path (str): The Location of the dataset.
+        path_thumbnails (str): The Location of the thumbnails.
+        ratio (float): Ratio between thumbnails contained and not contained in the dataset.
+        seed (int): Parameter to control randomness for repeatable experiments.
+        single_true (bool): If the evaluation dataset only gives a single label for images with multiple entities.
+        scene_extraction: (int): Whether to postprocess detections using the scene extraction algorithm. Disabled with 0.
 
-    path_thumbnails: str, default = 'data/thumbnails'
-        The Location of the thumbnails.
-
-    ratio: float, default = 1.0
-        Ratio between thumbnails contained and not contained in the dataset.
-
-    seed: int, default = 42
-        Parameter to control randomness for repeatable experiments.
-
-    single_true: bool = False
-        Whether the evaluation dataset only gives single labels for images with multiple entities.
-
-    scene_extraction: int = 0
-        Whether to postprocess detections using the scene extraction algorithm. Disabled with 0.
+    Returns:
+        scores (list): The evaluation scores. [accuracy, precision, recall, f1]
+        files (list): The files that were involved in the evaluation.
+        per_file_results (list): The evaluation metrics per file.
     """
     data = pd.read_csv(os.path.join(path, 'information.csv'))
     entities = data['entities']
@@ -47,6 +39,7 @@ def evaluate_on_dataset(path: str = 'data/datasets/ytcelebrity',
     thumbnail_entities = thumbnails['norm_name'].dropna().sort_values()
     entities = set(entities)
     thumbnail_entities = set(thumbnail_entities)
+
     # Sample Creation
     random.seed(seed)
     number_of_additional_thumbnails = int(len(entities) * ratio)
@@ -98,27 +91,16 @@ def get_evaluation_metrics(y_pred: list = None,
                            y_true: list = None,
                            missing_entities: set = None,
                            single_true: bool = False):
-    """ Calculates the accuracy, recall and precision for predictions.
-    Details: https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.364.5612&rep=rep1&type=pdf
+    """ Calculates the accuracy, recall, precision and f1-score for predictions. Details: https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.364.5612&rep=rep1&type=pdf
 
-    Parameters
-    ----------
-    y_pred: list
-        The list of lists with predicted entities (Entities per frame).
+    Args:
+        y_pred (list): The list of lists with predicted entities (Entities per frame).
+        y_true (list): The list of lists with true entities (Entities per frame).
+        missing_entities (set): List of entities to be handled as unknown.
+        single_true (bool): Whether the evaluation dataset only gives single labels for images with multiple entities.
 
-    y_true: list
-        The list of lists with true entities (Entities per frame).
-
-    missing_entities: set, default = None
-        List of entities to be handled as unknown.
-
-    single_true: bool  = False
-        Whether the evaluation dataset only gives single labels for images with multiple entities.
-
-    Returns
-    ----------
-    scores: np.array
-        [accuracy, precision, recall, f1]
+    Returns:
+        scores (np.array): [accuracy, precision, recall, f1]
     """
     frame_count = len(y_pred)
     if missing_entities is None:
