@@ -10,13 +10,13 @@
    :caption: Contents:
 
    source/cli
-   source/website
    source/src.hunter
+   source/website
+   source/src.data
+   source/src.models
+   source/src.knowledge_graph
    source/src.preprocessing
    source/src.postprocessing
-
-
-
 
 Indices and tables
 ==================
