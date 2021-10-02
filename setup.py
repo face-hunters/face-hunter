@@ -1,13 +1,7 @@
 from setuptools import find_packages, setup
+import os
 
-setup(
-    name='face-hunter',
-    packages=find_packages(),
-    version='0.1.0',
-    description='Our package creates a knowledge graph of entities and videos on YouTube.',
-    author='Team Project University of Mannheim',
-    license='',
-    install_requires=[
+install_requires = [
         "wget~=3.2",
         "user_agent==0.1.9",
         "opencv-python~=4.5.1.48",
@@ -15,7 +9,6 @@ setup(
         "pytube==11.0.1",
         "pandas~=1.2.3",
         "nmslib~=2.1.1",
-        "face-recognition==1.3.0",
         "scipy~=1.6.1",
         "pip~=21.1",
         "cryptography==2.8",
@@ -38,4 +31,16 @@ setup(
         "flask-ngrok~=0.0.25",
         "facenet-pytorch~=2.4.1"
     ]
+
+if not os.getenv('READTHEDOCS'):
+    install_requires.append('face-recognition==1.3.0')
+
+setup(
+    name='face-hunter',
+    packages=find_packages(),
+    version='0.1.0',
+    description='Our package creates a knowledge graph of entities and videos on YouTube.',
+    author='Team Project University of Mannheim',
+    license='',
+    install_requires=install_requires
 )
