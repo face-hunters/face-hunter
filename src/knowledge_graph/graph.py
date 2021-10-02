@@ -188,23 +188,23 @@ class Graph(object):
             Example:
             select distinct ?title ?link ?dbpedia_entity
             where {
-                ?scene a video:Scene;
-                    foaf:depicts ?dbpedia_entity;
-                    video:sceneFrom ?video.
-                ?video dc:identifier ?link;
-                        dc:title ?title.
+            ?scene a video:Scene;
+            foaf:depicts ?dbpedia_entity;
+            video:sceneFrom ?video.
+            ?video dc:identifier ?link;
+            dc:title ?title.
 
-                service <http://dbpedia.org/sparql> {
-                    ?dbpedia_entity dbo:birthDate ?date;
-                        owl:sameAs ?wikidata_entity
-                }
+            service <http://dbpedia.org/sparql> {
+            ?dbpedia_entity dbo:birthDate ?date;
+            owl:sameAs ?wikidata_entity
+            }
 
-                service <https://query.wikidata.org/sparql> {
-                    ?wikidata_entity <http://www.wikidata.org/prop/direct/P21> ?sex .
-                    ?sex rdfs:label ?sex_label
-                }
+            service <https://query.wikidata.org/sparql> {
+            ?wikidata_entity <http://www.wikidata.org/prop/direct/P21> ?sex .
+            ?sex rdfs:label ?sex_label
+            }
 
-                filter (regex(str(?wikidata_entity), "www.wikidata.org") && (?sex_label = "male"@en) && ?date < "19700101"^^xsd:date)
+            filter (regex(str(?wikidata_entity), "www.wikidata.org") && (?sex_label = "male"@en) && ?date < "19700101"^^xsd:date)
             }
 
         Args:
