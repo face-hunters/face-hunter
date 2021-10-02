@@ -11,6 +11,7 @@ install_requires = [
         "nmslib~=2.1.1",
         "scipy~=1.6.1",
         "pip~=21.1",
+        "ipython==7.28.0",
         "cryptography==2.8",
         "keyring~=10.6.0",
         "requests~=2.23.0",
