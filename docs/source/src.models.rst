@@ -30,7 +30,7 @@ Evaluation
 Approximate k-Nearest Neighbors
 ###############################
 
-This module uses an implementation of `NMSLIB <https://github.com/nmslib/nmslib/>`__
+This module uses an implementation of `NMSLIB <https://github.com/nmslib/nmslib/>`__.
 
 .. automodule:: src.models.approximate_k_nearest_neighbors
    :members:
