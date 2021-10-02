@@ -269,7 +269,7 @@ class FaceRecognition(object):
             recognizer_model (any model): Model trained with embeddings to predict entities.
             distance_threshold (float): The threshold below which recognitions are marked as unknown.
 
-        Results:
+        Returns:
             detected_faces (list): List of detected entities.
         """
         detected_faces = []

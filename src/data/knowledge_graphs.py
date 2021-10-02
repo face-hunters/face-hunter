@@ -17,10 +17,10 @@ def download_wikidata_thumbnails(path: str = 'data/thumbnails/wikidata_thumbnail
                                  download: bool = True):
     """ Queries the thumbnail links from wikidata and saves the links in a file path/Thumbnails_links.csv
         Downloads the thumbnails of wikidata and parses them in the following structure:
-            <Entity1>
-                <Thumbnail1>
-            <Entity2>
-                <Thumbnail1>
+        <Entity1>
+        <Thumbnail1>
+        <Entity2>
+        <Thumbnail1>
         Saves a summary of the results in path/download_results.csv
         Saves the images in path/thumbnails
 
@@ -75,10 +75,10 @@ def download_dbpedia_thumbnails(path: str = 'data/thumbnails/dbpedia_thumbnails'
                                 download: bool = True):
     """ Queries the thumbnail links from dbpedia and saves the links in a file path/Thumbnails_links.csv
         Downloads the thumbnails of dbpedia and parses them in the following structure:
-            <Entity1>
-                <Thumbnail1>
-            <Entity2>
-                <Thumbnail1>
+        <Entity1>
+        <Thumbnail1>
+        <Entity2>
+        <Thumbnail1>
         Saves a summary of the results in path/download_results.csv
         Saves the images in path/thumbnails
 

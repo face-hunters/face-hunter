@@ -108,7 +108,7 @@ def _get_parser():
                                      parents=[logging_args])
     subparsers = parser.add_subparsers(title='action', help='Action to perform')
 
-    # Parser to download videos from youtube
+    # Parser to search for videos with an entity
     search = subparsers.add_parser('search', help='Returns videos in which an entity occurs')
     search.add_argument('--entity', help='Name of the entity', type=str, default=None)
     search.set_defaults(action=_search)
