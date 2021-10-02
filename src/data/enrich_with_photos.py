@@ -22,14 +22,14 @@ log_file = 'download.log'
 logging.basicConfig(level=logging.DEBUG, filename=log_file, filemode="a+", format="%(asctime)-15s %(levelname)-8s  %(message)s")
 
 
-def download_page(url):
+def download_page(url: str):
     """download raw content of the page
     
     Args:
-        url (str): url of the page 
+        url (str): URL of the page
     
     Returns:
-        raw content of the page
+        content (str): Raw content of the page
     """
     try:
         headers = {}
@@ -44,14 +44,14 @@ def download_page(url):
         return None
 
 
-def parse_page(url):
-    """parge the page and get all the links of images, max number is 100 due to limit by google
+def parse_page(url: str):
+    """ Parse the page and get all the links of images, max number is 100 due to limit by google
     
     Args:
         url (str): url of the page
     
     Returns:
-        A set containing the urls of images
+        urls (set): A set containing the urls of images
     """
     page_content = download_page(url)
     if page_content:
@@ -85,6 +85,14 @@ def fetch_image(link):
 
 
 def encode_downloaded_img(img):
+    """ Creates the embedding for an image
+
+    Args:
+        img: The image to encode
+
+    Returns:
+        embedding
+    """
     temp_img = Image.open(io.BytesIO(img))
     temp_img = cv2.cvtColor(np.array(temp_img), cv2.COLOR_RGB2BGR)
     encodings = face_recognition.face_encodings(temp_img)
@@ -95,6 +103,7 @@ def encode_downloaded_img(img):
 
 
 def compare_install_face(img, img_dir, downloaded, encode=None):
+    """ Downloads an image only if the detected face is to an extent similar to the other images """
     try:
         encode_new_img = encode_downloaded_img(img)
         if not encode is None and len(encode_new_img) == 128:

@@ -28,6 +28,10 @@ class MemoryStore(object):
     """ Implementation to store and query rdf-triples in a local file. """
 
     def __init__(self, path: str = './models/store'):
+        """
+        Args:
+            path (str): Location where the triples should be saved.
+        """
         self.path = path
         self.graph = Graph()
         if os.path.isfile(self.path):

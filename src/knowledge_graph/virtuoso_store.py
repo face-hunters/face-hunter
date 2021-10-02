@@ -9,10 +9,18 @@ LOGGER = logging.getLogger('virtuoso-store')
 class VirtuosoStore(object):
     """ Implementation to store and query rdf-triples in a Virtuoso instance """
 
-    def __init__(self, conn_url: str = 'http://localhost:8890/sparql-auth',
+    def __init__(self,
+                 conn_url: str = 'http://localhost:8890/sparql-auth',
                  graph: str = 'http://localhost:8890/DAV/',
                  username: str = 'dba',
                  password: str = 'dba'):
+        """
+        Args:
+            conn_url (str): The SPARQL-endpoint with authentication of the Virtuoso instance.
+            graph (str): The Virtuoso graph in which the information should be saved.
+            username (str): Username for the authentication.
+            password (str): Password for the authentication.
+        """
         self.graph = graph
         self.endpoint = SPARQLWrapper(conn_url)
         self.endpoint.setHTTPAuth(DIGEST)

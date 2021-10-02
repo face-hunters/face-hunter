@@ -16,21 +16,18 @@ LOGGER = logging.getLogger('knowledge-graphs')
 def download_wikidata_thumbnails(path: str = 'data/thumbnails/wikidata_thumbnails', query_links: bool = True,
                                  download: bool = True):
     """ Queries the thumbnail links from wikidata and saves the links in a file path/Thumbnails_links.csv
-    Downloads the thumbnails of wikidata and parses them in the following structure:
-        <Entity1>
-            <Thumbnail1>
-        <Entity2>
-            <Thumbnail1>
-    saves a summary of the results in path/download_results.csv
-    saves the images in path/thumbnails
-    Parameters
-    ----------
-    path: str, default = data/thumbnails/wikidata_thumbnails
-        Path where the thumbnails should be saved at
-    query_links: bool, default = True
-        Boolean that indicates whether to query the thumbnails links
-    download: bool, default = True
-        Boolean that indicated whether to download the thumbnails
+        Downloads the thumbnails of wikidata and parses them in the following structure:
+            <Entity1>
+                <Thumbnail1>
+            <Entity2>
+                <Thumbnail1>
+        Saves a summary of the results in path/download_results.csv
+        Saves the images in path/thumbnails
+
+    Args:
+        path (str): Path where the thumbnails should be saved at
+        query_links (bool): Boolean that indicates whether to query the thumbnails links
+        download (bool): Boolean that indicated whether to download the thumbnails
     """
     if query_links:
         check_path_exists(path)
@@ -77,21 +74,18 @@ def download_wikidata_thumbnails(path: str = 'data/thumbnails/wikidata_thumbnail
 def download_dbpedia_thumbnails(path: str = 'data/thumbnails/dbpedia_thumbnails', query_links: bool = True,
                                 download: bool = True):
     """ Queries the thumbnail links from dbpedia and saves the links in a file path/Thumbnails_links.csv
-    Downloads the thumbnails of dbpedia and parses them in the following structure:
-        <Entity1>
-            <Thumbnail1>
-        <Entity2>
-            <Thumbnail1>
-    saves a summary of the results in path/download_results.csv
-    saves the images in path/thumbnails
-    Parameters
-    ----------
-    path: str, default = data/thumbnails/dbpedia_thumbnails
-        Path where the thumbnails should be saved at
-    query_links: bool, default = True
-        Boolean that indicates whether to query the thumbnails links
-    download: bool, default = True
-        Boolean that indicated whether to download the thumbnails
+        Downloads the thumbnails of dbpedia and parses them in the following structure:
+            <Entity1>
+                <Thumbnail1>
+            <Entity2>
+                <Thumbnail1>
+        Saves a summary of the results in path/download_results.csv
+        Saves the images in path/thumbnails
+
+    Args:
+        path (str): ath where the thumbnails should be saved at
+        query_links (bool): Boolean that indicates whether to query the thumbnails links
+        download (bool): Boolean that indicated whether to download the thumbnails
     """
     check_path_exists(path)
     if query_links:
@@ -158,6 +152,12 @@ def download_dbpedia_thumbnails(path: str = 'data/thumbnails/dbpedia_thumbnails'
 
 
 def download_images(path, method='wikidata'):
+    """ Downloads entity thumbnails
+
+    Args:
+        path (str): Path where the thumbnails should be stored and the Thumbnails_links.csv is located.
+        method (str): Source knowledge graph.
+    """
     def mycallback(result):
         global results
         results.append(result)
@@ -182,23 +182,16 @@ def download_images(path, method='wikidata'):
 
 
 def download_thumbnail(index: int, i_thumbnail_url: str, i_path: str, i_file_name: str):
-    """ Downloads a thumbnail from dbpedia
+    """ Downloads a single thumbnail
 
-    Parameters
-    ----------
-    index: int
-        The index of the downloaded thumbnail taken from the thumbnail urls dataframe
-    i_thumbnail_url: str
-        The url of the downloaded thumbnail
-    i_path: str
-        The download path
-    i_file_name: str
-        The file name
+    Args:
+        index (int): The index of the downloaded thumbnail taken from the thumbnail urls dataframe
+        i_thumbnail_url (str): The url of the downloaded thumbnail
+        i_path (str): The download path
+        i_file_name (str): The file name
 
-    Returns
-    ----------
-    output: list
-        A list containing the index, the thumbnail url and the result outcome (success, HTTPError or UnicodeEncodeError)
+    Returns:
+        output (list): A list containing the index, the thumbnail url and the result outcome (success, HTTPError or UnicodeEncodeError)
     """
     try:
         if index % 10 == 0:
@@ -239,18 +232,14 @@ def download_thumbnail(index: int, i_thumbnail_url: str, i_path: str, i_file_nam
 
 
 def download_entity_list(path: str = 'data/thumbnails', entity_list: list = None):
-    """ Download a list of entities'thumbnails from wikidata.
-    Parameters
-    ----------
-    path: str, default = 'data/thumbnails'
-      Path where the thumbnails are stored.
-    entity_list: list, default = None
-      A list of entities required to download
+    """ Downloads a specific list of entity thumbnails from wikidata.
+
+    Args:
+        path (str): Path where the thumbnails are stored.
+        entity_list (list): A list of entities required to download
      
-    Returns
-    ----------
-    sm: list
-        A list containing the still missing entities
+    Returns:
+        sm (list): A list containing the still missing entities
     """
     url = 'https://query.wikidata.org/sparql'
     sm = []
@@ -292,13 +281,14 @@ def download_entity_list(path: str = 'data/thumbnails', entity_list: list = None
 
 
 def download_missing_thumbnails(path: str = './videos/ytcelebrity', path_thumbnails: str = 'data/thumbnails'):
-    """ Compares a list of entities with a dataset and downloads missing ones.
-    Parameters
-    ----------
-    path: str, default = './videos/ytcelebrity'
-        Path where the information.csv of the dataset is saved.
-    path_thumbnails: str, default = 'data/thumbnails'
-        Path where the Thumbnails_links.csv is saved.
+    """ Compares a list of entities with the ones in a dataset and downloads missing ones.
+
+    Args:
+        path (str): Path where the information.csv of the dataset is saved.
+        path_thumbnails (str): Path where the Thumbnails_links.csv is saved.
+
+    Returns:
+        missing_entities (list): List of missing entities that have ben found.
     """
     data = pd.read_csv(os.path.join(path, 'information.csv'))
     thumbnails = pd.read_csv(os.path.join(path_thumbnails, 'wikidata_Thumbnails_links.csv'))
@@ -313,7 +303,15 @@ def download_missing_thumbnails(path: str = './videos/ytcelebrity', path_thumbna
     return missing_entities
 
 
-def get_same_as_link(uri) -> str:
+def get_same_as_link(uri: str) -> str:
+    """ Gets the corresponding Wikidata/DBpedia uri for a DBpedia/Wikidata uri.
+
+    Args:
+        uri (str): A DBpedia- or Wikidata-URI.
+
+    Returns:
+        corresponding_uri (str): The uri of the other knowledge graph.
+    """
     if uri.startswith('http://dbpedia'):
         query = ('SELECT DISTINCT ?concept '
                  'WHERE { '
@@ -339,6 +337,15 @@ def get_same_as_link(uri) -> str:
 
 
 def get_uri_from_label(label: str) -> tuple:
+    """ Gets the corresponding Wikidata and DBpedia uri for a label.
+
+    Args:
+        label (str): A label.
+
+    Returns:
+        dbpedia_uri (str): The uri of the entity in DBpedia.
+        wikidata_uri (str): The uri of the entity in Wikidata.
+    """
     query = ('SELECT ?entity '
              'WHERE { '
              f'?entity rdfs:label "{label}"@en ; '
@@ -372,6 +379,16 @@ def get_uri_from_label(label: str) -> tuple:
 
 
 def get_uri_from_csv(name: str, data: pd.DataFrame):
+    """ Gets the DBpedia- and Wikidata-URI from a Thumbnail_links.csv as a dataframe.
+
+    Args:
+        name (str): Name of the entity.
+        data (DataFrame): Dataframe of the Thumbnail_links.csv
+
+    Returns:
+        dbpedia_uri (str): The uri of the entity in DBpedia.
+        wikidata_uri (str): The uri of the entity in Wikidata.
+    """
     uris = pd.unique(data[data['name'] == name]['entity'])
 
     dbpedia_uri = None

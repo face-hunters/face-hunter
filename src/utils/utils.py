@@ -17,10 +17,8 @@ LOGGER = logging.getLogger('utils')
 def check_path_exists(path: str = None):
     """ Checks if a path exists and creates it if not.
 
-    Parameters
-    ----------
-    path: str, default = None
-        The path to check.
+    Args:
+        path (str): The path to check.
     """
     if path is not None and not os.path.exists(path):
         LOGGER.info(f'Creating path path')
@@ -30,15 +28,11 @@ def check_path_exists(path: str = None):
 def get_config(path: str = '/root/FACE-HUNTER/src/utils/config.yaml'):
     """ Loads the configuration file to a dictionary
 
-    Parameters
-    ----------
-    path: str, default = None
-        The path to the configuration file.
+    Args:
+        path (str): The path to the configuration file.
 
-    Returns
-    ----------
-    config: Dictionary
-        The loaded parameters
+    Returns:
+        config (dict): The loaded parameters.
     """
     with open(path) as f:
         config = yaml.safe_load(f)
@@ -46,18 +40,18 @@ def get_config(path: str = '/root/FACE-HUNTER/src/utils/config.yaml'):
 
 
 def face_number(img, detector=MTCNN()):
-    """ caculate how many faces in img, for download thumbnails use
+    """ Computes the number of faces in an image.
 
-    if you have to detect many image, you can create a detector then pass to this function:
-      detector = MTCNN()
-      for img in img_list:
-        face_number = face_number('img.jpg', detector)
+        if you have to detect many images, you can create a detector then pass to this function:
+          detector = MTCNN()
+          for img in img_list:
+            face_number = face_number('img.jpg', detector)
 
-    params:
-      img: can be img object or img path
+    Args:
+        img (img object or img path): The image or path to it.
 
-    return:
-      face number in the img
+    Returns:
+        count (int): Number of faces in the image.
     """
     if isinstance(img, str):
         img = cv2.cvtColor(cv2.imread(img), cv2.COLOR_BGR2RGB)
@@ -69,21 +63,25 @@ def face_number(img, detector=MTCNN()):
 def image_files_in_folder(folder):
     """ Searches for images in a folder
 
-    Parameters
-    ----------
-    folder: str, default = None
-        The path to the dictionary
+    Args:
+        folder (str): The path to the dictionary.
 
-    Returns
-    ----------
-    list
-        paths to images
+    Returns:
+        paths (list): Paths to images.
     """
     return [os.path.join(folder, f) for f in os.listdir(folder) if re.match(r'.*\.(jpg|jpeg|png)', f, flags=re.I)]
 
 
 def upload_folder(input_dictionary: str, cloud_config: str, cloud_bucket: str):
     """ Uploads every file in a dictionary to the google cloud storage
+
+    Args:
+        input_dictionary (str): Dictionary containing the files to upload.
+        cloud_config (str): JSON-string of the cloud credentials
+        cloud_bucket (str): Name of the bucket in which the files should be saved.
+
+    Returns:
+        paths (list): List of all local and remote paths.
     """
     return [upload_file(os.path.join(input_dictionary, file), cloud_config, cloud_bucket, file.split(input_dictionary)[1]) for file in glob.iglob(input_dictionary + '**/**', recursive=True)]
 
@@ -91,24 +89,14 @@ def upload_folder(input_dictionary: str, cloud_config: str, cloud_bucket: str):
 def upload_file(input_file: str, cloud_config: str, cloud_bucket: str, name: str) -> Tuple[str, str]:
     """ Uploads a local file to the google cloud storage
 
-    Parameters
-    ----------
-    input_file: str
-        Path to the local file to upload
+    Args:
+        input_file (str): Path to the local file to upload
+        cloud_config (dict): JSON-string of the cloud credentials
+        cloud_bucket (str): Name of the bucket in which the files should be saved.
+        name (str): Filename with ending that should be written to the cloud
 
-    cloud_config: dict
-        JSON-string of the cloud credentials
-
-    cloud_bucket: str
-        Name of the google cloud bucket
-
-    name: str
-        Filename with ending that should be written to the cloud
-
-    Returns
-    ----------
-    Tuple
-        path to the local and remote file
+    Returns:
+        paths (tuple): path to the local and remote file
     """
     if cloud_config is None or cloud_bucket is None:
         return input_file, input_file
@@ -139,24 +127,14 @@ def upload_file(input_file: str, cloud_config: str, cloud_bucket: str, name: str
 def download_file(path: str, cloud_config: str = None, cloud_bucket: str = None, name: str = None) -> str:
     """ Downloads a file from the google cloud storage
 
-    Parameters
-    ----------
-    path: str
-        Path to a local dictionary
+    Args:
+        path (str): Path to a local dictionary
+        cloud_config (dict): JSON-string of the cloud credentials
+        cloud_bucket (str): Name of the google cloud bucket
+        name (str): Name of the file in the cloud
 
-    cloud_config: dict
-        JSON-string of the cloud credentials
-
-    cloud_bucket: str
-        Name of the google cloud bucket
-
-    name: str
-        Name of the file in the cloud
-
-    Returns
-    ----------
-    path: str
-        Path to the downloaded local file
+    Returns:
+        path (str): Path to the downloaded local file
     """
     if not os.path.isfile(path):
         if cloud_config is None:

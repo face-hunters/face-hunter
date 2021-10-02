@@ -30,7 +30,8 @@ DBR = Namespace('http://dbpedia.org/resource/')
 class Graph(object):
     """ Links new videos with their entities in a knowledge graph and allows to look up user queries. """
 
-    def __init__(self, storage_type: str = 'memory',
+    def __init__(self,
+                 storage_type: str = 'memory',
                  memory_path: str = 'models/store',
                  virtuoso_url: str = None,
                  virtuoso_graph: str = None,
@@ -38,6 +39,17 @@ class Graph(object):
                  virtuoso_password: str = None,
                  dbpedia_csv: str = None,
                  wikidata_csv: str = None):
+        """
+        Args:
+            storage_type (str): Whether to save links to a local rdf-file or a Virtuoso database. Should be 'memory' for a local file, 'virtuoso' for Virtuoso.
+            memory_path (str): Path to which the links should be written. Only necessary if storage_type = memory.
+            virtuoso_url (str): URL of the Virtuoso-SPARQL-instance. Only necessary if storage_type = virtuoso.
+            virtuoso_graph (str): URL of the Virtuoso-Graph in which the links should be saved. Only necessary if storage_type = virtuoso.
+            virtuoso_username (str): Username to access the Virtuoso instance. Only necessary if storage_type = virtuoso.
+            virtuoso_password (str): Password to access the Virtuoso instance. Only necessary if storage_type = virtuoso.
+            dbpedia_csv (str): Path of the normalized DBpedia-thumbnail-information.
+            wikidata_csv (str): Path of the normalized Wikidata-thumbnail-information
+        """
         self.storage_type = storage_type
         if storage_type == 'memory':
             self.store = MemoryStore(memory_path)

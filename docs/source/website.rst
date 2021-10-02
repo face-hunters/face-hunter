@@ -8,7 +8,7 @@ It allows to search for scenes of entities or to write own SPARQL-queries and is
 For usage follow the installation instructions on `Angular-Setup <https://angular.io/guide/setup-local/>`__.
 
 How to run locally
-##############
+##################
 
 In the dictionary of the website run:
 
@@ -17,7 +17,7 @@ In the dictionary of the website run:
     $  ng serve
 
 How to build for production
-##############
+###########################
 
 In the dictionary of the website run:
 
