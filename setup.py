@@ -15,6 +15,7 @@ setup(
         "pytube==11.0.1",
         "pandas~=1.2.3",
         "nmslib~=2.1.1",
+        "face-recognition==1.3.0",
         "scipy~=1.6.1",
         "pip~=21.1",
         "cryptography==2.8",
