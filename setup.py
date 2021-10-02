@@ -9,6 +9,7 @@ setup(
     license='',
     install_requires=[
         "wget~=3.2",
+        "user_agent==0.1.9",
         "opencv-python~=4.5.1.48",
         "numpy~=1.19.2",
         "pytube==11.0.1",
