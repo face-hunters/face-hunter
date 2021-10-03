@@ -1,0 +1,33 @@
+# Pycharm
+.idea
+__pycache__
+
+# ignore .git and .cache folders
+.git
+.cache
+
+# VS Code
+.vscode/
+
+# Spyder
+.spyproject/
+
+# Jupyter NB Checkpoints
+.ipynb_checkpoints/
+
+# Mac OS-specific storage files
+.DS_Store
+
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# Lock file
+*.lock.*
+face-hunter.json
+
+# SSH keys
+*pub_key*

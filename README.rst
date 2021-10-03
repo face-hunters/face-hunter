@@ -69,7 +69,7 @@ Follow these steps:
 
 .. code-block::
 
-    $ sudo docker run -v /mnt/face-hunter-bucket:/root/FACE-HUNTER/face-hunter-bucket --privileged -it shaban2lesh/face-hunter /bin/bash
+    $ sudo docker run -v /mnt/face-hunter-bucket:/root/FACE-HUNTER/face-hunter-bucket --privileged -it facehunters/face-hunter /bin/bash
     $ cd root/FACE-HUNTER
     $ python cli.py ARGUMENTS
 
