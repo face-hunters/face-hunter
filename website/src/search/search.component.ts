@@ -65,6 +65,7 @@ export class SearchComponent implements OnInit {
   }
 
   reset() {
+    this.currentPage = 0;
     this.allVideos = [];
     this.videos = [];
   }
