@@ -21,5 +21,5 @@ export GOOGLE_APPLICATION_CREDENTIALS=/root/face-hunter.json
 mkdir /mnt/face-hunter-bucket
 gcsfuse face-hunter-bucket /mnt/face-hunter-bucket
 
-sudo docker pull shaban2lesh/face-hunter
-# sudo docker run -v /mnt/face-hunter-bucket:/root/FACE-HUNTER/face-hunter-bucket --privileged -it shaban2lesh/face-hunter /bin/bash
+sudo docker pull facehunters/face-hunter
+# sudo docker run -v /mnt/face-hunter-bucket:/root/FACE-HUNTER/face-hunter-bucket --privileged -it facehunters/face-hunter /bin/bash
