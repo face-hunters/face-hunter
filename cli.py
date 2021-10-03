@@ -113,7 +113,8 @@ def _link(args):
                                     virtuoso_username=CONFIG['virtuoso']['user'],
                                     virtuoso_password=CONFIG['virtuoso']['password'],
                                     dbpedia_csv=CONFIG['face-recognition'].get('dbpedia'),
-                                    wikidata_csv=CONFIG['face-recognition'].get('wikidata'))
+                                    wikidata_csv=CONFIG['face-recognition'].get('wikidata'),
+                                    postprocessing_threshold=CONFIG['face-recognition']['postprocessing-threshold'])
     else:
         newly_created = hunter.link('memory',
                                     algorithm=CONFIG['face-recognition']['algorithm'],

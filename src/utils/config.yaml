@@ -1,11 +1,8 @@
 rdf:
   uri: http://localhost/
 
-virtuoso:
-  sparql-auth: http://localhost:8890/sparql-auth
-  graph: http://localhost:8890/DAV/
-  user: dba
-  password: dba
+memory:
+  path: models/example_graph
 
 face-recognition:
   device: cpu
@@ -20,4 +17,5 @@ face-recognition:
   distance-threshold: 0.6
   index: models/index.bin
   k: 1
-  by: second
+  by: frame
+  postprocessing-threshold: 3

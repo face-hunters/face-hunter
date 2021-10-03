@@ -8,27 +8,40 @@ import json
 from flask_ngrok import run_with_ngrok
 from flask_api import FlaskApi
 from flask_cors import CORS
+from src.utils.utils import get_config
 
-#  todo: from config
-BY = 'frame'
-FRAME_THRESHOLD = 7
-STORAGE_TYPE = 'virtuoso'
-MEMORY_PATH = ''
-VIRTUOSO_URL = 'http://localhost:8890/sparql-auth'
-VIRTUOSO_GRAPH = 'http://localhost:8890/DAV/'
-VIRTUOSO_USERNAME = 'dba'
-VIRTUOSO_PASSWORD = 'dba'
-DBPEDIA_CSV = None
-WIKIDATA_CSV = None
+
+CONFIG = get_config('../src/utils/config.yaml')
+
+
+BY = CONFIG['face-recognition']['by']
+FRAME_THRESHOLD = CONFIG['face-recognition']['postprocessing-threshold']
+if 'virtuoso' in CONFIG:
+    STORAGE_TYPE = 'virtuoso'
+    MEMORY_PATH = ''
+    VIRTUOSO_URL = CONFIG['virtuoso']['url']
+    VIRTUOSO_GRAPH = CONFIG['virtuoso']['graph']
+    VIRTUOSO_USERNAME = CONFIG['virtuoso']['username']
+    VIRTUOSO_PASSWORD = CONFIG['virtuoso']['password']
+else:
+    STORAGE_TYPE = 'memory'
+    MEMORY_PATH = '../' + CONFIG['memory']['path']
+    VIRTUOSO_URL = ''
+    VIRTUOSO_GRAPH = ''
+    VIRTUOSO_USERNAME = ''
+    VIRTUOSO_PASSWORD = ''
+
+DBPEDIA_CSV = CONFIG['face-recognition'].get('dbpedia')
+WIKIDATA_CSV = CONFIG['face-recognition'].get('wikidata')
 
 THUMBNAIL_LIST = None
-THUMBNAILS_PATH = '../data/thumbnails'
-IMG_WIDTH = 500
-DISTANCE_THRESHOLD = 0.72
-ENCODER_NAME = 'Facenet'
-LABELS_PATH = '../data/embeddings/labels_facenet.pickle'
-EMBEDDINGS_PATH = '../data/embeddings/embeddings_facenet.pickle'
-INDEX_PATH = '../data/embeddings/index.bin'
+THUMBNAILS_PATH = '../' + CONFIG['face-recognition']['thumbnails']
+IMG_WIDTH = CONFIG['face-recognition']['img-width']
+DISTANCE_THRESHOLD = CONFIG['face-recognition']['distance-threshold']
+ENCODER_NAME = CONFIG['face-recognition']['encoder']
+LABELS_PATH = '../' + CONFIG['face-recognition']['labels']
+EMBEDDINGS_PATH = '../' + CONFIG['face-recognition']['embeddings']
+INDEX_PATH = '../' + CONFIG['face-recognition']['index']
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -69,7 +82,7 @@ def get_videos_by_sparql():
             filters = None
         result = api.get_videos_by_sparql(query, filters)
         if result is not None:
-            result = result[:9]
+            result = result[:19]
         response = jsonify({'success': True, 'result': result})
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
@@ -81,7 +94,7 @@ def get_videos_by_sparql():
 def get_scenes_by_entity(entity):
     result = api.get_videos_by_entity(entity)
     if result is not None:
-        result = result[:9]
+        result = result[:19]
     response = jsonify({'success': True, 'result': result})
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response

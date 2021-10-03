@@ -34,6 +34,7 @@ div p {
   border-radius: 10px;
   border: 1px solid black;
   margin: 10px;
+  vertical-align: top;
 }
 
 .search_item div p {
@@ -41,6 +42,7 @@ div p {
   text-align: left;
   display: inline-block;
   width: 70px;
+  word-break: break-word;
 }
 
 .sparql {

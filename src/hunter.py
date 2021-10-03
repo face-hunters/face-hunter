@@ -103,7 +103,8 @@ class Hunter(object):
              virtuoso_username: str = None,
              virtuoso_password: str = None,
              dbpedia_csv: str = 'data/thumbnails/dbpedia_thumbnails/Thumbnails_links.csv',
-             wikidata_csv: str = 'data/thumbnails/wikidata_thumbnails/Thumbnails_links.csv'):
+             wikidata_csv: str = 'data/thumbnails/wikidata_thumbnails/Thumbnails_links.csv',
+             postprocessing_threshold: int = 3):
         """ Recognize entities in a video and add corresponding links to the knowledge graph.
 
         Args:
@@ -123,6 +124,7 @@ class Hunter(object):
             virtuoso_password (str): Password to access the Virtuoso instance. Only necessary if storage_type = virtuoso.
             dbpedia_csv (str): Path of the normalized DBpedia-thumbnail-information.
             wikidata_csv (str): Path of the normalized Wikidata-thumbnail-information.
+            postprocessing_threshold (int): Number of similar/not similar consecutive frames to start/end a scene.
 
         Returns:
             new_links (bool): Whether the video already existed in the database or not.
@@ -142,7 +144,7 @@ class Hunter(object):
                                                                                   recognize_by)
 
             graph.insert_video(self.identifier, os.path.split(self.path_to_video)[1])
-            scenes = extract_scenes(frame_wise_entities, timestamps, 3)
+            scenes = extract_scenes(frame_wise_entities, timestamps, postprocessing_threshold)
             for scene in scenes:
                 graph.insert_scene(scene.names[0], self.identifier, scene.start[0], scene.end[0])
             return True

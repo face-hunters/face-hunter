@@ -1,0 +1,219 @@
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix mpeg7: <http://purl.org/ontology/mpeg7/> .
+@prefix temporal: <http://swrl.stanford.edu/ontologies/builtins/3.3/temporal.owl> .
+@prefix video: <http://purl.org/ontology/video/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://localhost/81CseF4bJvQ#t=0:00:02,0:00:08> a video:Scene ;
+    video:sceneFrom <http://localhost/81CseF4bJvQ> ;
+    video:temporalSegmentOf <http://localhost/81CseF4bJvQ> ;
+    temporal:duration "0:00:06"^^xsd:duration ;
+    temporal:hasFinishTime "0:00:08"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:02"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Leonardo_DiCaprio> .
+
+<http://localhost/81CseF4bJvQ#t=0:00:10,0:00:11> a video:Scene ;
+    video:sceneFrom <http://localhost/81CseF4bJvQ> ;
+    video:temporalSegmentOf <http://localhost/81CseF4bJvQ> ;
+    temporal:duration "0:00:00"^^xsd:duration ;
+    temporal:hasFinishTime "0:00:11"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:10"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Leonardo_DiCaprio> .
+
+<http://localhost/81CseF4bJvQ#t=0:00:11,0:00:11> a video:Scene ;
+    video:sceneFrom <http://localhost/81CseF4bJvQ> ;
+    video:temporalSegmentOf <http://localhost/81CseF4bJvQ> ;
+    temporal:duration "0:00:00"^^xsd:duration ;
+    temporal:hasFinishTime "0:00:12"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:11"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Leonardo_DiCaprio> .
+
+<http://localhost/81CseF4bJvQ#t=0:00:12,0:00:15> a video:Scene ;
+    video:sceneFrom <http://localhost/81CseF4bJvQ> ;
+    video:temporalSegmentOf <http://localhost/81CseF4bJvQ> ;
+    temporal:duration "0:00:03"^^xsd:duration ;
+    temporal:hasFinishTime "0:00:15"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:12"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Leonardo_DiCaprio> .
+
+<http://localhost/81CseF4bJvQ#t=0:00:16,0:00:16> a video:Scene ;
+    video:sceneFrom <http://localhost/81CseF4bJvQ> ;
+    video:temporalSegmentOf <http://localhost/81CseF4bJvQ> ;
+    temporal:duration "0:00:00"^^xsd:duration ;
+    temporal:hasFinishTime "0:00:17"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:16"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Leonardo_DiCaprio> .
+
+<http://localhost/81CseF4bJvQ#t=0:00:17,0:00:17> a video:Scene ;
+    video:sceneFrom <http://localhost/81CseF4bJvQ> ;
+    video:temporalSegmentOf <http://localhost/81CseF4bJvQ> ;
+    temporal:duration "0:00:00"^^xsd:duration ;
+    temporal:hasFinishTime "0:00:18"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:17"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Leonardo_DiCaprio> .
+
+<http://localhost/81CseF4bJvQ#t=0:00:18,0:00:21> a video:Scene ;
+    video:sceneFrom <http://localhost/81CseF4bJvQ> ;
+    video:temporalSegmentOf <http://localhost/81CseF4bJvQ> ;
+    temporal:duration "0:00:02"^^xsd:duration ;
+    temporal:hasFinishTime "0:00:21"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:18"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Leonardo_DiCaprio> .
+
+<http://localhost/81CseF4bJvQ#t=0:00:41,0:01:20> a video:Scene ;
+    video:sceneFrom <http://localhost/81CseF4bJvQ> ;
+    video:temporalSegmentOf <http://localhost/81CseF4bJvQ> ;
+    temporal:duration "0:00:38"^^xsd:duration ;
+    temporal:hasFinishTime "0:01:20"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:41"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Leonardo_DiCaprio> .
+
+<http://localhost/81CseF4bJvQ#t=0:02:45,0:02:48> a video:Scene ;
+    video:sceneFrom <http://localhost/81CseF4bJvQ> ;
+    video:temporalSegmentOf <http://localhost/81CseF4bJvQ> ;
+    temporal:duration "0:00:03"^^xsd:duration ;
+    temporal:hasFinishTime "0:02:48"^^xsd:dateTime ;
+    temporal:hasStartTime "0:02:45"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Leonardo_DiCaprio> .
+
+<http://localhost/81CseF4bJvQ#t=0:04:11,0:04:14> a video:Scene ;
+    video:sceneFrom <http://localhost/81CseF4bJvQ> ;
+    video:temporalSegmentOf <http://localhost/81CseF4bJvQ> ;
+    temporal:duration "0:00:03"^^xsd:duration ;
+    temporal:hasFinishTime "0:04:14"^^xsd:dateTime ;
+    temporal:hasStartTime "0:04:11"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Leonardo_DiCaprio> .
+
+<http://localhost/81CseF4bJvQ#t=0:04:16,0:04:19> a video:Scene ;
+    video:sceneFrom <http://localhost/81CseF4bJvQ> ;
+    video:temporalSegmentOf <http://localhost/81CseF4bJvQ> ;
+    temporal:duration "0:00:02"^^xsd:duration ;
+    temporal:hasFinishTime "0:04:19"^^xsd:dateTime ;
+    temporal:hasStartTime "0:04:16"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Leonardo_DiCaprio> .
+
+<http://localhost/JSArPXaQ6xQ#t=0:00:14,0:00:23> a video:Scene ;
+    video:sceneFrom <http://localhost/JSArPXaQ6xQ> ;
+    video:temporalSegmentOf <http://localhost/JSArPXaQ6xQ> ;
+    temporal:duration "0:00:09"^^xsd:duration ;
+    temporal:hasFinishTime "0:00:23"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:14"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Arnold_Schwarzenegger> .
+
+<http://localhost/JSArPXaQ6xQ#t=0:00:27,0:00:36> a video:Scene ;
+    video:sceneFrom <http://localhost/JSArPXaQ6xQ> ;
+    video:temporalSegmentOf <http://localhost/JSArPXaQ6xQ> ;
+    temporal:duration "0:00:08"^^xsd:duration ;
+    temporal:hasFinishTime "0:00:36"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:27"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Arnold_Schwarzenegger> .
+
+<http://localhost/JSArPXaQ6xQ#t=0:00:38,0:00:41> a video:Scene ;
+    video:sceneFrom <http://localhost/JSArPXaQ6xQ> ;
+    video:temporalSegmentOf <http://localhost/JSArPXaQ6xQ> ;
+    temporal:duration "0:00:02"^^xsd:duration ;
+    temporal:hasFinishTime "0:00:41"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:38"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Arnold_Schwarzenegger> .
+
+<http://localhost/JSArPXaQ6xQ#t=0:00:43,0:00:49> a video:Scene ;
+    video:sceneFrom <http://localhost/JSArPXaQ6xQ> ;
+    video:temporalSegmentOf <http://localhost/JSArPXaQ6xQ> ;
+    temporal:duration "0:00:06"^^xsd:duration ;
+    temporal:hasFinishTime "0:00:49"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:43"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Arnold_Schwarzenegger> .
+
+<http://localhost/JSArPXaQ6xQ#t=0:00:49,0:00:52> a video:Scene ;
+    video:sceneFrom <http://localhost/JSArPXaQ6xQ> ;
+    video:temporalSegmentOf <http://localhost/JSArPXaQ6xQ> ;
+    temporal:duration "0:00:02"^^xsd:duration ;
+    temporal:hasFinishTime "0:00:52"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:49"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Arnold_Schwarzenegger> .
+
+<http://localhost/JSArPXaQ6xQ#t=0:00:56,0:01:17> a video:Scene ;
+    video:sceneFrom <http://localhost/JSArPXaQ6xQ> ;
+    video:temporalSegmentOf <http://localhost/JSArPXaQ6xQ> ;
+    temporal:duration "0:00:20"^^xsd:duration ;
+    temporal:hasFinishTime "0:01:17"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:56"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Arnold_Schwarzenegger> .
+
+<http://localhost/UjpBs2BfNbw#t=0:00:59,0:01:00> a video:Scene ;
+    video:sceneFrom <http://localhost/UjpBs2BfNbw> ;
+    video:temporalSegmentOf <http://localhost/UjpBs2BfNbw> ;
+    temporal:duration "0:00:00"^^xsd:duration ;
+    temporal:hasFinishTime "0:01:00"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:59"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Arnold_Schwarzenegger> .
+
+<http://localhost/UjpBs2BfNbw#t=0:01:00,0:01:01> a video:Scene ;
+    video:sceneFrom <http://localhost/UjpBs2BfNbw> ;
+    video:temporalSegmentOf <http://localhost/UjpBs2BfNbw> ;
+    temporal:duration "0:00:00"^^xsd:duration ;
+    temporal:hasFinishTime "0:01:01"^^xsd:dateTime ;
+    temporal:hasStartTime "0:01:00"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Arnold_Schwarzenegger> .
+
+<http://localhost/UjpBs2BfNbw#t=0:01:44,0:01:45> a video:Scene ;
+    video:sceneFrom <http://localhost/UjpBs2BfNbw> ;
+    video:temporalSegmentOf <http://localhost/UjpBs2BfNbw> ;
+    temporal:duration "0:00:01"^^xsd:duration ;
+    temporal:hasFinishTime "0:01:45"^^xsd:dateTime ;
+    temporal:hasStartTime "0:01:44"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Arnold_Schwarzenegger> .
+
+<http://localhost/UjpBs2BfNbw#t=0:01:48,0:01:51> a video:Scene ;
+    video:sceneFrom <http://localhost/UjpBs2BfNbw> ;
+    video:temporalSegmentOf <http://localhost/UjpBs2BfNbw> ;
+    temporal:duration "0:00:02"^^xsd:duration ;
+    temporal:hasFinishTime "0:01:51"^^xsd:dateTime ;
+    temporal:hasStartTime "0:01:48"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Arnold_Schwarzenegger> .
+
+<http://localhost/UjpBs2BfNbw#t=0:01:55,0:01:58> a video:Scene ;
+    video:sceneFrom <http://localhost/UjpBs2BfNbw> ;
+    video:temporalSegmentOf <http://localhost/UjpBs2BfNbw> ;
+    temporal:duration "0:00:02"^^xsd:duration ;
+    temporal:hasFinishTime "0:01:58"^^xsd:dateTime ;
+    temporal:hasStartTime "0:01:55"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Arnold_Schwarzenegger> .
+
+<http://localhost/UjpBs2BfNbw#t=0:02:01,0:02:04> a video:Scene ;
+    video:sceneFrom <http://localhost/UjpBs2BfNbw> ;
+    video:temporalSegmentOf <http://localhost/UjpBs2BfNbw> ;
+    temporal:duration "0:00:03"^^xsd:duration ;
+    temporal:hasFinishTime "0:02:04"^^xsd:dateTime ;
+    temporal:hasStartTime "0:02:01"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Arnold_Schwarzenegger> .
+
+<http://localhost/UjpBs2BfNbw#t=0:02:08,0:02:09> a video:Scene ;
+    video:sceneFrom <http://localhost/UjpBs2BfNbw> ;
+    video:temporalSegmentOf <http://localhost/UjpBs2BfNbw> ;
+    temporal:duration "0:00:01"^^xsd:duration ;
+    temporal:hasFinishTime "0:02:09"^^xsd:dateTime ;
+    temporal:hasStartTime "0:02:08"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Arnold_Schwarzenegger> .
+
+<http://localhost/UjpBs2BfNbw#t=0:02:24,0:02:25> a video:Scene ;
+    video:sceneFrom <http://localhost/UjpBs2BfNbw> ;
+    video:temporalSegmentOf <http://localhost/UjpBs2BfNbw> ;
+    temporal:duration "0:00:01"^^xsd:duration ;
+    temporal:hasFinishTime "0:02:25"^^xsd:dateTime ;
+    temporal:hasStartTime "0:02:24"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Arnold_Schwarzenegger> .
+
+<http://localhost/JSArPXaQ6xQ> a mpeg7:Video ;
+    dc:identifier "http://www.youtube.com/watch?v=JSArPXaQ6xQ" ;
+    dc:title "Golden Globe Awards 2010 - Arnold Schwarzenegger introduces Ava-DAR" .
+
+<http://localhost/UjpBs2BfNbw> a mpeg7:Video ;
+    dc:identifier "http://www.youtube.com/watch?v=UjpBs2BfNbw" ;
+    dc:title "Terminator First Arrival Scene" .
+
+<http://localhost/81CseF4bJvQ> a mpeg7:Video ;
+    dc:identifier "http://www.youtube.com/watch?v=81CseF4bJvQ" ;
+    dc:title "Celebrities FLIRTING with Leonardo DiCaprio! (2020)" .
+

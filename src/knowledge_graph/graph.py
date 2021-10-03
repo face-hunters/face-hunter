@@ -77,7 +77,7 @@ class Graph(object):
 
         self.store.insert((video_uri, RDF['type'], MPEG7['Video']))
         self.store.insert((video_uri, DC['identifier'], Literal(f'http://www.youtube.com/watch?v={youtube_id}')))
-        self.store.insert((video_uri, DC['title'], Literal(title)))
+        self.store.insert((video_uri, DC['title'], Literal('.'.join(title.split('.')[:-1]))))
         self.store.commit()
 
     def insert_scene(self, entities: list, youtube_id: str, start_time: timedelta, end_time: timedelta):
@@ -108,9 +108,9 @@ class Graph(object):
             else:
                 dbpedia_uri, wikidata_uri = get_uri_from_csv(entity, self.entity_data)
             if dbpedia_uri is not None:
-                self.store.insert((scene_uri, FOAF['depicts'], dbpedia_uri))
+                self.store.insert((scene_uri, FOAF['depicts'], URIRef(dbpedia_uri)))
             elif wikidata_uri is not None:
-                self.store.insert((scene_uri, FOAF['depicts'], wikidata_uri))
+                self.store.insert((scene_uri, FOAF['depicts'], URIRef(wikidata_uri)))
             else:
                 LOGGER.info(f'Failed to create link to {entity} for video {youtube_id}')
         self.store.commit()

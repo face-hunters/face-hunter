@@ -203,7 +203,7 @@ class FaceRecognition(object):
         flat_aligned_faces = [face for l in aligned_faces for face in l]
         LOGGER.debug(flat_aligned_faces)
         # batch encoding
-        if len(flat_aligned_faces) > 1:  # otherwise, no face in the batch
+        if len(flat_aligned_faces) > 0:  # otherwise, no face in the batch
             flat_aligned_faces = np.array(flat_aligned_faces)
             flat_embeddings = self.encoder.predict(flat_aligned_faces)
 
