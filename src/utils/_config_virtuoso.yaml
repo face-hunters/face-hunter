@@ -1,0 +1,24 @@
+rdf:
+  uri: http://localhost/
+
+virtuoso:
+  sparql-auth: http://localhost:8890/sparql-auth
+  graph: http://localhost:8890/DAV/
+  user: dba
+  password: dba
+
+face-recognition:
+  device: cpu
+  thumbnails: data/thumbnails/test
+  labels: data/embeddings/labels.pickle
+  embeddings: data/embeddings/embeddings.pickle
+  img-width: 500
+  encoder: ArcFace
+  algorithm: appr
+  method: hnsw
+  space: cosinesimil
+  distance-threshold: 0.6
+  index: models/index.bin
+  k: 1
+  by: frame
+  postprocessing-threshold: 3
