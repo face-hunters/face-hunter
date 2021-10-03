@@ -19,6 +19,7 @@ import {HttpClientModule} from "@angular/common/http";
 import {HunterService} from "../services/hunter.service";
 import {FormsModule} from "@angular/forms";
 import {NotFoundDialogComponent} from "../not-found-dialog/not-found-dialog.component";
+import {YamlService} from "../services/yaml.service";
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import {NotFoundDialogComponent} from "../not-found-dialog/not-found-dialog.comp
     FormsModule
   ],
   providers: [
-    HunterService
+    HunterService,
+    YamlService
   ],
   bootstrap: [AppComponent]
 })

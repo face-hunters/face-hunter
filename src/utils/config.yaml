@@ -6,3 +6,18 @@ virtuoso:
   graph: http://localhost:8890/DAV/
   user: dba
   password: dba
+
+face-recognition:
+  thumbnails: data/thumbnails/thumbnails
+  labels: data/embeddings/labels.pickle
+  embeddings: data/embeddings/embeddings.pickle
+  img-width: 500
+  encoder: Dlib
+  algorithm: appr
+  method: hnsw
+  space: cosinesimil
+  distance-threshold: 0.6
+  index: data/embeddings/index.bin
+  k: 1
+  dbpedia: data/thumbnails/dbpedia_thumbnails/Thumbnails_links.csv
+  wikidata: data/thumbnails/dbpedia_thumbnails/Thumbnails_links.csv

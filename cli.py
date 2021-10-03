@@ -11,7 +11,7 @@ on_rtd = os.environ.get('READTHEDOCS') == 'True'
 if on_rtd:
     CONFIG = get_config('../src/utils/config.yaml')
 else:
-    CONFIG = get_config('../src/utils/config.yaml')
+    CONFIG = get_config('src/utils/config.yaml')
 
 
 def _search(args):
@@ -26,9 +26,15 @@ def _search(args):
                                   virtuoso_url=CONFIG['virtuoso']['sparql-auth'],
                                   virtuoso_graph=CONFIG['virtuoso']['graph'],
                                   virtuoso_username=CONFIG['virtuoso']['user'],
-                                  virtuoso_password=CONFIG['virtuoso']['password']))
+                                  virtuoso_password=CONFIG['virtuoso']['password'],
+                                  dbpedia_csv=CONFIG['face-recognition']['dbpedia'],
+                                  wikidata_csv=CONFIG['face-recognition']['wikidata']))
     else:
-        LOGGER.info(Hunter.search(args.entity, 'memory', memory_path=CONFIG['memory']['path']))
+        LOGGER.info(Hunter.search(args.entity,
+                                  'memory',
+                                  memory_path=CONFIG['memory']['path'],
+                                  dbpedia_csv=CONFIG['face-recognition']['dbpedia'],
+                                  wikidata_csv=CONFIG['face-recognition']['wikidata']))
 
 
 def _download_datasets(args):
@@ -85,14 +91,39 @@ def _link(args):
         args.url (str): Location of the video on YouTube.
     """
     from src.hunter import Hunter
+    hunter = Hunter(args.url).fit(
+        [],
+        CONFIG['face-recognition']['thumbnails'],
+        CONFIG['face-recognition']['img-width'],
+        CONFIG['face-recognition']['encoder'],
+        CONFIG['face-recognition']['labels'],
+        CONFIG['face-recognition']['embeddings']
+    )
     if 'virtuoso' in CONFIG:
-        LOGGER.info(Hunter(args.url).link('virtuoso',
-                                          virtuoso_url=CONFIG['virtuoso']['sparql-auth'],
-                                          virtuoso_graph=CONFIG['virtuoso']['graph'],
-                                          virtuoso_username=CONFIG['virtuoso']['user'],
-                                          virtuoso_password=CONFIG['virtuoso']['password']))
+        LOGGER.info(hunter.link('virtuoso',
+                                algorithm=CONFIG['face-recognition']['algorithm'],
+                                method=CONFIG['face-recognition']['method'],
+                                space=CONFIG['face-recognition']['space'],
+                                distance_threshold=CONFIG['face-recognition']['distance-threshold'],
+                                index_path=CONFIG['face-recognition']['index'],
+                                k=CONFIG['face-recognition']['k'],
+                                virtuoso_url=CONFIG['virtuoso']['sparql-auth'],
+                                virtuoso_graph=CONFIG['virtuoso']['graph'],
+                                virtuoso_username=CONFIG['virtuoso']['user'],
+                                virtuoso_password=CONFIG['virtuoso']['password'],
+                                dbpedia_csv=CONFIG['face-recognition']['dbpedia'],
+                                wikidata_csv=CONFIG['face-recognition']['wikidata']))
     else:
-        LOGGER.info(Hunter(args.url).link('memory', memory_path=CONFIG['memory']['path']))
+        LOGGER.info(hunter.link('memory',
+                                algorithm=CONFIG['face-recognition']['algorithm'],
+                                method=CONFIG['face-recognition']['method'],
+                                space=CONFIG['face-recognition']['space'],
+                                distance_threshold=CONFIG['face-recognition']['distance-threshold'],
+                                index_path=CONFIG['face-recognition']['index'],
+                                k=CONFIG['face-recognition']['k'],
+                                memory_path=CONFIG['memory']['path'],
+                                dbpedia_csv=CONFIG['face-recognition']['dbpedia'],
+                                wikidata_csv=CONFIG['face-recognition']['wikidata']))
 
 
 def _get_parser():

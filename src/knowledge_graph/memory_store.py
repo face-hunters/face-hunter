@@ -13,7 +13,7 @@ on_rtd = os.environ.get('READTHEDOCS') == 'True'
 if on_rtd:
     CONFIG = get_config('../src/utils/config.yaml')
 else:
-    CONFIG = get_config('../src/utils/config.yaml')
+    CONFIG = get_config('src/utils/config.yaml')
 
 HOME_URI = CONFIG['rdf']['uri']
 
