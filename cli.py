@@ -27,14 +27,14 @@ def _search(args):
                                   virtuoso_graph=CONFIG['virtuoso']['graph'],
                                   virtuoso_username=CONFIG['virtuoso']['user'],
                                   virtuoso_password=CONFIG['virtuoso']['password'],
-                                  dbpedia_csv=CONFIG['face-recognition']['dbpedia'],
-                                  wikidata_csv=CONFIG['face-recognition']['wikidata']))
+                                  dbpedia_csv=CONFIG['face-recognition'].get('dbpedia'),
+                                  wikidata_csv=CONFIG['face-recognition'].get('wikidata')))
     else:
         LOGGER.info(Hunter.search(args.entity,
                                   'memory',
                                   memory_path=CONFIG['memory']['path'],
-                                  dbpedia_csv=CONFIG['face-recognition']['dbpedia'],
-                                  wikidata_csv=CONFIG['face-recognition']['wikidata']))
+                                  dbpedia_csv=CONFIG.get['face-recognition'].get('dbpedia'),
+                                  wikidata_csv=CONFIG['face-recognition'].get('wikidata')))
 
 
 def _download_datasets(args):
@@ -93,11 +93,11 @@ def _link(args):
     from src.hunter import Hunter
     hunter = Hunter(args.url).fit(
         [],
-        CONFIG['face-recognition']['thumbnails'],
+        CONFIG['face-recognition'].get('thumbnails'),
         CONFIG['face-recognition']['img-width'],
         CONFIG['face-recognition']['encoder'],
-        CONFIG['face-recognition']['labels'],
-        CONFIG['face-recognition']['embeddings']
+        CONFIG['face-recognition'].get('labels'),
+        CONFIG['face-recognition'].get('embeddings')
     )
     if 'virtuoso' in CONFIG:
         LOGGER.info(hunter.link('virtuoso',
@@ -105,25 +105,25 @@ def _link(args):
                                 method=CONFIG['face-recognition']['method'],
                                 space=CONFIG['face-recognition']['space'],
                                 distance_threshold=CONFIG['face-recognition']['distance-threshold'],
-                                index_path=CONFIG['face-recognition']['index'],
+                                index_path=CONFIG['face-recognition'].get('index'),
                                 k=CONFIG['face-recognition']['k'],
                                 virtuoso_url=CONFIG['virtuoso']['sparql-auth'],
                                 virtuoso_graph=CONFIG['virtuoso']['graph'],
                                 virtuoso_username=CONFIG['virtuoso']['user'],
                                 virtuoso_password=CONFIG['virtuoso']['password'],
-                                dbpedia_csv=CONFIG['face-recognition']['dbpedia'],
-                                wikidata_csv=CONFIG['face-recognition']['wikidata']))
+                                dbpedia_csv=CONFIG['face-recognition'].get('dbpedia'),
+                                wikidata_csv=CONFIG['face-recognition'].get('wikidata')))
     else:
         LOGGER.info(hunter.link('memory',
                                 algorithm=CONFIG['face-recognition']['algorithm'],
                                 method=CONFIG['face-recognition']['method'],
                                 space=CONFIG['face-recognition']['space'],
                                 distance_threshold=CONFIG['face-recognition']['distance-threshold'],
-                                index_path=CONFIG['face-recognition']['index'],
+                                index_path=CONFIG['face-recognition'].get('index'),
                                 k=CONFIG['face-recognition']['k'],
                                 memory_path=CONFIG['memory']['path'],
-                                dbpedia_csv=CONFIG['face-recognition']['dbpedia'],
-                                wikidata_csv=CONFIG['face-recognition']['wikidata']))
+                                dbpedia_csv=CONFIG['face-recognition'].get('dbpedia'),
+                                wikidata_csv=CONFIG['face-recognition'].get('wikidata')))
 
 
 def _get_parser():
