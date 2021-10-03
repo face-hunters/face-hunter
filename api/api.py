@@ -81,9 +81,11 @@ def get_videos_by_sparql():
         if filters == '':
             filters = None
         result = api.get_videos_by_sparql(query, filters)
+        length = 0
         if result is not None:
-            result = result[:19]
-        response = jsonify({'success': True, 'result': result})
+            length = len(result)
+            result = result
+        response = jsonify({'success': True, 'result': result, 'length': length})
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
 
@@ -93,9 +95,11 @@ def get_videos_by_sparql():
 @app.route('/api/entity/<entity>', methods=['GET'])
 def get_scenes_by_entity(entity):
     result = api.get_videos_by_entity(entity)
+    length = 0
     if result is not None:
-        result = result[:19]
-    response = jsonify({'success': True, 'result': result})
+        length = len(result)
+        result = result
+    response = jsonify({'success': True, 'result': result, 'length': length})
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 

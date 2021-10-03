@@ -16,12 +16,16 @@ export class SearchComponent implements OnInit {
 
   value: any;
 
+  allVideos: any;
   videos: any[] = [];
+
+  currentPage = 0;
 
   constructor(public dialog: MatDialog,
               private hunter: HunterService,
               @Inject(DOCUMENT) public document: Document) {
     this.value = '';
+    this.allVideos = [];
     this.videos = [];
   }
 
@@ -38,14 +42,14 @@ export class SearchComponent implements OnInit {
       let start = +start_split[0]*24*60 + +start_split[1]*60 + +start_split[2];
       let end = +end_split[0]*24*60 + +end_split[1]*60 + +end_split[2];
 
-      this.videos.push({video: raw_data[scene][0],
+      this.allVideos.push({video: raw_data[scene][0],
         id: raw_data[scene][1].split('=')[raw_data[scene][1].split('=').length - 1],
         start: start,
         end: end,
         duration: end - start,
         entity: raw_data[scene][2]})
     }
-    console.log(this.videos)
+    console.log(this.allVideos)
   }
 
   get_videos_of_celebritiy(name: string) {
@@ -54,12 +58,14 @@ export class SearchComponent implements OnInit {
       if (data['result'] == null) {
         this.dialog.open(NotFoundDialogComponent);
       } else {
-        this.process_scene(data.result)
+        this.process_scene(data.result);
+        this.videos = this.allVideos.slice(0, 5);
       }
     });
   }
 
   reset() {
+    this.allVideos = [];
     this.videos = [];
   }
 
@@ -75,9 +81,21 @@ export class SearchComponent implements OnInit {
         this.hunter.execute_query(query_data).subscribe(data => {
           console.log(data);
           this.process_scene(data.result)
+          this.videos = this.allVideos.slice(0, 5);
         })
       }
     });
+  }
+
+  backward():void {
+    this.currentPage -= 5;
+    this.videos = this.allVideos.slice(this.currentPage, this.currentPage + 5);
+  }
+
+  forward():void {
+    this.currentPage += 5;
+    this.videos = this.allVideos.slice(this.currentPage, this.currentPage + 5);
+    console.log(this.currentPage)
   }
 
 }

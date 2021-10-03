@@ -27,6 +27,12 @@
   </div>
 </div>
 
+<div class="paging-div" *ngIf="videos.length != 0">
+  <button *ngIf="(currentPage - 5) >= 0" class="paging-p" mat-raised-button (click)="backward()">Back</button>
+  <button *ngIf="!((currentPage + 5) >= allVideos.length)" class="paging-p" mat-raised-button (click)="forward()">Forward</button>
+</div>
+
+
 <button class="bback" mat-fab aria-label="Back button" color="primary" *ngIf="videos.length > 0" (click)="reset()">
   <mat-icon>arrow_back</mat-icon>
 </button>
