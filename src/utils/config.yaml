@@ -8,16 +8,16 @@ virtuoso:
   password: dba
 
 face-recognition:
-  thumbnails: data/thumbnails/thumbnails
+  device: cpu
+  thumbnails: data/thumbnails/test
   labels: data/embeddings/labels.pickle
   embeddings: data/embeddings/embeddings.pickle
   img-width: 500
-  encoder: Dlib
+  encoder: ArcFace
   algorithm: appr
   method: hnsw
   space: cosinesimil
   distance-threshold: 0.6
-  index: data/embeddings/index.bin
+  index: models/index.bin
   k: 1
-  dbpedia: data/thumbnails/dbpedia_thumbnails/Thumbnails_links.csv
-  wikidata: data/thumbnails/dbpedia_thumbnails/Thumbnails_links.csv
+  by: second

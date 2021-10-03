@@ -8,9 +8,14 @@ from PIL import Image
 from deepface.commons import functions
 from facenet_pytorch import MTCNN
 from src.preprocessing.facial_preprocessing import face_alignment
-from src.utils.utils import image_files_in_folder
+from src.utils.utils import image_files_in_folder, get_config
 
-LOGGER = logging.getLogger(__name__)
+LOGGER = logging.getLogger('face-recognition')
+
+if os.environ.get('READTHEDOCS') == 'True':
+    CONFIG = get_config('../src/utils/config.yaml')
+else:
+    CONFIG = get_config('src/utils/config.yaml')
 
 
 class FaceRecognition(object):
@@ -20,7 +25,7 @@ class FaceRecognition(object):
                  thumbnail_list: list = None,
                  thumbnails_path: str = 'data/thumbnails/thumbnails',
                  img_width: int = 500,
-                 encoder_name: str = 'Dlib',
+                 encoder_name: str = 'ArcFace',
                  labels_path: str = 'data/embeddings/labels.pickle',
                  embeddings_path: str = 'data/embeddings/embeddings.pickle'):
         """ create or load kg_encodings. create detector, encoder
@@ -38,12 +43,12 @@ class FaceRecognition(object):
         self.img_width = img_width
         self.labels_path = labels_path
         self.embeddings_path = embeddings_path
-        self.detector = MTCNN(keep_all=True, post_process=False, device='cuda:0')
+        self.detector = MTCNN(keep_all=True, post_process=False, device=CONFIG['face-recognition']['device'])
         self.encoder = DeepFace.build_model(encoder_name)
         self.target = functions.find_input_shape(self.encoder)  # (150,150) encoder input shape
         self.labels, self.embeddings = self.load_embeddings()  # store the 2 lists in labels.pickle encoddings.pickle
 
-    def recognize_video(self, video_path: str, recognizer_model=None, distance_threshold=0.6, by='second'):
+    def recognize_video(self, video_path: str, recognizer_model=None, distance_threshold=0.6, by='second', show_frames: bool = False):
         """ recognize faces on a frame or second level
 
         Args:
@@ -51,6 +56,7 @@ class FaceRecognition(object):
             recognizer_model (any model): Model trained with embeddings to predict entities.
             distance_threshold (float): The threshold below which recognitions are marked as unknown.
             by (str): Recognize by 'second' or 'frame'.
+            show_frames (bool): Whether each frame should be displayed to the user or not.
 
         Returns:
             frame_faces_list (list): List of recognized entities per frame/second.
@@ -59,6 +65,7 @@ class FaceRecognition(object):
         """
         if not os.path.exists(video_path):
             LOGGER.info(f'{video_path} does not exists')
+        LOGGER.debug(video_path)
 
         LOGGER.info(f'Starting face recognition on {video_path}')
 
@@ -86,6 +93,10 @@ class FaceRecognition(object):
                 dsize = (self.img_width, int(h * r))
                 frame = cv2.resize(frame, dsize)
 
+            if show_frames:
+                cv2.imshow('Frame', frame)
+                cv2.waitKey()
+
             frames.append(frame)
 
             # batch detect
@@ -106,9 +117,10 @@ class FaceRecognition(object):
                 timestamp = (timestamps[-1] + 1000) if timestamps else 0.0
                 timestamps.append(timestamp)
 
-                frame_number += fps
+                frame_number += int(fps)
+                LOGGER.debug(frame_number)
                 video.set(cv2.CAP_PROP_POS_FRAMES, frame_number)
-                success, image = video.read()
+                success, frame = video.read()
 
         if len(frames) == 1:
             frame_faces_list.append(self.recognize_image(frames[0], recognizer_model))
@@ -189,7 +201,7 @@ class FaceRecognition(object):
             aligned_faces.append(frame_aligned_faces)
 
         flat_aligned_faces = [face for l in aligned_faces for face in l]
-
+        LOGGER.debug(flat_aligned_faces)
         # batch encoding
         if len(flat_aligned_faces) > 1:  # otherwise, no face in the batch
             flat_aligned_faces = np.array(flat_aligned_faces)
@@ -239,7 +251,9 @@ class FaceRecognition(object):
                     continue
 
                 embeddings.append(entity_embedding[0])
-                labels.append(entity_dir.split('_')[0])
+                labels.append(entity_dir.replace('_', ' '))
+
+                LOGGER.debug(embeddings)
 
         # write to disk
         with open(self.labels_path, 'wb') as f:

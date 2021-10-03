@@ -57,7 +57,8 @@ class Hunter(object):
                   space='cosinesimil',
                   distance_threshold=0.4,
                   index_path='data/embeddings/index.bin',
-                  k=1
+                  k=1,
+                  recognize_by: str = 'second'
                   ) -> list:
         """ Get a list of entities that could be recognized in the video.
 
@@ -68,6 +69,7 @@ class Hunter(object):
             space (str): Similarity measure to use in the space. Only necessary if algorithm = 'appr'.
             index_path (str): Path to an existing nmslib-index. Only necessary if algorithm = 'appr'.
             k (int): The number of k-nearest neighbors to consider for the detection. Only necessary if algorithm = 'appr'.
+            recognize_by (str): Recognize by 'second' or 'frame'.
 
         Returns:
             entities (list): Entities found in the video.
@@ -84,16 +86,17 @@ class Hunter(object):
             raise Exception('Unknown Predictor')
 
         self.path_to_video = download_youtube_video(self.url, tempfile.gettempdir())
-        return self.face_detection.recognize_video(self.path_to_video, detector, distance_threshold)
+        return self.face_detection.recognize_video(self.path_to_video, detector, distance_threshold, recognize_by)
 
     def link(self,
+             storage_type: str = 'memory',
              algorithm='appr',
              method='hnsw',
              space='cosinesimil',
              distance_threshold=0.4,
              index_path='data/embeddings/index.bin',
              k=1,
-             storage_type: str = 'memory',
+             recognize_by: str = 'second',
              memory_path: str = 'models/store',
              virtuoso_url: str = None,
              virtuoso_graph: str = None,
@@ -110,6 +113,7 @@ class Hunter(object):
             space (str): Similarity measure to use in the space. Only necessary if algorithm = 'appr'.
             index_path (str): Path to an existing nmslib-index. Only necessary if algorithm = 'appr'.
             k (int): The number of k-nearest neighbors to consider for the detection. Only necessary if algorithm = 'appr'.
+            recognize_by (str): Recognize by 'second' or 'frame'.
             storage_type (str): Whether to save links to a local rdf-file or a Virtuoso database. Should be 'memory' for a local file,
                             'virtuoso' for Virtuoso.
             memory_path (str): Path to which the links should be written. Only necessary if storage_type = memory.
@@ -119,6 +123,9 @@ class Hunter(object):
             virtuoso_password (str): Password to access the Virtuoso instance. Only necessary if storage_type = virtuoso.
             dbpedia_csv (str): Path of the normalized DBpedia-thumbnail-information.
             wikidata_csv (str): Path of the normalized Wikidata-thumbnail-information.
+
+        Returns:
+            new_links (bool): Whether the video already existed in the database or not.
         """
         graph = Graph(storage_type,
                       memory_path,
@@ -129,13 +136,17 @@ class Hunter(object):
                       dbpedia_csv,
                       wikidata_csv)
 
-        recognized_entities, frame_wise_entities, timestamps = self.recognize(algorithm, method, space,
-                                                                              distance_threshold, index_path, k)
         if not graph.video_exists(self.identifier):
+            recognized_entities, frame_wise_entities, timestamps = self.recognize(algorithm, method, space,
+                                                                                  distance_threshold, index_path, k,
+                                                                                  recognize_by)
+
             graph.insert_video(self.identifier, os.path.split(self.path_to_video)[1])
-            scenes = extract_scenes(frame_wise_entities, timestamps)
+            scenes = extract_scenes(frame_wise_entities, timestamps, 3)
             for scene in scenes:
                 graph.insert_scene(scene.names[0], self.identifier, scene.start[0], scene.end[0])
+            return True
+        return False
 
     @staticmethod
     def search(entity: str = None,

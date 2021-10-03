@@ -92,7 +92,7 @@ def _link(args):
     """
     from src.hunter import Hunter
     hunter = Hunter(args.url).fit(
-        [],
+        None,
         CONFIG['face-recognition'].get('thumbnails'),
         CONFIG['face-recognition']['img-width'],
         CONFIG['face-recognition']['encoder'],
@@ -100,30 +100,36 @@ def _link(args):
         CONFIG['face-recognition'].get('embeddings')
     )
     if 'virtuoso' in CONFIG:
-        LOGGER.info(hunter.link('virtuoso',
-                                algorithm=CONFIG['face-recognition']['algorithm'],
-                                method=CONFIG['face-recognition']['method'],
-                                space=CONFIG['face-recognition']['space'],
-                                distance_threshold=CONFIG['face-recognition']['distance-threshold'],
-                                index_path=CONFIG['face-recognition'].get('index'),
-                                k=CONFIG['face-recognition']['k'],
-                                virtuoso_url=CONFIG['virtuoso']['sparql-auth'],
-                                virtuoso_graph=CONFIG['virtuoso']['graph'],
-                                virtuoso_username=CONFIG['virtuoso']['user'],
-                                virtuoso_password=CONFIG['virtuoso']['password'],
-                                dbpedia_csv=CONFIG['face-recognition'].get('dbpedia'),
-                                wikidata_csv=CONFIG['face-recognition'].get('wikidata')))
+        newly_created = hunter.link(storage_type='virtuoso',
+                                    algorithm=CONFIG['face-recognition']['algorithm'],
+                                    method=CONFIG['face-recognition']['method'],
+                                    space=CONFIG['face-recognition']['space'],
+                                    distance_threshold=CONFIG['face-recognition']['distance-threshold'],
+                                    index_path=CONFIG['face-recognition'].get('index'),
+                                    k=CONFIG['face-recognition']['k'],
+                                    recognize_by=CONFIG['face-recognition']['by'],
+                                    virtuoso_url=CONFIG['virtuoso']['sparql-auth'],
+                                    virtuoso_graph=CONFIG['virtuoso']['graph'],
+                                    virtuoso_username=CONFIG['virtuoso']['user'],
+                                    virtuoso_password=CONFIG['virtuoso']['password'],
+                                    dbpedia_csv=CONFIG['face-recognition'].get('dbpedia'),
+                                    wikidata_csv=CONFIG['face-recognition'].get('wikidata'))
     else:
-        LOGGER.info(hunter.link('memory',
-                                algorithm=CONFIG['face-recognition']['algorithm'],
-                                method=CONFIG['face-recognition']['method'],
-                                space=CONFIG['face-recognition']['space'],
-                                distance_threshold=CONFIG['face-recognition']['distance-threshold'],
-                                index_path=CONFIG['face-recognition'].get('index'),
-                                k=CONFIG['face-recognition']['k'],
-                                memory_path=CONFIG['memory']['path'],
-                                dbpedia_csv=CONFIG['face-recognition'].get('dbpedia'),
-                                wikidata_csv=CONFIG['face-recognition'].get('wikidata')))
+        newly_created = hunter.link('memory',
+                                    algorithm=CONFIG['face-recognition']['algorithm'],
+                                    method=CONFIG['face-recognition']['method'],
+                                    space=CONFIG['face-recognition']['space'],
+                                    distance_threshold=CONFIG['face-recognition']['distance-threshold'],
+                                    index_path=CONFIG['face-recognition'].get('index'),
+                                    k=CONFIG['face-recognition']['k'],
+                                    recognize_by=CONFIG['face-recognition']['by'],
+                                    memory_path=CONFIG['memory']['path'],
+                                    dbpedia_csv=CONFIG['face-recognition'].get('dbpedia'),
+                                    wikidata_csv=CONFIG['face-recognition'].get('wikidata'))
+    if newly_created:
+        LOGGER.info(f'Linked {args.url} successfully')
+    else:
+        LOGGER.info(f'Video {args.url} already exists in the knowledge graph')
 
 
 def _get_parser():

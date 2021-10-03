@@ -55,6 +55,7 @@ class ApproximateKNearestNeighbors(object):
         else:
             # Transform the embeddings list into numpy array for nmslib
             embeddings = np.array(embeddings)
+            LOGGER.debug(embeddings)
             self.recognizer.addDataPointBatch(embeddings)
             index_time_params = {'M': 15, 'indexThreadQty': 4, 'efConstruction': 100}
             self.recognizer.createIndex(index_time_params)
@@ -62,7 +63,7 @@ class ApproximateKNearestNeighbors(object):
         self.fitted = True
         return self
 
-    def predict(self, embedding) -> str:
+    def predict(self, embedding):
         """ Predict the entity of an embedding
 
         Args:

@@ -358,7 +358,7 @@ def get_uri_from_label(label: str) -> tuple:
     try:
         dbpedia_uri = str(json_normalize(q_results['results']['bindings']).loc[0, 'entity.value'])
     except KeyError:
-        LOGGER.info('no dbpedia entry found')
+        LOGGER.info(f'no dbpedia entry found for {label}')
         dbpedia_uri = None
 
     query = ('SELECT ?entity '
@@ -372,7 +372,7 @@ def get_uri_from_label(label: str) -> tuple:
     try:
         wikidata_uri = str(json_normalize(q_results['results']['bindings']).loc[0, 'entity.value'])
     except KeyError:
-        LOGGER.info('no dbpedia entry found')
+        LOGGER.info(f'no wikidata entry found found for {label}')
         wikidata_uri = None
 
     return dbpedia_uri, wikidata_uri

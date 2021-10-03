@@ -78,6 +78,8 @@ def get_videos_by_sparql():
 @app.route('/api/entity/<entity>', methods=['GET'])
 def get_scenes_by_entity(entity):
     result = api.get_videos_by_entity(entity)
+    if result is not None:
+        result = result[:9]
     response = jsonify({'success': True, 'result': result})
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response

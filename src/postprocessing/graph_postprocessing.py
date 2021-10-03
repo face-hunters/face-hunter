@@ -20,21 +20,37 @@ def extract_scenes(recognitions: list, timestamps: list, frame_threshold: int = 
 
     scenes = []
     current_scene = None
-    for frame, entities in enumerate(recognitions):
+
+    # Preprocess recognitions
+    cleaned_recognitions = []
+    for index, rec in enumerate(recognitions):
+        recognition = []
+        for entity in rec:
+            if entity != 'unknown':
+                recognition.append(entity)
+        if len(recognition) == 0:
+            recognition.append(str(index))
+        cleaned_recognitions.append(recognition)
+
+    # Start scene extraction
+    for frame, entities in enumerate(cleaned_recognitions):
         if frame - (frame_threshold-1) < 0:
             continue
 
         if current_scene is not None and not np.any([np.all(np.char.equal(np.sort(pred), current_scene.names[0]))
-                                                     for pred in recognitions[frame - (frame_threshold - 1):frame + 1]]):
+                                                     for pred in cleaned_recognitions[frame - (frame_threshold - 1):frame + 1]]):
             scenes.append(current_scene.set_end(timestamps[frame]))
             current_scene = None
 
-        if current_scene is None and np.all([np.char.equal(np.sort(pred), np.sort(entities))
-                                             for pred in recognitions[frame - (frame_threshold - 1):frame]]):
-            current_scene = Scene(entities).set_start(timestamps[frame])
-
         if current_scene is not None and frame == (len(recognitions) - 1):
             scenes.append(current_scene.set_end(timestamps[frame]))
+
+        if np.any([len(pred) == 0 for pred in cleaned_recognitions[frame - (frame_threshold - 1):frame]]):
+            continue
+        if current_scene is None and np.all([np.char.equal(np.sort(pred), np.sort(entities))
+                                             for pred in cleaned_recognitions[frame - (frame_threshold - 1):frame]]):
+            current_scene = Scene(entities).set_start(timestamps[frame])
+
     return scenes
 
 
