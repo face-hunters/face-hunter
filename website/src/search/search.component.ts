@@ -38,13 +38,14 @@ export class SearchComponent implements OnInit {
       let start = +start_split[0]*24*60 + +start_split[1]*60 + +start_split[2];
       let end = +end_split[0]*24*60 + +end_split[1]*60 + +end_split[2];
 
-      this.videos.push({video: raw_data[0][0],
+      this.videos.push({video: raw_data[scene][0],
         id: raw_data[scene][1].split('=')[raw_data[scene][1].split('=').length - 1],
         start: start,
         end: end,
         duration: end - start,
         entity: raw_data[scene][2]})
     }
+    console.log(this.videos)
   }
 
   get_videos_of_celebritiy(name: string) {

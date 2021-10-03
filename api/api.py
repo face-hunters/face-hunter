@@ -68,6 +68,8 @@ def get_videos_by_sparql():
         if filters == '':
             filters = None
         result = api.get_videos_by_sparql(query, filters)
+        if result is not None:
+            result = result[:9]
         response = jsonify({'success': True, 'result': result})
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
