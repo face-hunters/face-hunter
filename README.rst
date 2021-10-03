@@ -35,7 +35,7 @@ The figure below illustrates the structure of the generated graphs.
 
 Using the `YouTube Faces Database <https://www.cs.tau.ac.il/~wolf/ytfaces/>`__ and
 `YouTube Celebrities Face Tracking and Recognition Dataset <http://seqamlab.com/youtube-celebrities-face-tracking-and-recognition-dataset/>`__
-we achieved an accuracy of X and X respectively. Scraping additional images improved the results to X and X.
+we achieved an accuracy of 0.603 and 0.64 respectively. Scraping additional images improved the results to 0.86 and 0.826.
 Evaluation steps for the `IMDb-Face <https://github.com/fwang91/IMDb-Face/>`__ and `IMDb-Wiki <https://data.vision.ee.ethz.ch/cvl/rrothe/imdb-wiki/>`__
 are implemented and allow future performance tests.
 
