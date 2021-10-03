@@ -48,7 +48,8 @@ resource "google_compute_disk" "default" {
   name  = "test-disk"
   type  = "pd-ssd"
   zone  = "${var.region}-c"
-  image = "debian-9-stretch-v20200805"
+  image = "ubuntu-1604-xenial-v20210429"
+  size = 64
   labels = {
     environment = "dev"
   }
@@ -57,14 +58,12 @@ resource "google_compute_disk" "default" {
 
 resource "google_compute_instance" "default" {
   name         = "attached-disk-instance"
-  machine_type = "e2-medium"
+  machine_type = "e2-highmem-2"
   zone         = "${var.region}-c"
   tags         = ["externalssh","webserver"]
 
   boot_disk {
-    initialize_params {
-      image = "ubuntu-1604-xenial-v20210429"
-    }
+    source = google_compute_disk.default.name
   }
   network_interface {
     network = "default"
@@ -123,11 +122,6 @@ resource "google_compute_instance" "default" {
   }
 }
 
-resource "google_compute_attached_disk" "default" {
-  disk     = google_compute_disk.default.id
-  instance = google_compute_instance.default.id
-}
-
 variable "project_name"{
   default = "face-hunter-319522"
 }
@@ -155,4 +149,3 @@ data "http" "my_ip" {
 output "ip" {
  value = google_compute_address.static.address
 }
-
