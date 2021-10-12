@@ -354,9 +354,12 @@ def get_uri_from_label(label: str) -> tuple:
     sparql_dbpedia = SPARQLWrapper('http://dbpedia.org/sparql')
     sparql_dbpedia.setQuery(query)
     sparql_dbpedia.setReturnFormat(JSON)
-    q_results = sparql_dbpedia.query().convert()
     try:
+        q_results = sparql_dbpedia.query().convert()
         dbpedia_uri = str(json_normalize(q_results['results']['bindings']).loc[0, 'entity.value'])
+    except HTTPError as e:
+        LOGGER.error('Failed DBpedia Network Request')
+        dbpedia_uri = None
     except KeyError:
         LOGGER.info(f'no dbpedia entry found for {label}')
         dbpedia_uri = None
@@ -368,9 +371,12 @@ def get_uri_from_label(label: str) -> tuple:
     sparql_wikidata = SPARQLWrapper('https://query.wikidata.org/sparql')
     sparql_wikidata.setQuery(query)
     sparql_wikidata.setReturnFormat(JSON)
-    q_results = sparql_wikidata.query().convert()
     try:
+        q_results = sparql_wikidata.query().convert()
         wikidata_uri = str(json_normalize(q_results['results']['bindings']).loc[0, 'entity.value'])
+    except HTTPError as e:
+        LOGGER.error('Failed Wikidata Network Request')
+        wikidata_uri = None
     except KeyError:
         LOGGER.info(f'no wikidata entry found found for {label}')
         wikidata_uri = None

@@ -9,8 +9,9 @@ from rdflib.plugins.sparql import prepareQuery
 LOGGER = logging.getLogger('memory-store')
 
 on_rtd = os.environ.get('READTHEDOCS') == 'True'
+on_flask = os.environ.get('FLASK_running') == 'True'
 
-if on_rtd:
+if on_rtd or on_flask:
     CONFIG = get_config('../src/utils/config.yaml')
 else:
     CONFIG = get_config('src/utils/config.yaml')

@@ -10,10 +10,11 @@ from src.data.knowledge_graphs import get_same_as_link, get_uri_from_label, get_
 import os
 
 on_rtd = os.environ.get('READTHEDOCS') == 'True'
+on_flask = os.environ.get('FLASK_running') == 'True'
 
 LOGGER = logging.getLogger('graph')
 
-if on_rtd:
+if on_rtd or on_flask:
     CONFIG = get_config('../src/utils/config.yaml')
 else:
     CONFIG = get_config('src/utils/config.yaml')

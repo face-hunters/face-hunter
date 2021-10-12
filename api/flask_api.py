@@ -39,14 +39,13 @@ class FlaskApi(object):
         """ Instantiate ApproximateKNearestNeighbors， FaceRecognition and Graph """
         self.recognizer_model = ApproximateKNearestNeighbors(distance_threshold=distance_threshold,
                                                              index_path=index_path)
-        self.face_recognition = FaceRecognition(thumbnail_list, thumbnails_path, img_width, distance_threshold,
+        self.face_recognition = FaceRecognition(thumbnail_list, thumbnails_path, img_width,
                                                 encoder_name, labels_path, embeddings_path)
         self.graph = Graph(storage_type, memory_path, virtuoso_url, virtuoso_graph, virtuoso_username,
                            virtuoso_password, dbpedia_csv, wikidata_csv)
 
     def recognize_local_video(self, path):
         return self.face_recognition.recognize_video(path, self.recognizer_model)
-        # return self.face_recognition.recognize_video(path)
 
     def recognize_youtube_video(self, identifier, by='frame', frame_threshold=7):
         """

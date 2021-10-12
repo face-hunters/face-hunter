@@ -1,3 +1,6 @@
+import os
+os.environ['FLASK_running'] = "True"
+
 from flask import (
     Flask,
     jsonify,
@@ -115,4 +118,5 @@ def iternal_error(error):
 
 
 if __name__ == '__main__':
+
     app.run()
