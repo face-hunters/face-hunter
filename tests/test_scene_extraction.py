@@ -12,7 +12,7 @@ PREDICTIONS_2 = [['Ali', 'Bo'], ['Ali', 'Bo'], ['Bo', 'Ali'], ['Bo', 'Ali'],
 class TestSceneExtraction(base_test.BaseComponentTest):
 
     def test_default(self):
-        expected_scenes = [Scene(['Ali', 'Bo']).set_start(3).set_end(8), Scene(['Bo']).set_start(8).set_end(9)]
+        expected_scenes = [Scene(['Ali', 'Bo']).set_start(1).set_end(6), Scene(['Bo']).set_start(6).set_end(9)]
 
         scenes = extract_scenes(PREDICTIONS, TIMESTAMPS)
 
@@ -26,14 +26,14 @@ class TestSceneExtraction(base_test.BaseComponentTest):
         assert repr(expected_scenes) == repr(scenes)
 
     def test_five_threshold(self):
-        expected_scenes = [Scene(['Ali', 'Bo']).set_start(5).set_end(9)]
+        expected_scenes = [Scene(['Ali', 'Bo']).set_start(1).set_end(9)]
 
         scenes = extract_scenes(PREDICTIONS, TIMESTAMPS, frame_threshold=5)
 
         assert repr(expected_scenes) == repr(scenes)
 
     def test_three_threshold_with_false_predictions(self):
-        expected_scenes = [Scene(['Ali', 'Bo']).set_start(3).set_end(9)]
+        expected_scenes = [Scene(['Ali', 'Bo']).set_start(1).set_end(9)]
 
         scenes = extract_scenes(PREDICTIONS_2, TIMESTAMPS, frame_threshold=3)
 
