@@ -5,60 +5,12 @@
 @prefix video: <http://purl.org/ontology/video/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<http://localhost/81CseF4bJvQ#t=0:00:02,0:00:08> a video:Scene ;
+<http://localhost/81CseF4bJvQ#t=0:00:02,0:00:21> a video:Scene ;
     video:sceneFrom <http://localhost/81CseF4bJvQ> ;
     video:temporalSegmentOf <http://localhost/81CseF4bJvQ> ;
-    temporal:duration "0:00:06"^^xsd:duration ;
-    temporal:hasFinishTime "0:00:08"^^xsd:dateTime ;
-    temporal:hasStartTime "0:00:02"^^xsd:dateTime ;
-    foaf:depicts <http://dbpedia.org/resource/Leonardo_DiCaprio> .
-
-<http://localhost/81CseF4bJvQ#t=0:00:10,0:00:11> a video:Scene ;
-    video:sceneFrom <http://localhost/81CseF4bJvQ> ;
-    video:temporalSegmentOf <http://localhost/81CseF4bJvQ> ;
-    temporal:duration "0:00:00"^^xsd:duration ;
-    temporal:hasFinishTime "0:00:11"^^xsd:dateTime ;
-    temporal:hasStartTime "0:00:10"^^xsd:dateTime ;
-    foaf:depicts <http://dbpedia.org/resource/Leonardo_DiCaprio> .
-
-<http://localhost/81CseF4bJvQ#t=0:00:11,0:00:11> a video:Scene ;
-    video:sceneFrom <http://localhost/81CseF4bJvQ> ;
-    video:temporalSegmentOf <http://localhost/81CseF4bJvQ> ;
-    temporal:duration "0:00:00"^^xsd:duration ;
-    temporal:hasFinishTime "0:00:12"^^xsd:dateTime ;
-    temporal:hasStartTime "0:00:11"^^xsd:dateTime ;
-    foaf:depicts <http://dbpedia.org/resource/Leonardo_DiCaprio> .
-
-<http://localhost/81CseF4bJvQ#t=0:00:12,0:00:15> a video:Scene ;
-    video:sceneFrom <http://localhost/81CseF4bJvQ> ;
-    video:temporalSegmentOf <http://localhost/81CseF4bJvQ> ;
-    temporal:duration "0:00:03"^^xsd:duration ;
-    temporal:hasFinishTime "0:00:15"^^xsd:dateTime ;
-    temporal:hasStartTime "0:00:12"^^xsd:dateTime ;
-    foaf:depicts <http://dbpedia.org/resource/Leonardo_DiCaprio> .
-
-<http://localhost/81CseF4bJvQ#t=0:00:16,0:00:16> a video:Scene ;
-    video:sceneFrom <http://localhost/81CseF4bJvQ> ;
-    video:temporalSegmentOf <http://localhost/81CseF4bJvQ> ;
-    temporal:duration "0:00:00"^^xsd:duration ;
-    temporal:hasFinishTime "0:00:17"^^xsd:dateTime ;
-    temporal:hasStartTime "0:00:16"^^xsd:dateTime ;
-    foaf:depicts <http://dbpedia.org/resource/Leonardo_DiCaprio> .
-
-<http://localhost/81CseF4bJvQ#t=0:00:17,0:00:17> a video:Scene ;
-    video:sceneFrom <http://localhost/81CseF4bJvQ> ;
-    video:temporalSegmentOf <http://localhost/81CseF4bJvQ> ;
-    temporal:duration "0:00:00"^^xsd:duration ;
-    temporal:hasFinishTime "0:00:18"^^xsd:dateTime ;
-    temporal:hasStartTime "0:00:17"^^xsd:dateTime ;
-    foaf:depicts <http://dbpedia.org/resource/Leonardo_DiCaprio> .
-
-<http://localhost/81CseF4bJvQ#t=0:00:18,0:00:21> a video:Scene ;
-    video:sceneFrom <http://localhost/81CseF4bJvQ> ;
-    video:temporalSegmentOf <http://localhost/81CseF4bJvQ> ;
-    temporal:duration "0:00:02"^^xsd:duration ;
+    temporal:duration "0:00:19"^^xsd:duration ;
     temporal:hasFinishTime "0:00:21"^^xsd:dateTime ;
-    temporal:hasStartTime "0:00:18"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:02"^^xsd:dateTime ;
     foaf:depicts <http://dbpedia.org/resource/Leonardo_DiCaprio> .
 
 <http://localhost/81CseF4bJvQ#t=0:00:41,0:01:20> a video:Scene ;
@@ -77,21 +29,189 @@
     temporal:hasStartTime "0:02:45"^^xsd:dateTime ;
     foaf:depicts <http://dbpedia.org/resource/Leonardo_DiCaprio> .
 
-<http://localhost/81CseF4bJvQ#t=0:04:11,0:04:14> a video:Scene ;
+<http://localhost/81CseF4bJvQ#t=0:04:11,0:04:19> a video:Scene ;
     video:sceneFrom <http://localhost/81CseF4bJvQ> ;
     video:temporalSegmentOf <http://localhost/81CseF4bJvQ> ;
-    temporal:duration "0:00:03"^^xsd:duration ;
-    temporal:hasFinishTime "0:04:14"^^xsd:dateTime ;
+    temporal:duration "0:00:08"^^xsd:duration ;
+    temporal:hasFinishTime "0:04:19"^^xsd:dateTime ;
     temporal:hasStartTime "0:04:11"^^xsd:dateTime ;
     foaf:depicts <http://dbpedia.org/resource/Leonardo_DiCaprio> .
 
-<http://localhost/81CseF4bJvQ#t=0:04:16,0:04:19> a video:Scene ;
-    video:sceneFrom <http://localhost/81CseF4bJvQ> ;
-    video:temporalSegmentOf <http://localhost/81CseF4bJvQ> ;
-    temporal:duration "0:00:02"^^xsd:duration ;
-    temporal:hasFinishTime "0:04:19"^^xsd:dateTime ;
-    temporal:hasStartTime "0:04:16"^^xsd:dateTime ;
-    foaf:depicts <http://dbpedia.org/resource/Leonardo_DiCaprio> .
+<http://localhost/9yp_va8Zelo#t=0:00:03,0:00:08> a video:Scene ;
+    video:sceneFrom <http://localhost/9yp_va8Zelo> ;
+    video:temporalSegmentOf <http://localhost/9yp_va8Zelo> ;
+    temporal:duration "0:00:05"^^xsd:duration ;
+    temporal:hasFinishTime "0:00:08"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:03"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/9yp_va8Zelo#t=0:00:18,0:00:33> a video:Scene ;
+    video:sceneFrom <http://localhost/9yp_va8Zelo> ;
+    video:temporalSegmentOf <http://localhost/9yp_va8Zelo> ;
+    temporal:duration "0:00:15"^^xsd:duration ;
+    temporal:hasFinishTime "0:00:33"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:18"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/9yp_va8Zelo#t=0:00:36,0:00:44> a video:Scene ;
+    video:sceneFrom <http://localhost/9yp_va8Zelo> ;
+    video:temporalSegmentOf <http://localhost/9yp_va8Zelo> ;
+    temporal:duration "0:00:08"^^xsd:duration ;
+    temporal:hasFinishTime "0:00:44"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:36"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/9yp_va8Zelo#t=0:00:47,0:00:50> a video:Scene ;
+    video:sceneFrom <http://localhost/9yp_va8Zelo> ;
+    video:temporalSegmentOf <http://localhost/9yp_va8Zelo> ;
+    temporal:duration "0:00:03"^^xsd:duration ;
+    temporal:hasFinishTime "0:00:50"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:47"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/9yp_va8Zelo#t=0:00:53,0:00:59> a video:Scene ;
+    video:sceneFrom <http://localhost/9yp_va8Zelo> ;
+    video:temporalSegmentOf <http://localhost/9yp_va8Zelo> ;
+    temporal:duration "0:00:06"^^xsd:duration ;
+    temporal:hasFinishTime "0:00:59"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:53"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/9yp_va8Zelo#t=0:01:07,0:01:11> a video:Scene ;
+    video:sceneFrom <http://localhost/9yp_va8Zelo> ;
+    video:temporalSegmentOf <http://localhost/9yp_va8Zelo> ;
+    temporal:duration "0:00:04"^^xsd:duration ;
+    temporal:hasFinishTime "0:01:11"^^xsd:dateTime ;
+    temporal:hasStartTime "0:01:07"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/9yp_va8Zelo#t=0:01:15,0:01:54> a video:Scene ;
+    video:sceneFrom <http://localhost/9yp_va8Zelo> ;
+    video:temporalSegmentOf <http://localhost/9yp_va8Zelo> ;
+    temporal:duration "0:00:39"^^xsd:duration ;
+    temporal:hasFinishTime "0:01:54"^^xsd:dateTime ;
+    temporal:hasStartTime "0:01:15"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/9yp_va8Zelo#t=0:02:01,0:02:21> a video:Scene ;
+    video:sceneFrom <http://localhost/9yp_va8Zelo> ;
+    video:temporalSegmentOf <http://localhost/9yp_va8Zelo> ;
+    temporal:duration "0:00:20"^^xsd:duration ;
+    temporal:hasFinishTime "0:02:21"^^xsd:dateTime ;
+    temporal:hasStartTime "0:02:01"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/9yp_va8Zelo#t=0:02:24,0:03:09> a video:Scene ;
+    video:sceneFrom <http://localhost/9yp_va8Zelo> ;
+    video:temporalSegmentOf <http://localhost/9yp_va8Zelo> ;
+    temporal:duration "0:00:45"^^xsd:duration ;
+    temporal:hasFinishTime "0:03:09"^^xsd:dateTime ;
+    temporal:hasStartTime "0:02:24"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/9yp_va8Zelo#t=0:03:15,0:03:28> a video:Scene ;
+    video:sceneFrom <http://localhost/9yp_va8Zelo> ;
+    video:temporalSegmentOf <http://localhost/9yp_va8Zelo> ;
+    temporal:duration "0:00:13"^^xsd:duration ;
+    temporal:hasFinishTime "0:03:28"^^xsd:dateTime ;
+    temporal:hasStartTime "0:03:15"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/9yp_va8Zelo#t=0:03:37,0:03:40> a video:Scene ;
+    video:sceneFrom <http://localhost/9yp_va8Zelo> ;
+    video:temporalSegmentOf <http://localhost/9yp_va8Zelo> ;
+    temporal:duration "0:00:03"^^xsd:duration ;
+    temporal:hasFinishTime "0:03:40"^^xsd:dateTime ;
+    temporal:hasStartTime "0:03:37"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/9yp_va8Zelo#t=0:03:45,0:03:48> a video:Scene ;
+    video:sceneFrom <http://localhost/9yp_va8Zelo> ;
+    video:temporalSegmentOf <http://localhost/9yp_va8Zelo> ;
+    temporal:duration "0:00:03"^^xsd:duration ;
+    temporal:hasFinishTime "0:03:48"^^xsd:dateTime ;
+    temporal:hasStartTime "0:03:45"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/9yp_va8Zelo#t=0:03:51,0:05:42> a video:Scene ;
+    video:sceneFrom <http://localhost/9yp_va8Zelo> ;
+    video:temporalSegmentOf <http://localhost/9yp_va8Zelo> ;
+    temporal:duration "0:01:51"^^xsd:duration ;
+    temporal:hasFinishTime "0:05:42"^^xsd:dateTime ;
+    temporal:hasStartTime "0:03:51"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/9yp_va8Zelo#t=0:05:48,0:05:57> a video:Scene ;
+    video:sceneFrom <http://localhost/9yp_va8Zelo> ;
+    video:temporalSegmentOf <http://localhost/9yp_va8Zelo> ;
+    temporal:duration "0:00:09"^^xsd:duration ;
+    temporal:hasFinishTime "0:05:57"^^xsd:dateTime ;
+    temporal:hasStartTime "0:05:48"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/9yp_va8Zelo#t=0:06:09,0:08:40> a video:Scene ;
+    video:sceneFrom <http://localhost/9yp_va8Zelo> ;
+    video:temporalSegmentOf <http://localhost/9yp_va8Zelo> ;
+    temporal:duration "0:02:31"^^xsd:duration ;
+    temporal:hasFinishTime "0:08:40"^^xsd:dateTime ;
+    temporal:hasStartTime "0:06:09"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/9yp_va8Zelo#t=0:08:46,0:09:36> a video:Scene ;
+    video:sceneFrom <http://localhost/9yp_va8Zelo> ;
+    video:temporalSegmentOf <http://localhost/9yp_va8Zelo> ;
+    temporal:duration "0:00:50"^^xsd:duration ;
+    temporal:hasFinishTime "0:09:36"^^xsd:dateTime ;
+    temporal:hasStartTime "0:08:46"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/HHckZCxdRkA#t=0:00:02,0:00:26> a video:Scene ;
+    video:sceneFrom <http://localhost/HHckZCxdRkA> ;
+    video:temporalSegmentOf <http://localhost/HHckZCxdRkA> ;
+    temporal:duration "0:00:24"^^xsd:duration ;
+    temporal:hasFinishTime "0:00:26"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:02"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/HHckZCxdRkA#t=0:00:31,0:00:55> a video:Scene ;
+    video:sceneFrom <http://localhost/HHckZCxdRkA> ;
+    video:temporalSegmentOf <http://localhost/HHckZCxdRkA> ;
+    temporal:duration "0:00:24"^^xsd:duration ;
+    temporal:hasFinishTime "0:00:55"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:31"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/HHckZCxdRkA#t=0:01:00,0:01:20> a video:Scene ;
+    video:sceneFrom <http://localhost/HHckZCxdRkA> ;
+    video:temporalSegmentOf <http://localhost/HHckZCxdRkA> ;
+    temporal:duration "0:00:20"^^xsd:duration ;
+    temporal:hasFinishTime "0:01:20"^^xsd:dateTime ;
+    temporal:hasStartTime "0:01:00"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/HHckZCxdRkA#t=0:01:51,0:02:57> a video:Scene ;
+    video:sceneFrom <http://localhost/HHckZCxdRkA> ;
+    video:temporalSegmentOf <http://localhost/HHckZCxdRkA> ;
+    temporal:duration "0:01:06"^^xsd:duration ;
+    temporal:hasFinishTime "0:02:57"^^xsd:dateTime ;
+    temporal:hasStartTime "0:01:51"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/HHckZCxdRkA#t=0:03:04,0:03:22> a video:Scene ;
+    video:sceneFrom <http://localhost/HHckZCxdRkA> ;
+    video:temporalSegmentOf <http://localhost/HHckZCxdRkA> ;
+    temporal:duration "0:00:18"^^xsd:duration ;
+    temporal:hasFinishTime "0:03:22"^^xsd:dateTime ;
+    temporal:hasStartTime "0:03:04"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/HHckZCxdRkA#t=0:04:55,0:05:05> a video:Scene ;
+    video:sceneFrom <http://localhost/HHckZCxdRkA> ;
+    video:temporalSegmentOf <http://localhost/HHckZCxdRkA> ;
+    temporal:duration "0:00:10"^^xsd:duration ;
+    temporal:hasFinishTime "0:05:05"^^xsd:dateTime ;
+    temporal:hasStartTime "0:04:55"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
 
 <http://localhost/JSArPXaQ6xQ#t=0:00:14,0:00:23> a video:Scene ;
     video:sceneFrom <http://localhost/JSArPXaQ6xQ> ;
@@ -140,6 +260,38 @@
     temporal:hasFinishTime "0:01:17"^^xsd:dateTime ;
     temporal:hasStartTime "0:00:56"^^xsd:dateTime ;
     foaf:depicts <http://dbpedia.org/resource/Arnold_Schwarzenegger> .
+
+<http://localhost/LopkUN9vxcI#t=0:00:24,0:00:31> a video:Scene ;
+    video:sceneFrom <http://localhost/LopkUN9vxcI> ;
+    video:temporalSegmentOf <http://localhost/LopkUN9vxcI> ;
+    temporal:duration "0:00:07"^^xsd:duration ;
+    temporal:hasFinishTime "0:00:31"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:24"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/LopkUN9vxcI#t=0:00:39,0:00:46> a video:Scene ;
+    video:sceneFrom <http://localhost/LopkUN9vxcI> ;
+    video:temporalSegmentOf <http://localhost/LopkUN9vxcI> ;
+    temporal:duration "0:00:07"^^xsd:duration ;
+    temporal:hasFinishTime "0:00:46"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:39"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/LopkUN9vxcI#t=0:00:51,0:00:56> a video:Scene ;
+    video:sceneFrom <http://localhost/LopkUN9vxcI> ;
+    video:temporalSegmentOf <http://localhost/LopkUN9vxcI> ;
+    temporal:duration "0:00:05"^^xsd:duration ;
+    temporal:hasFinishTime "0:00:56"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:51"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/LopkUN9vxcI#t=0:01:06,0:01:12> a video:Scene ;
+    video:sceneFrom <http://localhost/LopkUN9vxcI> ;
+    video:temporalSegmentOf <http://localhost/LopkUN9vxcI> ;
+    temporal:duration "0:00:06"^^xsd:duration ;
+    temporal:hasFinishTime "0:01:12"^^xsd:dateTime ;
+    temporal:hasStartTime "0:01:06"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
 
 <http://localhost/UjpBs2BfNbw#t=0:00:59,0:01:00> a video:Scene ;
     video:sceneFrom <http://localhost/UjpBs2BfNbw> ;
@@ -205,6 +357,186 @@
     temporal:hasStartTime "0:02:24"^^xsd:dateTime ;
     foaf:depicts <http://dbpedia.org/resource/Arnold_Schwarzenegger> .
 
+<http://localhost/fQQbJjgmylc#t=0:00:27,0:00:38> a video:Scene ;
+    video:sceneFrom <http://localhost/fQQbJjgmylc> ;
+    video:temporalSegmentOf <http://localhost/fQQbJjgmylc> ;
+    temporal:duration "0:00:11"^^xsd:duration ;
+    temporal:hasFinishTime "0:00:38"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:27"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/fQQbJjgmylc#t=0:00:44,0:00:56> a video:Scene ;
+    video:sceneFrom <http://localhost/fQQbJjgmylc> ;
+    video:temporalSegmentOf <http://localhost/fQQbJjgmylc> ;
+    temporal:duration "0:00:12"^^xsd:duration ;
+    temporal:hasFinishTime "0:00:56"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:44"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/fQQbJjgmylc#t=0:01:22,0:01:39> a video:Scene ;
+    video:sceneFrom <http://localhost/fQQbJjgmylc> ;
+    video:temporalSegmentOf <http://localhost/fQQbJjgmylc> ;
+    temporal:duration "0:00:17"^^xsd:duration ;
+    temporal:hasFinishTime "0:01:39"^^xsd:dateTime ;
+    temporal:hasStartTime "0:01:22"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/fQQbJjgmylc#t=0:01:46,0:01:50> a video:Scene ;
+    video:sceneFrom <http://localhost/fQQbJjgmylc> ;
+    video:temporalSegmentOf <http://localhost/fQQbJjgmylc> ;
+    temporal:duration "0:00:04"^^xsd:duration ;
+    temporal:hasFinishTime "0:01:50"^^xsd:dateTime ;
+    temporal:hasStartTime "0:01:46"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/fQQbJjgmylc#t=0:02:07,0:02:15> a video:Scene ;
+    video:sceneFrom <http://localhost/fQQbJjgmylc> ;
+    video:temporalSegmentOf <http://localhost/fQQbJjgmylc> ;
+    temporal:duration "0:00:08"^^xsd:duration ;
+    temporal:hasFinishTime "0:02:15"^^xsd:dateTime ;
+    temporal:hasStartTime "0:02:07"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/fQQbJjgmylc#t=0:02:18,0:02:30> a video:Scene ;
+    video:sceneFrom <http://localhost/fQQbJjgmylc> ;
+    video:temporalSegmentOf <http://localhost/fQQbJjgmylc> ;
+    temporal:duration "0:00:12"^^xsd:duration ;
+    temporal:hasFinishTime "0:02:30"^^xsd:dateTime ;
+    temporal:hasStartTime "0:02:18"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/fQQbJjgmylc#t=0:03:02,0:03:06> a video:Scene ;
+    video:sceneFrom <http://localhost/fQQbJjgmylc> ;
+    video:temporalSegmentOf <http://localhost/fQQbJjgmylc> ;
+    temporal:duration "0:00:04"^^xsd:duration ;
+    temporal:hasFinishTime "0:03:06"^^xsd:dateTime ;
+    temporal:hasStartTime "0:03:02"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/fQQbJjgmylc#t=0:03:12,0:03:17> a video:Scene ;
+    video:sceneFrom <http://localhost/fQQbJjgmylc> ;
+    video:temporalSegmentOf <http://localhost/fQQbJjgmylc> ;
+    temporal:duration "0:00:05"^^xsd:duration ;
+    temporal:hasFinishTime "0:03:17"^^xsd:dateTime ;
+    temporal:hasStartTime "0:03:12"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/fQQbJjgmylc#t=0:03:21,0:03:25> a video:Scene ;
+    video:sceneFrom <http://localhost/fQQbJjgmylc> ;
+    video:temporalSegmentOf <http://localhost/fQQbJjgmylc> ;
+    temporal:duration "0:00:04"^^xsd:duration ;
+    temporal:hasFinishTime "0:03:27"^^xsd:dateTime ;
+    temporal:hasStartTime "0:03:23"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/fQQbJjgmylc#t=0:03:47,0:03:51> a video:Scene ;
+    video:sceneFrom <http://localhost/fQQbJjgmylc> ;
+    video:temporalSegmentOf <http://localhost/fQQbJjgmylc> ;
+    temporal:duration "0:00:04"^^xsd:duration ;
+    temporal:hasFinishTime "0:03:51"^^xsd:dateTime ;
+    temporal:hasStartTime "0:03:47"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/fQQbJjgmylc#t=0:04:04,0:04:13> a video:Scene ;
+    video:sceneFrom <http://localhost/fQQbJjgmylc> ;
+    video:temporalSegmentOf <http://localhost/fQQbJjgmylc> ;
+    temporal:duration "0:00:09"^^xsd:duration ;
+    temporal:hasFinishTime "0:04:13"^^xsd:dateTime ;
+    temporal:hasStartTime "0:04:04"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/ziwYbVx_-qg#t=0:00:30,0:00:35> a video:Scene ;
+    video:sceneFrom <http://localhost/ziwYbVx_-qg> ;
+    video:temporalSegmentOf <http://localhost/ziwYbVx_-qg> ;
+    temporal:duration "0:00:05"^^xsd:duration ;
+    temporal:hasFinishTime "0:00:35"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:30"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/ziwYbVx_-qg#t=0:00:40,0:01:12> a video:Scene ;
+    video:sceneFrom <http://localhost/ziwYbVx_-qg> ;
+    video:temporalSegmentOf <http://localhost/ziwYbVx_-qg> ;
+    temporal:duration "0:00:32"^^xsd:duration ;
+    temporal:hasFinishTime "0:01:12"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:40"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/ziwYbVx_-qg#t=0:01:27,0:02:02> a video:Scene ;
+    video:sceneFrom <http://localhost/ziwYbVx_-qg> ;
+    video:temporalSegmentOf <http://localhost/ziwYbVx_-qg> ;
+    temporal:duration "0:00:35"^^xsd:duration ;
+    temporal:hasFinishTime "0:02:02"^^xsd:dateTime ;
+    temporal:hasStartTime "0:01:27"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/ziwYbVx_-qg#t=0:02:06,0:02:36> a video:Scene ;
+    video:sceneFrom <http://localhost/ziwYbVx_-qg> ;
+    video:temporalSegmentOf <http://localhost/ziwYbVx_-qg> ;
+    temporal:duration "0:00:30"^^xsd:duration ;
+    temporal:hasFinishTime "0:02:36"^^xsd:dateTime ;
+    temporal:hasStartTime "0:02:06"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/ziwYbVx_-qg#t=0:02:49,0:04:02> a video:Scene ;
+    video:sceneFrom <http://localhost/ziwYbVx_-qg> ;
+    video:temporalSegmentOf <http://localhost/ziwYbVx_-qg> ;
+    temporal:duration "0:01:13"^^xsd:duration ;
+    temporal:hasFinishTime "0:04:02"^^xsd:dateTime ;
+    temporal:hasStartTime "0:02:49"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/ziwYbVx_-qg#t=0:04:13,0:05:05> a video:Scene ;
+    video:sceneFrom <http://localhost/ziwYbVx_-qg> ;
+    video:temporalSegmentOf <http://localhost/ziwYbVx_-qg> ;
+    temporal:duration "0:00:52"^^xsd:duration ;
+    temporal:hasFinishTime "0:05:05"^^xsd:dateTime ;
+    temporal:hasStartTime "0:04:13"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/ziwYbVx_-qg#t=0:05:16,0:05:35> a video:Scene ;
+    video:sceneFrom <http://localhost/ziwYbVx_-qg> ;
+    video:temporalSegmentOf <http://localhost/ziwYbVx_-qg> ;
+    temporal:duration "0:00:19"^^xsd:duration ;
+    temporal:hasFinishTime "0:05:35"^^xsd:dateTime ;
+    temporal:hasStartTime "0:05:16"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/ziwYbVx_-qg#t=0:05:41,0:05:59> a video:Scene ;
+    video:sceneFrom <http://localhost/ziwYbVx_-qg> ;
+    video:temporalSegmentOf <http://localhost/ziwYbVx_-qg> ;
+    temporal:duration "0:00:18"^^xsd:duration ;
+    temporal:hasFinishTime "0:05:59"^^xsd:dateTime ;
+    temporal:hasStartTime "0:05:41"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/ziwYbVx_-qg#t=0:06:05,0:06:41> a video:Scene ;
+    video:sceneFrom <http://localhost/ziwYbVx_-qg> ;
+    video:temporalSegmentOf <http://localhost/ziwYbVx_-qg> ;
+    temporal:duration "0:00:36"^^xsd:duration ;
+    temporal:hasFinishTime "0:06:41"^^xsd:dateTime ;
+    temporal:hasStartTime "0:06:05"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/ziwYbVx_-qg#t=0:06:55,0:07:05> a video:Scene ;
+    video:sceneFrom <http://localhost/ziwYbVx_-qg> ;
+    video:temporalSegmentOf <http://localhost/ziwYbVx_-qg> ;
+    temporal:duration "0:00:10"^^xsd:duration ;
+    temporal:hasFinishTime "0:07:05"^^xsd:dateTime ;
+    temporal:hasStartTime "0:06:55"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/81CseF4bJvQ> a mpeg7:Video ;
+    dc:identifier "http://www.youtube.com/watch?v=81CseF4bJvQ" ;
+    dc:title "Celebrities FLIRTING with Leonardo DiCaprio! (2020)" .
+
+<http://localhost/LopkUN9vxcI> a mpeg7:Video ;
+    dc:identifier "http://www.youtube.com/watch?v=LopkUN9vxcI" ;
+    dc:title "MASH-UP Obama vs Trump at National Prayer Breakfast" .
+
+<http://localhost/HHckZCxdRkA> a mpeg7:Video ;
+    dc:identifier "http://www.youtube.com/watch?v=HHckZCxdRkA" ;
+    dc:title "Watch Obama dig into Trump at the 2011 White House Corres" .
+
 <http://localhost/JSArPXaQ6xQ> a mpeg7:Video ;
     dc:identifier "http://www.youtube.com/watch?v=JSArPXaQ6xQ" ;
     dc:title "Golden Globe Awards 2010 - Arnold Schwarzenegger introduces Ava-DAR" .
@@ -213,7 +545,15 @@
     dc:identifier "http://www.youtube.com/watch?v=UjpBs2BfNbw" ;
     dc:title "Terminator First Arrival Scene" .
 
-<http://localhost/81CseF4bJvQ> a mpeg7:Video ;
-    dc:identifier "http://www.youtube.com/watch?v=81CseF4bJvQ" ;
-    dc:title "Celebrities FLIRTING with Leonardo DiCaprio! (2020)" .
+<http://localhost/ziwYbVx_-qg> a mpeg7:Video ;
+    dc:identifier "http://www.youtube.com/watch?v=ziwYbVx_-qg" ;
+    dc:title "Slow Jam the News with President Obama" .
+
+<http://localhost/fQQbJjgmylc> a mpeg7:Video ;
+    dc:identifier "http://www.youtube.com/watch?v=fQQbJjgmylc" ;
+    dc:title "Thank You President Obama" .
+
+<http://localhost/9yp_va8Zelo> a mpeg7:Video ;
+    dc:identifier "http://www.youtube.com/watch?v=9yp_va8Zelo" ;
+    dc:title "How Has President Obama Found Post-White House Life" .
 

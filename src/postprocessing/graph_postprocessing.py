@@ -39,7 +39,7 @@ def extract_scenes(recognitions: list, timestamps: list, frame_threshold: int = 
 
         if current_scene is not None and not np.any([np.all(np.char.equal(np.sort(pred), current_scene.names[0]))
                                                      for pred in cleaned_recognitions[frame - (frame_threshold - 1):frame + 1]]):
-            scenes.append(current_scene.set_end(timestamps[frame]))
+            scenes.append(current_scene.set_end(timestamps[frame - frame_threshold + 1]))
             current_scene = None
 
         if current_scene is not None and frame == (len(recognitions) - 1):
@@ -49,7 +49,7 @@ def extract_scenes(recognitions: list, timestamps: list, frame_threshold: int = 
             continue
         if current_scene is None and np.all([np.char.equal(np.sort(pred), np.sort(entities))
                                              for pred in cleaned_recognitions[frame - (frame_threshold - 1):frame]]):
-            current_scene = Scene(entities).set_start(timestamps[frame])
+            current_scene = Scene(entities).set_start(timestamps[frame - frame_threshold + 1])
 
     return scenes
 
