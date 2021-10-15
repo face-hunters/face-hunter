@@ -1,10 +1,12 @@
 <div class="query">
 
-  <p><b>select distinct ?title ?link ?dbpedia_entity</b></p>
+  <p><b>select distinct ?title ?link ?dbpedia_entity ?start ?end</b></p>
   <mat-divider></mat-divider>
   <p>where {{'{'}}</p>
   <p class="one">?scene a video:Scene;</p>
   <p class="two">foaf:depicts ?dbpedia_entity;</p>
+  <p class="two">temporal:hasStartTime ?start;</p>
+  <p class="two">temporal:hasFinishTime ?end;</p>
   <p class="two">video:sceneFrom ?video.</p>
   <p class="one">?video dc:identifier ?link;</p>
   <p class="two">dc:title ?title.</p>
