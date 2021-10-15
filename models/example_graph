@@ -293,6 +293,30 @@
     temporal:hasStartTime "0:01:06"^^xsd:dateTime ;
     foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
 
+<http://localhost/SDtg-LU6XIs#t=0:00:15,0:00:48> a video:Scene ;
+    video:sceneFrom <http://localhost/SDtg-LU6XIs> ;
+    video:temporalSegmentOf <http://localhost/SDtg-LU6XIs> ;
+    temporal:duration "0:00:33"^^xsd:duration ;
+    temporal:hasFinishTime "0:00:48"^^xsd:dateTime ;
+    temporal:hasStartTime "0:00:15"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Arnold_Schwarzenegger> .
+
+<http://localhost/SDtg-LU6XIs#t=0:01:19,0:01:22> a video:Scene ;
+    video:sceneFrom <http://localhost/SDtg-LU6XIs> ;
+    video:temporalSegmentOf <http://localhost/SDtg-LU6XIs> ;
+    temporal:duration "0:00:03"^^xsd:duration ;
+    temporal:hasFinishTime "0:01:22"^^xsd:dateTime ;
+    temporal:hasStartTime "0:01:19"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Arnold_Schwarzenegger> .
+
+<http://localhost/SDtg-LU6XIs#t=0:02:00,0:02:04> a video:Scene ;
+    video:sceneFrom <http://localhost/SDtg-LU6XIs> ;
+    video:temporalSegmentOf <http://localhost/SDtg-LU6XIs> ;
+    temporal:duration "0:00:04"^^xsd:duration ;
+    temporal:hasFinishTime "0:02:04"^^xsd:dateTime ;
+    temporal:hasStartTime "0:02:00"^^xsd:dateTime ;
+    foaf:depicts <http://dbpedia.org/resource/Arnold_Schwarzenegger> .
+
 <http://localhost/UjpBs2BfNbw#t=0:00:59,0:01:00> a video:Scene ;
     video:sceneFrom <http://localhost/UjpBs2BfNbw> ;
     video:temporalSegmentOf <http://localhost/UjpBs2BfNbw> ;
@@ -524,6 +548,10 @@
     temporal:hasFinishTime "0:07:05"^^xsd:dateTime ;
     temporal:hasStartTime "0:06:55"^^xsd:dateTime ;
     foaf:depicts <http://dbpedia.org/resource/Barack_Obama> .
+
+<http://localhost/SDtg-LU6XIs> a mpeg7:Video ;
+    dc:identifier "http://www.youtube.com/watch?v=SDtg-LU6XIs" ;
+    dc:title "Sylvester Stallone & Arnold Schwarzenegger Present at the 2013 Golden Globes" .
 
 <http://localhost/81CseF4bJvQ> a mpeg7:Video ;
     dc:identifier "http://www.youtube.com/watch?v=81CseF4bJvQ" ;

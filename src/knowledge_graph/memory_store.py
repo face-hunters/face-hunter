@@ -67,6 +67,7 @@ class MemoryStore(object):
         Returns:
             results (list): Returns a list of lists with the queried properties. Format: [[<property1>, <property2>, ...], ...]
         """
+        self.graph.parse(self.path, format='n3')
         prepared_query = prepareQuery(query,
                                       initNs={'dc': DC, 'foaf': FOAF, 'video': VIDEO, 'mpeg7': MPEG7, 'dbo': DBO,
                                               'dbr': DBR, 'rdf': RDF, 'rdfs': RDFS, 'temporal': TEMPORAL})
@@ -84,5 +85,6 @@ class MemoryStore(object):
         Args:
             youtube_id (str): The id of the video to check.
         """
+        self.graph.parse(self.path, format='n3')
         video_uri = URIRef(f'{HOME_URI}{youtube_id}')
         return (video_uri, DC['identifier'], Literal(f'http://www.youtube.com/watch?v={youtube_id}')) in self.graph
