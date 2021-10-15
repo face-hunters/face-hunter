@@ -20,17 +20,21 @@ import {HunterService} from "../services/hunter.service";
 import {FormsModule} from "@angular/forms";
 import {NotFoundDialogComponent} from "../not-found-dialog/not-found-dialog.component";
 import {YamlService} from "../services/yaml.service";
+import {InsertDialogComponent} from "../insert-dialog/insert-dialog.component";
+import {ToastrModule} from "ngx-toastr";
 
 @NgModule({
   declarations: [
     AppComponent,
     SparqlDialogComponent,
     NotFoundDialogComponent,
+    InsertDialogComponent,
     SearchComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    ToastrModule.forRoot(),
     MatToolbarModule,
     YouTubePlayerModule,
     MatFormFieldModule,

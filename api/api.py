@@ -11,6 +11,7 @@ import json
 from flask_ngrok import run_with_ngrok
 from flask_api import FlaskApi
 from flask_cors import CORS
+import threading
 from src.utils.utils import get_config
 
 
@@ -70,10 +71,11 @@ api = FlaskApi(
 )
 
 
-@app.route('/api/youtube/<id>', methods=['GET'])
-def recognize_youtube_video(id):
-    result = api.recognize_youtube_video(id, BY, FRAME_THRESHOLD)
-    return jsonify({'success': True, 'result': result})
+@app.route('/api/youtube/<youtube_id>', methods=['GET'])
+def recognize_youtube_video(youtube_id):
+    th = threading.Thread(target=api.recognize_youtube_video, args=(youtube_id, BY, FRAME_THRESHOLD))
+    th.start()
+    return jsonify({'success': True})
 
 
 @app.route('/api/query', methods=['POST'])

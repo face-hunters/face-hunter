@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Enter the ID of the video on YouTube</h1>
+<div mat-dialog-content>
+  <mat-form-field style="width: 100%" appearance="fill">
+    <mat-label>YouTube-ID</mat-label>
+    <input matInput [(ngModel)]="youtubeId">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="close()">Cancel</button>
+  <button mat-button [mat-dialog-close]="youtubeId">Insert</button>
+</div>
