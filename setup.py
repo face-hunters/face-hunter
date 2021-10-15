@@ -39,9 +39,9 @@ if not os.getenv('READTHEDOCS'):
 setup(
     name='face-hunter',
     packages=find_packages(),
-    version='0.1.0',
+    version='1.0.0',
     description='Our package creates a knowledge graph of entities and videos on YouTube.',
     author='Team Project University of Mannheim',
-    license='',
+    license='CC-BY-SA-4.0 License',
     install_requires=install_requires
 )
