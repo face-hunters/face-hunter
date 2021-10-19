@@ -136,7 +136,10 @@ class Graph(object):
         Returns:
             scenes (list): Returns a list of the scenes with a scene_uri, entity, start and end
         """
-        query = ('SELECT ?scene ?entity ?start ?end'
+        query = ('PREFIX foaf: <http://xmlns.com/foaf/0.1/> '
+                 'PREFIX video: <http://purl.org/ontology/video/> '
+                 'PREFIX temporal: <http://swrl.stanford.edu/ontologies/builtins/3.3/temporal.owl> '
+                 'SELECT ?scene ?entity ?start ?end'
                  ' WHERE {'
                  ' ?scene a video:Scene ;'
                  f' video:sceneFrom <{HOME_URI + identifier}>;'
@@ -169,7 +172,12 @@ class Graph(object):
                 LOGGER.warning('Could not identify entity using the label')
                 return None
 
-        query = ('SELECT  distinct ?title ?link ?dbpedia_entity ?start ?end'
+        query = ('PREFIX foaf: <http://xmlns.com/foaf/0.1/> '
+                 'PREFIX video: <http://purl.org/ontology/video/> '
+                 'PREFIX temporal: <http://swrl.stanford.edu/ontologies/builtins/3.3/temporal.owl> '
+                 'PREFIX dc: <http://purl.org/dc/elements/1.1/>'
+                 'PREFIX mpeg7: <http://purl.org/ontology/mpeg7/>'
+                 'SELECT  distinct ?title ?link ?dbpedia_entity ?start ?end'
                  ' WHERE {'
                  ' ?scene a video:Scene ;'
                  f' foaf:depicts <{identifier}> ;'
@@ -216,6 +224,10 @@ class Graph(object):
             scenes (list): Returns a list of the scenes in which a entity occurs. Format: [[<title>, <link>, <dbpedia_entity>, <start>, <end>], ...]
         """
         query = (
+            'PREFIX foaf: <http://xmlns.com/foaf/0.1/> '
+            'PREFIX video: <http://purl.org/ontology/video/> '
+            'PREFIX temporal: <http://swrl.stanford.edu/ontologies/builtins/3.3/temporal.owl> '
+            'PREFIX dc: <http://purl.org/dc/elements/1.1/>'
             'select distinct ?title ?link ?dbpedia_entity ?start ?end'
             ' where { '
             ' ?scene a video:Scene; '

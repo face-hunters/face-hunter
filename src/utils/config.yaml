@@ -6,7 +6,7 @@ memory:
 
 face-recognition:
   device: cpu
-  thumbnails: data/thumbnails/test
+  thumbnails: data/thumbnails/thumbnails
   labels: data/embeddings/labels.pickle
   embeddings: data/embeddings/embeddings.pickle
   img-width: 500
@@ -17,5 +17,5 @@ face-recognition:
   distance-threshold: 0.6
   index: models/index.bin
   k: 1
-  by: frame
-  postprocessing-threshold: 3
+  by: second
+  postprocessing-threshold: 2

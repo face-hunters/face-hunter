@@ -74,7 +74,9 @@ class VirtuosoStore(object):
         Args:
             youtube_id (str): The id of the video to check.
         """
-        query = ('SELECT count(?video)'
+        query = ('PREFIX dc: <http://purl.org/dc/elements/1.1/>'
+                 'PREFIX mpeg7: <http://purl.org/ontology/mpeg7/>'
+                 'SELECT count(?video)'
                  'WHERE {'
                  '?video a mpeg7:Video ;'
                  f'dc:identifier "http://www.youtube.com/watch?v={youtube_id}" .'

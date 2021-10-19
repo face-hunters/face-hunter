@@ -33,7 +33,7 @@ def _search(args):
         LOGGER.info(Hunter.search(args.entity,
                                   'memory',
                                   memory_path=CONFIG['memory']['path'],
-                                  dbpedia_csv=CONFIG.get['face-recognition'].get('dbpedia'),
+                                  dbpedia_csv=CONFIG['face-recognition'].get('dbpedia'),
                                   wikidata_csv=CONFIG['face-recognition'].get('wikidata')))
 
 

@@ -3,8 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 
 @Component({
   selector: 'insert-dialog',
-  templateUrl: 'insert-dialog.component.html',
-  styleUrls: ['./insert-dialog.component.scss']
+  templateUrl: 'insert-dialog.component.html'
 })
 export class InsertDialogComponent {
 
