@@ -84,6 +84,8 @@ How to use
 
 The module can be imported and used directly in Python or by accessing the command line interface.
 
+Example configurations are available under `utils <https://github.com/face-hunters/face-hunter/tree/main/src/utils/>`__.
+
 A detailed documentation can be found `here <https://face-hunter.readthedocs.io/>`__.
 
 Credits
