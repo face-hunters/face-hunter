@@ -2,6 +2,7 @@ import os
 import re
 import logging
 import pandas as pd
+import numpy as np
 from src.utils.utils import check_path_exists
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.tree import export_text

@@ -84,6 +84,19 @@ def _run_detection(args):
     evaluate_on_dataset(args.path, args.thumbnails, ratio=args.ratio, scene_extraction=args.scene_extraction)
 
 
+def _fine_tune_threshold(args):
+    """ Finds the optimal threshold using a dataset.
+
+    Args:
+        args.path (str): Location of the dataset.
+        args.samples (int): Number of samples considered per entity to find the optimal threshold.
+        args.model (str): The model which should be investigated.
+    """
+    from src.models.distance_tuning import tune_distance_threshold
+
+    tune_distance_threshold(args.path, args.samples, args.model)
+
+
 def _link(args):
     """ Recognize entities in a video from YouTube and add the information to a knowledge graph.
 
@@ -178,6 +191,15 @@ def _get_parser():
     run_detection.add_argument('--scene_extraction', help='Threshold for scene postprocessing. Should be 0 for no '
                                                           'postprocessing', type=int, default=0)
     run_detection.set_defaults(action=_run_detection)
+
+    # Parser to find the optimal threshold
+    run_detection = subparsers.add_parser('find_threshold',
+                                          help='Evaluates distances between entity representations to obtain the '
+                                               'optimal threshold')
+    run_detection.add_argument('--path', help='Path to the dataset', type=str, default='data/datasets/youtube_faces')
+    run_detection.add_argument('--samples', help='Number of samples considered per entity', type=int, default=5)
+    run_detection.add_argument('--model', help='Model used for the fine-tuning', type=str, default='Dlib')
+    run_detection.set_defaults(action=_fine_tune_threshold)
 
     # Parser to link a video
     link = subparsers.add_parser('link',
