@@ -23,9 +23,9 @@ FRAME_THRESHOLD = CONFIG['face-recognition']['postprocessing-threshold']
 if 'virtuoso' in CONFIG:
     STORAGE_TYPE = 'virtuoso'
     MEMORY_PATH = ''
-    VIRTUOSO_URL = CONFIG['virtuoso']['url']
+    VIRTUOSO_URL = CONFIG['virtuoso']['sparql-auth']
     VIRTUOSO_GRAPH = CONFIG['virtuoso']['graph']
-    VIRTUOSO_USERNAME = CONFIG['virtuoso']['username']
+    VIRTUOSO_USERNAME = CONFIG['virtuoso']['user']
     VIRTUOSO_PASSWORD = CONFIG['virtuoso']['password']
 else:
     STORAGE_TYPE = 'memory'

@@ -173,7 +173,7 @@ class FaceRecognition(object):
 
         for i in range(len(boxes)):
             # there is face in the frame
-            if boxes[i] is not None:
+            if boxes[i] is not None and confidence[i] is not None and keypoints[i] is not None:
                 frame_faces = [{
                     'box': [box[0], box[1], box[2] - box[0], box[3] - box[1]],
                     'confidence': confidence,
@@ -245,7 +245,7 @@ class FaceRecognition(object):
                 LOGGER.info(f'Encoding {entity_dir}, thumbnail: {img_path}')
                 entity_embedding = self.represent(img_path, one_face=True)
 
-                if not entity_embedding:
+                if entity_embedding is None:
                     LOGGER.warning(f'Could not create encoding for image {img_path}')
                     continue
 
@@ -342,6 +342,11 @@ class FaceRecognition(object):
         # faces = self.detector.detect_faces(img)
         # Compatible with the MTCNN from facenet_pytorch
         boxes, confidence, keypoints = self.detector.detect(Image.fromarray(img), landmarks=True)
+
+        # If no face is found
+        if confidence[0] is None:
+            return None
+
         faces = [{
             'box': [box[0], box[1], box[2] - box[0], box[3] - box[1]],
             'confidence': confidence,
