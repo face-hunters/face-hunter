@@ -47,7 +47,7 @@ def extract_scenes(recognitions: list, timestamps: list, frame_threshold: int = 
 
         if np.any([len(pred) == 0 for pred in cleaned_recognitions[frame - (frame_threshold - 1):frame]]):
             continue
-        if current_scene is None and np.all(np.all([np.char.equal(np.sort(pred), np.sort(entities)))
+        if current_scene is None and np.all([np.all(np.char.equal(np.sort(pred), np.sort(entities)))
                                              for pred in cleaned_recognitions[frame - (frame_threshold - 1):frame]]):
             current_scene = Scene(entities).set_start(timestamps[frame - frame_threshold + 1])
 
