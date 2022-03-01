@@ -34,20 +34,25 @@ def extract_scenes(recognitions: list, timestamps: list, frame_threshold: int = 
 
     # Start scene extraction
     for frame, entities in enumerate(cleaned_recognitions):
-        if frame - (frame_threshold-1) < 0:
+        if frame - (frame_threshold - 1) < 0:
             continue
 
-        if current_scene is not None and not np.any([np.all(np.char.equal(np.sort(pred), current_scene.names[0]))
-                                                     for pred in cleaned_recognitions[frame - (frame_threshold - 1):frame + 1]]):
+        if current_scene is not None and not np.any(
+                [len(pred) != len(current_scene.names[0]) or np.all(np.sort(pred) == current_scene.names[0])
+                 for pred in cleaned_recognitions[frame - (frame_threshold - 1):frame + 1]]):
             scenes.append(current_scene.set_end(timestamps[frame - frame_threshold + 1]))
             current_scene = None
 
         if current_scene is not None and frame == (len(recognitions) - 1):
             scenes.append(current_scene.set_end(timestamps[frame]))
 
-        if np.any([len(pred) == 0 for pred in cleaned_recognitions[frame - (frame_threshold - 1):frame]]):
+        if np.any([((pred) == 0 or len(pred) != len(entities)) for pred in
+                   cleaned_recognitions[frame - (frame_threshold - 1):frame]]):
             continue
-        if current_scene is None and np.all([np.all(np.char.equal(np.sort(pred), np.sort(entities)))
+        print([np.sort(pred) for pred in cleaned_recognitions[frame - (frame_threshold - 1):frame]])
+        print(np.sort(entities))
+
+        if current_scene is None and np.all([np.all(np.sort(pred) == np.sort(entities))
                                              for pred in cleaned_recognitions[frame - (frame_threshold - 1):frame]]):
             current_scene = Scene(entities).set_start(timestamps[frame - frame_threshold + 1])
 
