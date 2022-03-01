@@ -1,4 +1,4 @@
-<img [src]="imageSrc">
+<img [src]="imageSrc" *ngIf="videos.length == 0">
 
 <div *ngIf="videos.length == 0">
   <div class="search_bar">
