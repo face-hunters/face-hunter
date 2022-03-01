@@ -12,6 +12,8 @@ import {DOCUMENT} from "@angular/common";
 })
 export class SearchComponent implements OnInit {
 
+  imageSrc = 'assets/overview.png'
+
   entity: string = '';
 
   value: any;
@@ -20,6 +22,8 @@ export class SearchComponent implements OnInit {
   videos: any[] = [];
 
   currentPage = 0;
+
+  loading: boolean = false;
 
   constructor(public dialog: MatDialog,
               private hunter: HunterService,
@@ -79,11 +83,14 @@ export class SearchComponent implements OnInit {
     dialogRef.afterClosed().subscribe(query_data => {
       if (query_data != null) {
         console.log(query_data);
+        this.loading = true;
         this.hunter.execute_query(query_data).subscribe(data => {
           console.log(data);
+          this.loading = false;
           this.process_scene(data.result)
           this.videos = this.allVideos.slice(0, 5);
-        })
+        },
+        error => this.loading = false)
       }
     });
   }

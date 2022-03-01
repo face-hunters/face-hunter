@@ -1,3 +1,5 @@
+<img [src]="imageSrc">
+
 <div *ngIf="videos.length == 0">
   <div class="search_bar">
     <mat-form-field class="example-form-field" appearance="fill">
@@ -13,7 +15,8 @@
     <mat-icon aria-hidden="false" aria-label="Example home icon" (click)="get_videos_of_celebritiy(entity)">search</mat-icon>
   </div>
 
-  <p (click)="openDialog()" class="sparql">.. or execute a SPARQL-Query directly</p>
+  <p *ngIf="loading == false" (click)="openDialog()" class="sparql">.. or execute a SPARQL-Query directly</p>
+  <p *ngIf="loading" class="sparql">Please wait while executing federated SPARQL-query ...</p>
 </div>
 
 <div *ngFor="let video of videos" class="search_item">
