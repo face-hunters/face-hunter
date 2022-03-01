@@ -38,7 +38,7 @@ def extract_scenes(recognitions: list, timestamps: list, frame_threshold: int = 
             continue
 
         if current_scene is not None and not np.any(
-                [len(pred) != len(current_scene.names[0]) or np.all(np.sort(pred) == current_scene.names[0])
+                [len(pred) == len(current_scene.names[0]) or np.all(np.sort(pred) == current_scene.names[0])
                  for pred in cleaned_recognitions[frame - (frame_threshold - 1):frame + 1]]):
             scenes.append(current_scene.set_end(timestamps[frame - frame_threshold + 1]))
             current_scene = None
